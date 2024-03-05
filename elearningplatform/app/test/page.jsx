@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { db } from '../lib/firebase'; 
 import { ref, onValue } from 'firebase/database';
+import Navbar from '../components/Navbar';
 
 export default function DataPage() {
  const [data, setData] = useState(null);
@@ -22,13 +23,17 @@ export default function DataPage() {
  }, []);
 
  return (
-    <div>
-      <h1>Data from Firebase Realtime Database</h1>
-      {data ? (
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      ) : (
-        <p>Loading data...</p>
-      )}
-    </div>
+    <header>
+        <Navbar />
+        <div className="max-w-4xl mt-10 mx-auto p-6 bg-blue-200 rounded-lg shadow-md">
+            <h1 className="text-2xl font-bold mb-4 font-black">Current Users</h1>
+            {data ? (
+            <pre className="text-lg text-gray-700">{JSON.stringify(data, null, 2)}</pre>
+            ) : (
+            <p className="text-lg text-gray-500">Loading data...</p>
+            )}
+        </div>
+    </header>
+    
  );
 }
