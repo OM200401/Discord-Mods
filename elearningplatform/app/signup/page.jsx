@@ -11,7 +11,8 @@ import db from '../lib/firebase';
 // Added html validation for input of email and password
 
 export default function SignUpPage() {
-    const [name, setName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -45,11 +46,11 @@ export default function SignUpPage() {
                             <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                                 <div className="flex flex-col">
                                     <label className="leading-loose">First Name</label>
-                                    <input type='input' onChange={e => setName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={name} />
+                                    <input type='input' onChange={e => setFirstName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={name} />
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">Last Name</label>
-                                    <input type='input' onChange={e => setName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={name} />
+                                    <input type='input' onChange={e => setLastName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={name} />
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">Email</label>
