@@ -19,6 +19,7 @@ export default function Home() {
     ))
   )
   ,[]);
+  
 
 
   return (
@@ -29,7 +30,7 @@ export default function Home() {
         <h1 className="text-6xl font-bold pt-10 font-mono">
           Welcome to our E-Learning Platform
           <h2>{students.length > 0 && students.map(student => (
-            <h1>{student.Name}</h1>
+            <h1 className=' text-white'>{student.Name}</h1>
           ))}</h2>
 
         </h1>

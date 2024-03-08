@@ -37,7 +37,7 @@ export default function LoginPage() {
                                     <label className="leading-loose">Password</label>
                                     <input type="password" className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                                 </div>
-                                <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Submit</button>
+                                <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"><Link href="/home">Login</Link></button>
                                 <div className="mt-4">
                                     <p>Don't have an account? <a className="text-blue-600 hover:text-blue-700"><Link href="/signup">Sign up</Link></a></p>
                                 </div>
