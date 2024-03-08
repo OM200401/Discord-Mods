@@ -15,6 +15,7 @@ export default function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [userType, setUserType] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -22,7 +23,8 @@ export default function SignUpPage() {
         addDoc(colRef,{
             name:name,
             email:email,
-            password:password
+            password:password,
+            userType:userType
         });
     }
 
@@ -57,6 +59,13 @@ export default function SignUpPage() {
                                     <label className="leading-loose">Confirm Password</label>
                                     <input type="password" className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                                 </div>
+                                <div className="flex flex-col">
+                                    <label className="leading-loose">User Type</label>
+                                    <select value={userType} onChange={(e) => setUserType(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
+                                        <option value="student">Student</option>
+                                        <option value="teacher">Teacher</option>
+                                    </select>
+                                </div>                                                                
                                 <button type='submit' onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Sign Up</button>
                             </div>
                         </form>
