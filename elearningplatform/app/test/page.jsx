@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
-import { db } from '../lib/firebase'; 
+import firestore from '../lib/firebase';
 import { ref, onValue } from 'firebase/database';
 import Navbar from '../components/Navbar';
 
@@ -8,7 +8,7 @@ export default function DataPage() {
  const [data, setData] = useState(null);
 
  useEffect(() => {
-    const dbRef = ref(db, 'User'); 
+    const dbRef = ref(firestore, 'User'); 
 
     const handleData = (snapshot) => {
       const data = snapshot.val();
