@@ -26,7 +26,7 @@ export default function DataPage() {
     <header>
         <Navbar />
         <div className="max-w-4xl mt-10 mx-auto p-6 bg-blue-200 rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold mb-4 font-black">Current Users</h1>
+            <h1 className="text-2xl font-bold mb-4">Current Users</h1>
             {data ? (
             <pre className="text-lg text-gray-700">{JSON.stringify(data, null, 2)}</pre>
             ) : (
