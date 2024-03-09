@@ -2,6 +2,7 @@
 import Navbar from "../components/Navbar";
 import { useState } from 'react';
 import Link from "next/link";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 // Created front end for the login page with Email and Password
 // Validation in html also added to check the type of email input and password
@@ -10,9 +11,17 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        // handle login here
+        // Handle login here
+        const auth = getAuth();
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);           
+            const user = userCredential.user;           
+        } catch (error) {
+            // Handle any errors from login fields here
+            console.error("Error signing in with email and password", error);
+        } 
     };
 
     return (

@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import { collection } from 'firebase/firestore';
 import { onSnapshot,addDoc } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import db from '../lib/firebase';
-
 
 
 //Created signup page for users that do not have an account on the platform
@@ -18,15 +18,26 @@ export default function SignUpPage() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [userType, setUserType] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
+        // Validate the form data here
+        const auth = getAuth();
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user
+        // After the user is created, you can add additional user info to your Firestore collection
         const colRef = collection(db,'Userinfo');
-        addDoc(colRef,{
-            name:name,
-            email:email,
-            password:password,
-            userType:userType
-        });
+        await addDoc(colRef, {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            userType: userType,
+            uid: user.uid  // Unique ID of the user
+        });        
+    } catch (error) {
+        //Hnadle errors if any thrown after validation
+        console.error("Error signing up with email and password", error);
+    }
     }
 
     return (
@@ -46,11 +57,11 @@ export default function SignUpPage() {
                             <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                                 <div className="flex flex-col">
                                     <label className="leading-loose">First Name</label>
-                                    <input type='input' onChange={e => setFirstName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={name} />
+                                    <input type='input' onChange={e => setFirstName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={firstName} />
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">Last Name</label>
-                                    <input type='input' onChange={e => setLastName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={name} />
+                                    <input type='input' onChange={e => setLastName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={lastName} />
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">Email</label>
