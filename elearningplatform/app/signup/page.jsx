@@ -18,10 +18,17 @@ export default function SignUpPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [userType, setUserType] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
 
     const handleSubmit = async(e) => {
         e.preventDefault();
+
         // Validate the form data here
+        if (!firstName || !lastName || !email || !password || !confirmPassword || !userType) {
+            setErrorMsg('All fields are required');
+            return;
+        }
+
         const auth = getAuth();
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -63,23 +70,23 @@ export default function SignUpPage() {
                             <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                                 <div className="flex flex-col">
                                     <label className="leading-loose">First Name</label>
-                                    <input type='input' onChange={e => setFirstName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={firstName} />
+                                    <input type='input' onChange={e => setFirstName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={firstName} required />
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">Last Name</label>
-                                    <input type='input' onChange={e => setLastName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={lastName} />
+                                    <input type='input' onChange={e => setLastName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={lastName} required/>
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">Email</label>
-                                    <input type="email" onChange={e => setEmail(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Email" value={email}  />
+                                    <input type="email" onChange={e => setEmail(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Email" value={email}  required/>
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">Password</label>
-                                    <input type="password" onChange={e => setPassword(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Password" value={password} />
+                                    <input type="password" onChange={e => setPassword(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Password" value={password} required/>
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">Confirm Password</label>
-                                    <input type="password" className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                                    <input type="password" className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required/>
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">User Type</label>
@@ -91,6 +98,7 @@ export default function SignUpPage() {
                                 <button type='submit' onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Sign Up</button>
                             </div>
                         </form>
+                        {errorMsg && <p className="text-red-500">{errorMsg}</p>}
                     </div>
                 </div>
             </div>
