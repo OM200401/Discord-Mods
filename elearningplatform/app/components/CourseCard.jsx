@@ -2,13 +2,13 @@ import Image from 'next/image';
 
 export default function CourseCard({ courseCode, courseName, imageUrl }) {
     return (
-        <div className="relative bg-white shadow-lg rounded-lg group hover:shadow-2xl transition duration-200">
-            <div className="relative w-full h-30 overflow-hidden rounded-t-lg">
-                <Image src={imageUrl} layout="fill" objectFit="cover" alt={courseName} />
+        <div className="relative bg-white shadow-lg rounded-lg group hover:shadow-2xl transition duration-200 max-w-md mx-auto">
+            <div className="relative w-full h-48 md:h-64 lg:h-40 overflow-hidden rounded-t-lg">
+                <Image src={imageUrl} layout="responsive" width={500} height={300} alt={courseName} />
             </div>
             <div className="px-6 py-4">
-                <h3 className="text-xl font-bold text-gray-800">{courseCode}</h3>
-                <p className="mt-2 text-sm text-gray-600">{courseName}</p>
+                <h3 className="text-lg md:text-xl font-bold text-gray-800">{courseCode}</h3>
+                <p className="mt-2 text-xs md:text-sm text-gray-600">{courseName}</p>
             </div>
         </div>
     );
