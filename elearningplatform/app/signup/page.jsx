@@ -5,6 +5,7 @@ import { collection } from 'firebase/firestore';
 import { onSnapshot,addDoc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import db from '../lib/firebase';
+import { useRouter } from 'next/router';
 
 
 //Created signup page for users that do not have an account on the platform
@@ -25,6 +26,7 @@ export default function SignUpPage() {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user
+        const router = useRouter();
         // After the user is created, you can add additional user info to your Firestore collection
         const colRef = collection(db,'Userinfo');
         await addDoc(colRef, {
@@ -33,9 +35,13 @@ export default function SignUpPage() {
             email: email,
             userType: userType,
             uid: user.uid  // Unique ID of the user
-        });        
+        });   
+
+        //Navigate to home page after signing up
+        router.push('/home');
+
     } catch (error) {
-        //Hnadle errors if any thrown after validation
+        //Handle errors if any thrown after validation
         console.error("Error signing up with email and password", error);
     }
     }
