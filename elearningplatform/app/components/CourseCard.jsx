@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function CourseCard({ courseCode, courseName, imageUrl }) {
     return (
-        <div className="relative bg-white shadow-lg rounded-lg group hover:shadow-2xl transition duration-200 max-w-md mx-auto">
+        <div className="relative bg-white shadow-lg rounded-lg group hover:scale-110 transition duration-200 max-w-md mx-auto">
             <div className="relative w-full h-48 md:h-64 lg:h-40 overflow-hidden rounded-t-lg">
                 <Image src={imageUrl} layout="responsive" width={500} height={300} alt={courseName} />
             </div>
