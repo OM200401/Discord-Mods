@@ -2,11 +2,11 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import { collection } from 'firebase/firestore';
-import { onSnapshot,addDoc } from 'firebase/firestore';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import db from '../lib/firebase';
-import { useRouter } from 'next/router';
-
+import {auth} from '../lib/firebase';
+import { redirect } from 'next/navigation';
+import { addDoc } from 'firebase/firestore';
 
 //Created signup page for users that do not have an account on the platform
 // Added html validation for input of email and password
@@ -17,8 +17,18 @@ export default function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [userType, setUserType] = useState('');
+    const [userType, setUserType] = useState('Student');
     const [errorMsg, setErrorMsg] = useState('');
+    const [user,setUser] = useState(null);
+
+    useEffect(() => {
+        if (user) {
+          console.log("Redirect");
+          redirect('/home');
+        }
+      }, [user]);
+
+
 
     const handleSubmit = async(e) => {
         e.preventDefault();
@@ -28,12 +38,13 @@ export default function SignUpPage() {
             setErrorMsg('All fields are required');
             return;
         }
+        // const router = useRouter();
 
-        const auth = getAuth();
+
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user
-        const router = useRouter();
+        setUser(user);
         // After the user is created, you can add additional user info to your Firestore collection
         const colRef = collection(db,'Userinfo');
         await addDoc(colRef, {
@@ -42,14 +53,11 @@ export default function SignUpPage() {
             email: email,
             userType: userType,
             uid: user.uid  // Unique ID of the user
-        });   
-
-        //Navigate to home page after signing up
-        router.push('/home');
+        });
 
     } catch (error) {
         //Handle errors if any thrown after validation
-        console.error("Error signing up with email and password", error);
+        setErrorMsg(error.message);
     }
     }
 
@@ -86,7 +94,7 @@ export default function SignUpPage() {
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">Confirm Password</label>
-                                    <input type="password" className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required/>
+                                    <input type="password" onChange={(e) => setConfirmPassword(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Confirm Password" value={confirmPassword} required/>
                                 </div>
                                 <div className="flex flex-col">
                                     <label className="leading-loose">User Type</label>
