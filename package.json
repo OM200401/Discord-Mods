@@ -1,6 +1,12 @@
 {
   "dependencies": {
+<<<<<<< HEAD
     "firebase": "^10.8.1",
+=======
+    "@nextui-org/react": "^2.2.10",
+    "firebase": "^10.8.1",
+    "framer-motion": "^11.0.8",
+>>>>>>> 9a325f4e9a095b67094e2e7306ebdc719df98fac
     "react-icons": "^5.0.1"
   }
 }
