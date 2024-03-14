@@ -1,18 +1,32 @@
 'use client';
+import Link from "next/link";
 import Sidebar from "../components/Sidebar"; 
 import CourseCard from "../components/CourseCard";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
-import {auth} from '../lib/firebase';
+import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { fetchCourseInfo } from "../components/FetchData";
 
 // Home Page that will be seen by the student user on logging in
 
 export default function home(){
     const [userName, setUserName] = useState('non');
     const [user,setUser] = useState();
+    const [courses, setCourses] = useState([]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+        const courseData = await fetchCourseInfo();
+        setCourses(courseData);
+        };
+
+        fetchData();
+    }, []);
+
+    // create a new function that will get the CourseCard info on clicking it and then go to the
+    // backend and get info about that course to redirect to the particular Course page 
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -47,10 +61,11 @@ export default function home(){
         <div className="flex flex-col md:flex-row ml-80">
             <Sidebar userName={ userName } />
             <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
-                <CourseCard courseCode="COSC 310" courseName="Software Engineering" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" />               
-                <CourseCard courseCode="COSC 304" courseName="Introduction to Databases" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" />               
-                <CourseCard courseCode="PHIL 331" courseName="Computer Ethics" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" />               
-                <CourseCard courseCode="PSYO 111" courseName="Introduction to Psychology I" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" />               
+                {courses.map(course => (
+                    <Link key={course.id} href={`/[courseCode]?courseCode=${course.courseCode}`}>
+                    <CourseCard courseCode={course.courseCode} courseName={course.courseName} imageUrl={course.imageUrl}/>
+                    </Link>
+                ))}
             </div>
         </div>
     );
