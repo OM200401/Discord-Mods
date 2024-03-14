@@ -50,6 +50,17 @@ export default function CoursePage() {
           <div className="relative md:ml-64">
             <CourseNavBar />
           </div>
+          <div className="p-6 w-screen bg-blue-100 text-center">
+            <h1 className="text-3xl text-black font-semibold">Course Name</h1>
+            <div className="mt-4">
+              <h2 className="text-2xl font-semibold text-black mt-48">Resources</h2>
+              <ul className="list-disc ml-80 text-left">
+                <li><a href="#resource1" className="text-blue-500 hover:underline">Resource 1</a></li>
+                <li><a href="#resource2" className="text-blue-500 hover:underline">Resource 2</a></li>
+                <li><a href="#resource3" className="text-blue-500 hover:underline">Resource 3</a></li>
+              </ul>
+            </div>
+          </div>
         </div>
-      );
+    );
 }
