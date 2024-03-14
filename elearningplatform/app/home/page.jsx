@@ -47,13 +47,13 @@ export default function home(){
     }, [userName]);
 
     return (
-        <div className="flex flex-col md:flex-row ml-80 bg-white">
+        <div className="flex flex-col md:flex-row ml-80">
             <Sidebar userName={ userName } />
             <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
-                <Link href={`/[courseCode]?courseCode=COSC310`}><CourseCard courseCode="COSC 310" courseName="Software Engineering" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
-                <Link href={`/[courseCode]?courseCode=COSC304`}><CourseCard courseCode="COSC 304" courseName="Introduction to Databases" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
-                <Link href={`/[courseCode]?courseCode=PHIL331`}><CourseCard courseCode="PHIL 331" courseName="Computer Ethics" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
-                <Link href={`/[courseCode]?courseCode=PSYO111`}><CourseCard courseCode="PSYO 111" courseName="Introduction to Psychology I" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
+                <Link href={`/[courseCode]?courseCode=COSC310`} as="/COSC310"><CourseCard courseCode="COSC 310" courseName="Software Engineering" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
+                <Link href={`/[courseCode]?courseCode=COSC304`} as="/COSC304"><CourseCard courseCode="COSC 304" courseName="Introduction to Databases" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
+                <Link href={`/[courseCode]?courseCode=PHIL331`} as="/PHIL331"><CourseCard courseCode="PHIL 331" courseName="Computer Ethics" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
+                <Link href={`/[courseCode]?courseCode=PSYO111`} as="/PSYO111"><CourseCard courseCode="PSYO 111" courseName="Introduction to Psychology I" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
             </div>
         </div>
     );

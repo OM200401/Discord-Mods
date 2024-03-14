@@ -35,7 +35,7 @@ export default function Sidebar({ userName }) {
                 <p className="mt-2 font-extrabold text-gray-600">HELLO {userName}</p>
             </div>
             <nav>
-                <Link href="/dashboard">
+                <Link href="/home">
                     <div className="block px-6 py-2 font-medium text-gray-800 hover:bg-gray-200 rounded-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-pointer">
                         {isMinimized ? <FaHome/> : 'Dashboard'}
                     </div>
