@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <div>
       {/* The component Navbar is used below and is implemented in the Navbar.tsx file under components*/}
-      <Navbar /> 
+      <Navbar data-testid="navbar" /> 
       <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
         <h1 className="text-6xl font-bold pt-10 font-mono">
           Welcome to our E-Learning Platform
