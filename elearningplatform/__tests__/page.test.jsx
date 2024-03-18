@@ -1,30 +1,30 @@
-import { render, screen } from '@testing-library/react';
-import { test, expect } from 'vitest';
-import Home from '../app/page';
+import { expect, test } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import Home from '../app/page'
 
-test('Home page renders without crashing', () => {
-  const { container } = render(<Home />);
+test('Navbar component is present', () => {
+    render(<Home />)
+    const navbar = screen.getByTestId('navbar')
+    expect(navbar).toBeDefined()
+  })
   
-  // Check if the page renders without crashing
-  expect(container).toBeTruthy();
-});
+  test('Page contains the expected heading text', () => {
+    const heading = screen.getByRole('heading', { level: 1, name: /Welcome to our E-Learning Platform/i })
+    expect(heading).toBeDefined()
+  })
+  
+  test('Page contains the expected paragraph text', () => {
+    const paragraph = screen.getByText(/Join us and explore the world of knowledge./i)
+    expect(paragraph).toBeDefined()
+  })
+  
+  test('"Get Started" link is present', () => {
+    const link = screen.getByText(/Get Started/i)
+    expect(link).toBeDefined()
+  })
 
-test('Home page contains expected content', () => {
-  const { getByText } = render(<Home />);
-  
-  // Check if the page contains the expected heading text
-  const heading = getByText(/Welcome to our E-Learning Platform/i);
-  expect(heading).toBeTruthy();
-  
-  // Check if the page contains the expected paragraph text
-  const paragraph = getByText(/Join us and explore the world of knowledge./i);
-  expect(paragraph).toBeTruthy();
-});
-
-test('Navbar is present', () => {
-  const { getByTestId } = render(<Home />);
-  
-  // Fetches the Navbar component using the data-testid attribute
-  const navbar = getByTestId('navbar');
-  expect(navbar).toBeTruthy();
-});
+test('"Get Started" link leads to the correct page', () => {
+    const link = screen.getByText(/Get Started/i)
+    expect(link).toBeDefined()
+    expect(link.closest('a').getAttribute('href')).toBe('/login')
+})
