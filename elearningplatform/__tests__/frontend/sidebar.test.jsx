@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import Sidebar from '../app/components/Sidebar'
+import Sidebar from '../../app/components/Sidebar'
 
 test('Sidebar is present', () => {
     render(<Sidebar />)

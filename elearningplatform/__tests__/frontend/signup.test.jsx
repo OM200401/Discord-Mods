@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import Signup from '../app/signup/page'
+import Signup from '../../app/signup/page'
 
 test('Signup form is present', () => {
     render(<Signup />)

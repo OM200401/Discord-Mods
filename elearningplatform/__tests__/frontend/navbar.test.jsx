@@ -1,6 +1,6 @@
 import { test,expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import NavBar from '../app/components/Navbar'
+import NavBar from '../../app/components/Navbar'
 
 test('Settings link is present', () => {
     render(<NavBar />)
