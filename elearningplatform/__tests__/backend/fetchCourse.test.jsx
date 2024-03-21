@@ -1,9 +1,9 @@
 import jest from 'jest';
 
-import { fetchCourseInfo } from '../app/components/FetchCourseData'
+import { fetchCourseInfo } from '../../app/components/FetchCourseData'
 import * as firestore from 'firebase/firestore'
 import { collection, query, where, getDocs } from "firebase/firestore";
-import db from '../app/lib/firebase';
+import db from '../../app/lib/firebase';
 
 describe('Firebase Database Tests', () => {
     test('Test database fetch operation', async () => {

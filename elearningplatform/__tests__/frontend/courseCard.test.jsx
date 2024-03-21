@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import CourseCard from '../app/components/CourseCard'
+import CourseCard from '../../app/components/CourseCard'
 
 const course = {
     courseCode: 'COSC101',

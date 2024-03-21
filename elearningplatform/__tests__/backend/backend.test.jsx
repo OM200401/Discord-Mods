@@ -2,7 +2,7 @@
 import jest from 'jest';
 
 import { render, screen } from '@testing-library/react';
-import Home from '../app/page';
+import Home from '../../app/page';
 
 // import SignUpPageTest from '@/app/backEndTestFiles/signupTest/page';
 
@@ -10,9 +10,9 @@ import { useState } from 'react';
 import { useEffect } from "react";
 import Link from "next/link";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import {auth} from '../app/lib/firebase';
+import {auth} from '../../app/lib/firebase';
 import { redirect } from "next/navigation";
-import db from '../app/lib/firebase';
+import db from '../../app/lib/firebase';
 
 import { collection, query, where, getDocs } from "firebase/firestore";
 
