@@ -1,8 +1,8 @@
 import { expect, test, mock } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Home from '../app/home/page';
+import Home from '../../app/home/page';
 import { useRouter } from 'next/router';
-import CoursePage from '../app/[courseCode]/page';
+import CoursePage from '../../app/[courseCode]/page';
 
 test('Sidebar is present on the home page', () => {
     render(<Home />);

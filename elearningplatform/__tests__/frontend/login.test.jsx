@@ -2,7 +2,7 @@
 
 import { expect, test } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import LoginPage from '../app/login/page';
+import LoginPage from '../../app/login/page';
 import { act } from '@testing-library/react';
 
 test('Navbar component is present', () => {

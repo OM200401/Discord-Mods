@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import CoursePage from '../app/[courseCode]/page';
+import CoursePage from '../../app/[courseCode]/page';
 
 test('Sidebar component is present', () => {
     render(<CoursePage />);
