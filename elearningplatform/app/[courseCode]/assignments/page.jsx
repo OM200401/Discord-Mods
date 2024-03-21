@@ -19,8 +19,8 @@ export default function Assignments() {
                 <CourseNavBar />
             </div>
                 <div className="p-6 text-center w-screen">
-                    <h1 className="text-3xl text-black font-semibold mb-4">Course Name </h1>
-                    <h2 className="text-3xl text-black font mt-20">Assignments</h2>
+                    <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name </h1>
+                    <h2 className="text-3xl text-black font mt-20" data-testid="assignments-heading">Assignments</h2>
                     <table className="mt-4 w-full text-left text-black border-collapse table-auto">
                         <thead>
                             <tr>
