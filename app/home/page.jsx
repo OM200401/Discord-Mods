@@ -1,12 +1,15 @@
 'use client';
 import Link from "next/link";
-import Sidebar from "../components/Sidebar"; 
+// import Sidebar from "../components/Sidebar"; 
+import dynamic from "next/dynamic";
 import CourseCard from "../components/CourseCard";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
+
+const Sidebar = dynamic(() => import('../components/Sidebar'), {ssr: false});
 
 // Home Page that will be seen by the student user on logging in
 

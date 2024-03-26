@@ -9,6 +9,11 @@ import { FaHome, FaBook, FaPencilAlt, FaFileAlt, FaUser, FaChalkboard, FaSignOut
 
 export default function Sidebar({ userName }) {
     const router = useRouter();
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
     // added isMinimized state that monitors the state of the sidebar and used below to determine 
     // whether the sidebar is minimized or not 
 
@@ -19,7 +24,9 @@ export default function Sidebar({ userName }) {
     const handleSignOut = async () => {
         try {
             await signOut(auth); 
-            router.push('/login');
+            if (router.isReady) {
+                router.push('/login');
+            }
         } catch (error) {
             console.error('Error signing out', error);
         }
