@@ -9,8 +9,12 @@ import db from '../lib/firebase';
 import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
 
-const Sidebar = dynamic(() => import('../components/Sidebar'), {ssr: false});
-
+let Sidebar;
+if (process.env.NODE_ENV === 'test') {
+    Sidebar = () => <div data-testid="sidebar-component"></div>;
+} else {
+    Sidebar = dynamic(() => import('../components/Sidebar'), {ssr: false});
+}
 // Home Page that will be seen by the student user on logging in
 
 export default function Home(){

@@ -27,7 +27,7 @@ test('Courses link is present', () => {
 })
 
 test('Assignments link is present', () => {
-    const homeLink = screen.getByText(/Assignments/i)
+    const homeLink = screen.getByText(/Assignments/i) 
     expect(homeLink).toBeDefined()
     expect(homeLink.closest('a').getAttribute('href')).toBe('/assignments')
 })

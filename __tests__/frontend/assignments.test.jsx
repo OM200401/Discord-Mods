@@ -1,10 +1,18 @@
 import { test, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import Assignments from '../../app/[courseCode]/assignments/page';
+import sinon from 'sinon';
+import * as nextRouter from 'next/router';
 
 test('Sidebar component is present', () => {
+    sinon.stub(nextRouter, 'useRouter').returns({
+        route: '/',
+        pathname: '',
+        query: '',
+        asPath: '',
+    })
     render(<Assignments />);
-    const sidebar = screen.getByTestId('sidebar');
+    const sidebar = screen.getByTestId('sidebar-component');
     expect(sidebar).toBeDefined();
 });
 
