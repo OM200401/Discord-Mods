@@ -8,6 +8,7 @@ import { FaHome, FaBook, FaPencilAlt, FaFileAlt, FaUser, FaChalkboard, FaSignOut
 //Creating a sidebar component to be able to use on all the pages for the app
 
 export default function Sidebar({ userName }) {
+    const router = useRouter();
     // added isMinimized state that monitors the state of the sidebar and used below to determine 
     // whether the sidebar is minimized or not 
 
@@ -17,8 +18,8 @@ export default function Sidebar({ userName }) {
     //Functions for handling sign out in the backend
     const handleSignOut = async () => {
         try {
-            const router = useRouter();
             await signOut(auth); 
+            router.push('/login');
         } catch (error) {
             console.error('Error signing out', error);
         }

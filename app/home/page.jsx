@@ -10,7 +10,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 // Home Page that will be seen by the student user on logging in
 
-export default function home(){
+export default function Home(){
     const [userName, setUserName] = useState('non');
     const [user,setUser] = useState();
 

@@ -64,7 +64,7 @@ export default function LoginPage() {
                                 </div>
                                 <button onClick={(e) => (handleSubmit(e))} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Login</button>
                                 <div className="mt-4">
-                                    <p>Don't have an account? <a className="text-blue-600 hover:text-blue-700"><Link href="/signup">Sign up</Link></a></p>
+                                    <p>Don&apos;t have an account? <a className="text-blue-600 hover:text-blue-700"><Link href="/signup">Sign up</Link></a></p>
                                 </div>
                             </div>
                         </div>

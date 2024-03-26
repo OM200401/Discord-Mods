@@ -13,6 +13,7 @@ export default function Home() {
   const [students, setStudents] = useState([]);
 
   const testStudents = [];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => (
     onSnapshot(colRef, (snapshot) => 
       setStudents(snapshot.docs.map((doc) => doc.data())
