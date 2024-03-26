@@ -1,34 +1,36 @@
-<<<<<<< HEAD
-# COSC310 Group Project 
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Requirements Engineering
+## Getting Started
 
-- All users should be able to 
-=======
-# COSC310 Project
+First, run the development server:
 
-## Requirements:
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-### Common requirements:
-- All users should be able to sign up, log in, and reset password in case they forget it.
-- All users should be able to update their information.
-- All users should be able to view a course.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Admins
-- Admins should be able to create a course and remove a course.
-- Admins can accept students into a course (students must be accepted into a course in order to take it).
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-### Teachers
-- Teachers can upload assignments (quizzes or essays)
-- Teachers can grade assignments
-- Teachers can view all grades for the courses they teach.
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-### Students
-- Students can request to enroll into a course.
-- Students can drop a course.
-- Students can submit assignments (quizzes or essays).
-- Students can view their own grades for a course.
-- Students can see their courses on a dashboard.
-- Students can see grades and feedback (optional) for each assignment they submit.
+## Learn More
 
->>>>>>> 940148e8e95cf8c288547d255eb8e8d724c12c7d
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
