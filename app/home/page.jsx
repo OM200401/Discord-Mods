@@ -11,7 +11,9 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
-    Sidebar = () => <div data-testid="sidebar-component"></div>;
+    const MockSidebar = () => <div data-testid="sidebar-component"></div>;
+    MockSidebar.displayName = 'Sidebar';
+    Sidebar = MockSidebar;
 } else {
     Sidebar = dynamic(() => import('../components/Sidebar'), {ssr: false});
 }

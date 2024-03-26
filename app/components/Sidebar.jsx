@@ -83,7 +83,7 @@ function Sidebar({ userName }) {
 
 if (process.env.NODE_ENV === 'test') {
     
-    Sidebar = ({ userName }) => {
+    const MockSidebar = ({ userName }) => {
         // Export a mock version of the Sidebar component for tests
         const [isMinimized, setIsMinimized] = useState(false);
         return(
@@ -134,6 +134,8 @@ if (process.env.NODE_ENV === 'test') {
         </div>
         );
     }
+    MockSidebar.displayName = 'Sidebar';
+    Sidebar = MockSidebar;
 }
 
 export default Sidebar;
