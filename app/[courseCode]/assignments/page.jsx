@@ -3,7 +3,7 @@ import Sidebar from '../../components/Sidebar';
 
 // Assignments Page for the Course
 
-export default function Assignments() {
+export default function Assignments({assignments}) {
 
     // Demo assignments array to display some assignments but will later have data 
     // displayed from the database
@@ -42,4 +42,29 @@ export default function Assignments() {
                 </div>
         </div>
     );
+}
+
+// This function gets called at build time
+export async function getStaticPaths() {
+    // Hardcode some course codes
+    const courses = ['course1', 'course2', 'course3'];
+
+    // Get the paths we want to pre-render based on courses
+    const paths = courses.map((course) => ({ params: { courseCode: course } }));
+
+    // We'll pre-render only these paths at build time.
+    // { fallback: false } means other routes should 404.
+    return { paths, fallback: false }
+}
+
+// This also gets called at build time
+export async function getStaticProps({ params }) {
+    // Hardcode some assignments
+    const assignments = [
+        { title: 'Assignment 1', dueDate: '2022-01-01', points: 100 },
+        { title: 'Assignment 2', dueDate: '2022-01-15', points: 150 },
+    ];
+
+    // Pass assignments data to the page via props
+    return { props: { assignments } }
 }
