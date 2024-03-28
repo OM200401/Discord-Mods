@@ -2,6 +2,10 @@
 import { useState } from 'react'; // Import useState hook
 import CourseNavBar from '../../components/CourseNavBar';
 import Sidebar from '../../components/Sidebar';
+import db from '../../lib/firebase';
+import {auth,firestore,storage,uploadBytes} from '../../lib/firebase';
+import { addDoc,collection,updateDoc } from 'firebase/firestore';
+import {getDownloadURL, ref} from 'firebase/storage';
 
 export default function Assignments() {
     // State variables to store the title of the assignment, the selected type (quiz or essay), the due date, the worth of the assignment, and the PDF file
@@ -18,7 +22,7 @@ export default function Assignments() {
     };
 
     // Function to handle submission of assignment details
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         // Perform submission logic here
         console.log('Assignment Details Submitted:', {
             assignmentTitle,
@@ -28,10 +32,35 @@ export default function Assignments() {
             pdfFile
         });
         // Clear input fields after submission
-        setAssignmentTitle('');
-        setDueDate('');
-        setAssignmentWorth('');
-        setPdfFile(null);
+        // setAssignmentTitle('');
+        // setDueDate('');
+        // setAssignmentWorth('');
+        // setPdfFile(null);
+
+        try {
+            const colRef = collection(db,'Assignments');
+
+            const assignmentDocRef = await addDoc(colRef, {
+                assignmentTitle: assignmentTitle,
+                assignmentType: assignmentType,
+                dueDate: dueDate,
+                assignmentWorth: assignmentWorth,
+            });
+
+            const storageRef = ref(storage, `assignments/${assignmentDocRef.id}`);
+            const snapshot = await uploadBytes(storageRef,pdfFile);
+            const downloadURL = await getDownloadURL(snapshot);
+
+            await updateDoc(assignmentDocRef, {
+                fileURL:downloadURL
+            })
+    
+        } catch (error) {
+            //Handle errors if any thrown after validation
+            setErrorMsg(error.message);
+        }
+
+
     };
 
     return (
