@@ -48,8 +48,8 @@ export default function home(){
 
     return (
         <div className="flex flex-col md:flex-row ml-80">
-            <Sidebar userName={ userName } />
-            <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
+            <Sidebar userName={ userName } data-testid="sidebar-component" />
+            <div  className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
                 <Link href={`/[courseCode]?courseCode=COSC310`} as="/COSC310"><CourseCard courseCode="COSC 310" courseName="Software Engineering" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
                 <Link href={`/[courseCode]?courseCode=COSC304`} as="/COSC304"><CourseCard courseCode="COSC 304" courseName="Introduction to Databases" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>
                 <Link href={`/[courseCode]?courseCode=PHIL331`} as="/PHIL331"><CourseCard courseCode="PHIL 331" courseName="Computer Ethics" imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU" /></Link>

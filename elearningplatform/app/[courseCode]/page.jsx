@@ -51,7 +51,7 @@ export default function CoursePage() {
             <CourseNavBar />
           </div>
           <div className="p-6 w-screen bg-blue-100 text-center">
-            <h1 className="text-3xl text-black font-semibold">Course Name</h1>
+            <h1 className="text-3xl text-black font-semibold"  data-testid="course-heading">Course Name</h1>
             <div className="mt-4">
               <h2 className="text-2xl font-semibold text-black mt-48">Resources</h2>
               <ul className="list-disc ml-80 text-left">
