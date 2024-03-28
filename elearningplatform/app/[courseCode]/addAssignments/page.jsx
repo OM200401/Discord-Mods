@@ -6,6 +6,7 @@ import db from '../../lib/firebase';
 import {auth,firestore,storage,uploadBytes} from '../../lib/firebase';
 import { addDoc,collection,updateDoc } from 'firebase/firestore';
 import {getDownloadURL, ref} from 'firebase/storage';
+import { update } from 'firebase/database';
 
 export default function Assignments() {
     // State variables to store the title of the assignment, the selected type (quiz or essay), the due date, the worth of the assignment, and the PDF file
@@ -47,13 +48,15 @@ export default function Assignments() {
                 assignmentWorth: assignmentWorth,
             });
 
+            let url = '';
             const storageRef = ref(storage, `assignments/${assignmentDocRef.id}`);
+            
             const snapshot = await uploadBytes(storageRef,pdfFile);
-            const downloadURL = await getDownloadURL(snapshot);
 
-            await updateDoc(assignmentDocRef, {
-                fileURL:downloadURL
+            getDownloadURL(snapshot.ref).then((downloadURL) => {
+                updateDoc(assignmentDocRef,{fileURL:downloadURL});
             })
+              
     
         } catch (error) {
             //Handle errors if any thrown after validation
