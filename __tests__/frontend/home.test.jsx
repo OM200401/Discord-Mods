@@ -4,16 +4,22 @@ import sinon from 'sinon';
 import * as nextRouter from 'next/router';
 import Home from '../../app/home/page';
 
-test('Sidebar is present on the home page', () => {
-    sinon.stub(nextRouter, 'useRouter').returns({
-        route: '/',
-        pathname: '',
-        query: '',
-        asPath: '',
-    });
+// test('Sidebar is present on the home page', () => {
+//     sinon.stub(nextRouter, 'useRouter').returns({
+//         route: '/',
+//         pathname: '',
+//         query: '',
+//         asPath: '',
+//     });
 
+//     render(<Home />);
+//     const sidebar = screen.getByTestId('sidebar-component');
+//     expect(sidebar).toBeDefined();
+// });
+
+test('Sidebar is present on the home page', () => {
     render(<Home />);
-    const sidebar = screen.getByTestId('sidebar-component');
+    const sidebar = screen.getByTestId('sidebar');
     expect(sidebar).toBeDefined();
 });
 
