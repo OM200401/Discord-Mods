@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - CI/CD
+  workflow_dispatch:
 jobs:
   Deploy-Production:
     runs-on: ubuntu-latest
