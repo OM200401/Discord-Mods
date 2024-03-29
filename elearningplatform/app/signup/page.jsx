@@ -45,16 +45,39 @@ export default function SignUpPage() {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user
         setUser(user);
-        // After the user is created, you can add additional user info to your Firestore collection
-        const colRef = collection(db,'Userinfo');
-        await addDoc(colRef, {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            userType: userType,
-            uid: user.uid  // Unique ID of the user
-        });
 
+        // After the user is created, you can add additional user info to your Firestore collection
+        if(userType == 'Student'){
+            const studentCollection = collection(db,'students');
+            const studentDocRef = await addDoc(studentCollection,{
+                firstName:firstName,
+                lastName:lastName,
+                email:email,
+                userType:userType
+            }) 
+
+
+            const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses');
+            addDoc(registeredCoursesCollectionRef, { uid: 'COSC305' });
+
+            
+ 
+        }else{
+            const teacherCollection = collection(db,'teachers');
+            const teacherDocRef = await addDoc(teacherDocRef,{
+                firstName:firstName,
+                lastName:lastName,
+                email:email,
+                userType:userType
+            })
+
+                const registeredCoursesCollectionRef = collection(teacherDocRef, 'coursesTaught');
+                addDoc(registeredCoursesCollectionRef, { uid: 'COSC305' });
+            
+
+        }
+       
+       
     } catch (error) {
         //Handle errors if any thrown after validation
         setErrorMsg(error.message);
@@ -74,31 +97,31 @@ export default function SignUpPage() {
                                 <p className="text-sm text-gray-500 font-normal leading-relaxed">Enter your information to create your account.</p>
                             </div>
                         </div>
-                        <form onSubmit={handleSubmit} className="divide-y divide-gray-200" data-testid="signup-form">
+                        <form onSubmit={handleSubmit} className="divide-y divide-gray-200">
                             <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                                 <div className="flex flex-col">
-                                    <label htmlFor='firstName' className="leading-loose">First Name</label>
-                                    <input id='firstName' type='input' onChange={e => setFirstName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={firstName} required />
+                                    <label className="leading-loose">First Name</label>
+                                    <input type='input' onChange={e => setFirstName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={firstName} required />
                                 </div>
                                 <div className="flex flex-col">
-                                    <label htmlFor='lastName' className="leading-loose">Last Name</label>
-                                    <input id='lastName' type='input' onChange={e => setLastName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={lastName} required/>
+                                    <label className="leading-loose">Last Name</label>
+                                    <input type='input' onChange={e => setLastName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={lastName} required/>
                                 </div>
                                 <div className="flex flex-col">
-                                    <label htmlFor='email' className="leading-loose">Email</label>
-                                    <input id='email' type="email" onChange={e => setEmail(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Email" value={email}  required/>
+                                    <label className="leading-loose">Email</label>
+                                    <input type="email" onChange={e => setEmail(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Email" value={email}  required/>
                                 </div>
                                 <div className="flex flex-col">
-                                    <label htmlFor='password' className="leading-loose">Password</label>
-                                    <input id='password' type="password" onChange={e => setPassword(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Password" value={password} required/>
+                                    <label className="leading-loose">Password</label>
+                                    <input type="password" onChange={e => setPassword(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Password" value={password} required/>
                                 </div>
                                 <div className="flex flex-col">
-                                    <label htmlFor='confirmPassword' className="leading-loose">Confirm Password</label>
-                                    <input id='confirmPassword' type="password" onChange={(e) => setConfirmPassword(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Confirm Password" value={confirmPassword} required/>
+                                    <label className="leading-loose">Confirm Password</label>
+                                    <input type="password" onChange={(e) => setConfirmPassword(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Confirm Password" value={confirmPassword} required/>
                                 </div>
                                 <div className="flex flex-col">
-                                    <label htmlFor='userType' className="leading-loose">User Type</label>
-                                    <select id='userType' value={userType} onChange={(e) => setUserType(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
+                                    <label className="leading-loose">User Type</label>
+                                    <select value={userType} onChange={(e) => setUserType(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
                                         <option value="student">Student</option>
                                         <option value="teacher">Teacher</option>
                                     </select>
