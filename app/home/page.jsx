@@ -8,7 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { fetchCourseInfo } from "../components/FetchCourseData";
+import FetchCourseData from "../components/FetchCourseData";
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
@@ -27,7 +27,7 @@ export default function Home(){
 
     useEffect(() => {
         const fetchData = async () => {
-        const courseData = await fetchCourseInfo();
+        const courseData = await FetchCourseData.fetchCourseInfo();
         setCourses(courseData);
         };
 

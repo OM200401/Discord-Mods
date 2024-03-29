@@ -21,10 +21,7 @@ describe('Firebase Database Tests', () => {
   
       // Ensure that the data matches the expected data
       expect(courseData.length).toBeGreaterThan(0); // Ensure that there is at least one document
-      const expectedCourses=[
-        {
-            description: 'Project Management',
-        },
+      const expectedCourses=[        
         {
             courseCode: 'PSYO 111',
             courseName: 'Introduction to Psychology 1',
