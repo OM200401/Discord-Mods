@@ -8,7 +8,7 @@ import { FaHome, FaBook, FaPencilAlt, FaFileAlt, FaUser, FaChalkboard, FaSignOut
 //Creating a sidebar component to be able to use on all the pages for the app
 
 function Sidebar({ userName }) {
-    const router = useRouter();
+    // const router = useRouter();
     // const [isClient, setIsClient] = useState(false);
 
     // useEffect(() => {
@@ -36,7 +36,8 @@ function Sidebar({ userName }) {
     const handleSignOut = async () => {
         try {
             await signOut(auth); 
-            router.push('/login');
+            // router.push('/login');
+            redirect('/login');
         } catch (error) {
             console.error('Error signing out', error);
         }

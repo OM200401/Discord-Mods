@@ -12,7 +12,7 @@ test('Sidebar component is present', () => {
         asPath: '',
     })
     render(<Assignments />);
-    const sidebar = screen.getByTestId('sidebar-component');
+    const sidebar = screen.findByTestId('sidebar-component');
     expect(sidebar).toBeDefined();
 });
 

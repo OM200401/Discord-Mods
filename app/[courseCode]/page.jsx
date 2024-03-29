@@ -46,7 +46,7 @@ export default function CoursePage() {
 
     return (
         <div className="flex flex-col md:flex-row">
-          <Sidebar userName={ userName } />
+          <Sidebar data-testid = "sidebar-component" userName={ userName } />
           <div className="relative md:ml-64">
             <CourseNavBar />
           </div>
