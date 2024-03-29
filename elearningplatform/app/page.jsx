@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <div>
       {/* The component Navbar is used below and is implemented in the Navbar.tsx file under components*/}
-      <Navbar /> 
+      <Navbar/> 
       <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
         <h1 className="text-6xl font-bold pt-10 font-mono">
           Welcome to our E-Learning Platform
@@ -41,7 +41,7 @@ export default function Home() {
           <a className="px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10">
             <Link href="/login">
               Get Started
-              {/* This button would lead th user to the login page */}
+              {/* This button would lead the user to the login page */}
             </Link>
           </a>
         </div>

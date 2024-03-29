@@ -1,38 +1,45 @@
 'use client'
 import { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
+import Navbar from '../../components/Navbar';
 import { collection } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import db from '../lib/firebase';
-import {auth} from '../lib/firebase';
+import db from '../../lib/firebase';
+import {auth} from '../../lib/firebase';
 import { redirect } from 'next/navigation';
 import { addDoc } from 'firebase/firestore';
+import { FaArrowAltCircleUp } from 'react-icons/fa';
 
 //Created signup page for users that do not have an account on the platform
 // Added html validation for input of email and password
 
-export default function SignUpPage() {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+export default function SignUpPageTest() {
+    const [firstName, setFirstName] = useState('tina');
+    const [lastName, setLastName] = useState('Smith');
+    const [email, setEmail] = useState('mukas@gmail.com');
+    const [password, setPassword] = useState('Jake@2005');
+    const [confirmPassword, setConfirmPassword] = useState('tina@2005');
     const [userType, setUserType] = useState('Student');
     const [errorMsg, setErrorMsg] = useState('');
     const [user,setUser] = useState(null);
 
     useEffect(() => {
-        if (user) {
-          console.log("Redirect");
-          redirect('/home');
+        async function run() {
+            await handleSubmit();
         }
-      }, [user]);
+
+        run().then(() => {
+            if (user) {
+                console.log("Redirect");
+                redirect('/home');
+            }
+        }
+    )
+}, [user]);
 
 
 
-    const handleSubmit = async(e) => {
-        e.preventDefault();
-
+    const handleSubmit = async() => {
+    
         // Validate the form data here
         if (!firstName || !lastName || !email || !password || !confirmPassword || !userType) {
             setErrorMsg('All fields are required');
@@ -45,39 +52,16 @@ export default function SignUpPage() {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user
         setUser(user);
-
         // After the user is created, you can add additional user info to your Firestore collection
-        if(userType == 'Student'){
-            const studentCollection = collection(db,'students');
-            const studentDocRef = await addDoc(studentCollection,{
-                firstName:firstName,
-                lastName:lastName,
-                email:email,
-                userType:userType
-            }) 
+        const colRef = collection(db,'Userinfo');
+        await addDoc(colRef, {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            userType: userType,
+            uid: user.uid  // Unique ID of the user
+        });
 
-
-            const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses');
-            addDoc(registeredCoursesCollectionRef, { uid: 'COSC305' });
-
-            
- 
-        }else{
-            const teacherCollection = collection(db,'teachers');
-            const teacherDocRef = await addDoc(teacherDocRef,{
-                firstName:firstName,
-                lastName:lastName,
-                email:email,
-                userType:userType
-            })
-
-                const registeredCoursesCollectionRef = collection(teacherDocRef, 'coursesTaught');
-                addDoc(registeredCoursesCollectionRef, { uid: 'COSC305' });
-            
-
-        }
-       
-       
     } catch (error) {
         //Handle errors if any thrown after validation
         setErrorMsg(error.message);
