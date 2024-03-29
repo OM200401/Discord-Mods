@@ -7,4 +7,9 @@ export default defineConfig({
     include: ['**/__tests__/frontend/**/*.{spec,test}.{js,jsx,ts,tsx}'],
     environment: 'jsdom',
   },
+  resolve: {
+    alias: process.env.NODE_ENV === 'test' ? {
+      '../components/FetchCourseData': '../components/FetchCourseData.mock',
+    } : {},
+  },
 })

@@ -8,7 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import FetchCourseData from "../components/FetchCourseData";
+import {fetchCourseInfo} from "../components/FetchCourseData"
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
@@ -24,11 +24,13 @@ export default function Home(){
     const [userName, setUserName] = useState('non');
     const [user,setUser] = useState();
     const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
-        const courseData = await FetchCourseData.fetchCourseInfo();
+        const courseData = await fetchCourseInfo();
         setCourses(courseData);
+        setLoading(false);
         };
 
         fetchData();
@@ -70,11 +72,15 @@ export default function Home(){
         <div className="flex flex-col md:flex-row ml-80">
             <Sidebar data-testid="sidebar-component" userName={ userName } />
             <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
-                {courses.map(course => (
-                    <Link key={course.id} href={`/[courseCode]?courseCode=${course.courseCode}`}>
-                    <CourseCard data-testid="course-card" courseCode={course.courseCode} courseName={course.courseName} imageUrl={course.imageUrl}/>
-                    </Link>
-                ))}
+                {loading ? (
+                    <p>Loading...</p>
+                ) : (
+                    courses.map(course => (
+                        <Link key={course.id} href={`/[courseCode]?courseCode=${course.courseCode}`}>
+                        <CourseCard data-testid="course-card" courseCode={course.courseCode} courseName={course.courseName} imageUrl={course.imageUrl}/>
+                        </Link>
+                    ))
+                )}
             </div>
         </div>
     );
