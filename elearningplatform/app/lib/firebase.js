@@ -3,7 +3,6 @@ import {getFirestore} from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
 import { getStorage,uploadBytes } from 'firebase/storage'; // Import getStorage for Firebase Storage
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyBoo9Uw3WfBge7ShHB6u2tnFBasnWZA9io",
   authDomain: "elearningdatabase-53938.firebaseapp.com",
@@ -18,7 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const auth = getAuth(app);
-const storage = getStorage(app); // Initialize Firebase Storage
+const storage = getStorage(app);
 
 export { auth,firestore,storage,uploadBytes };
 export default firestore;
