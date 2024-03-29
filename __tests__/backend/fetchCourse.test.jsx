@@ -23,6 +23,9 @@ describe('Firebase Database Tests', () => {
       expect(courseData.length).toBeGreaterThan(0); // Ensure that there is at least one document
       const expectedCourses=[
         {
+            description: 'Project Management',
+        },
+        {
             courseCode: 'PSYO 111',
             courseName: 'Introduction to Psychology 1',
             description: 'Survey of topics in psychology which relate to basic processes. Methods and statistics, the nervous system and physiological processes, sensation and perception, learning, cognition and memory.',
