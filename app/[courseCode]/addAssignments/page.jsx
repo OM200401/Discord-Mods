@@ -1,10 +1,14 @@
-"use client";
+
+'use client'
 import { useState } from 'react';
 import Sidebar from '../../components/Sidebar';
+import db from '../../lib/firebase';
+import {doc,setDoc} from 'firebase/firestore';
 
 export default function Assignments() {
     const [showForm, setShowForm] = useState(false);
-    const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'] }]);
+    const [quizTitle, setQuizTitle] = useState('');
+    const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
     const [weightage, setWeightage] = useState(0);
     const [formType, setFormType] = useState("");
     const [questionPrompt, setQuestionPrompt] = useState('');
@@ -25,13 +29,13 @@ export default function Assignments() {
     };
 
     const handleAddQuestion = () => {
-        setQuestions([...questions, { text: '', options: ['Option #1', 'Option #2'] }]);
+        setQuestions([...questions, { text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
     };
 
     const handleCorrectOptionChange = (questionIndex, optionIndex) => {
         setQuestions(questions.map((question, index) => {
             if (index === questionIndex) {
-                return { ...question, correctOption: optionIndex };
+                return { ...question, correctAnswer: optionIndex };
             }
             return question;
         }));
@@ -43,6 +47,20 @@ export default function Assignments() {
             setWeightage(value);
         } else {
             alert('Weightage must be a number between 0 and 100.');
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const quizCollectionRef = doc(db, 'quizzes',quizTitle);
+            setDoc(quizCollectionRef, {  questions });
+            // Optionally, you can reset the form after submission
+            setQuizTitle('');
+            setQuestions([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
+            setShowForm(false);
+        } catch (error) {
+            console.error('Error adding quiz:', error);
         }
     };
 
