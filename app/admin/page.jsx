@@ -1,6 +1,6 @@
 'use client';
 import Link from "next/link";
-// import Sidebar from "../components/Sidebar"; 
+import AdminSidebar from "../components/AdminSidebar"; 
 import dynamic from "next/dynamic";
 import CourseCard from "../components/CourseCard";
 import { useState, useEffect } from "react";
@@ -8,7 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import {fetchCourseInfo} from "../components/FetchCourseData"
+import { fetchAllCourses } from "../components/FetchAllCourses";
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
@@ -28,9 +28,9 @@ export default function Admin(){
 
     useEffect(() => {
         const fetchData = async () => {
-        const courseData = await fetchCourseInfo();
-        setCourses(courseData);
-        setLoading(false);
+            const courseData = await fetchAllCourses();
+            setCourses(courseData);
+            setLoading(false);
         };
 
         fetchData();
