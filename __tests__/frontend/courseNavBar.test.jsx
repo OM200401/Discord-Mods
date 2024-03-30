@@ -21,13 +21,13 @@ test('Assignments link is present', () => {
 })
 
 test('Quizzes link is present', () => {
-    const quizzesLink = screen.getByText(/Quizzes/i)
+    const quizzesLink = screen.getByText(/Quiz/i)
     expect(quizzesLink).toBeDefined()
-    expect(quizzesLink.closest('a').getAttribute('href')).toBe('/quizzes')
+    expect(quizzesLink.closest('a').getAttribute('href')).toBe('/COSC310/quiz')
 })
 
 test('Grades link is present', () => {
     const gradesLink = screen.getByText(/Grades/i)
     expect(gradesLink).toBeDefined()
-    expect(gradesLink.closest('a').getAttribute('href')).toBe('/grades')
+    expect(gradesLink.closest('a').getAttribute('href')).toBe('/COSC310/grades')
 })
