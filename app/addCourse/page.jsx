@@ -1,12 +1,35 @@
 'use client';
-import { useState } from 'react';
-import { useEffect } from "react";
-import firebase from 'firebase/app'; // import firebase from the firebase/app module
+import { useState, useEffect } from 'react';
+import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
+import db from '../lib/firebase';
+import { set } from 'firebase/database';
 
-const Page = () => {
+const AddCoursePage = () => {
     const [courseCode, setCourseCode] = useState('');
     const [courseName, setCourseName] = useState('');
     const [description, setDescription] = useState('');
+    const [teachers, setTeachers] = useState(['Fetching all teachers...']);
+    const [selectedTeacher, setSelectedTeacher] = useState('');
+
+    useEffect(() => {
+        const fetchTeachers = async () => {
+            try {
+                const teachersRef = collection(db, 'teachers');
+                const snapshot = await getDocs(teachersRef);
+                const teachersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setTeachers(teachersData);
+            } catch (error) {
+                console.error('Error fetching teachers:', error);
+            }
+        };
+
+        fetchTeachers();
+    }, []);
+
+    const isCourseCodeValid = (courseCode) => {
+        const regex = /^[A-Z]{4}\d{3}$/;
+        return regex.test(courseCode);
+    }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -16,38 +39,33 @@ const Page = () => {
             setCourseName(value);
         } else if (name === 'description') {
             setDescription(value);
+        } else if (name === 'teacher') {
+            setSelectedTeacher(value);
         }
     };
 
-    const handleSubmit = async (e) => { // Make sure to mark the handleSubmit function as async
-        e.preventDefault();
-        try {
-            // Initialize Firebase
-            const firebaseConfig = {
-                // your Firebase config here
-            };
-            if (!firebase.apps.length) { // Check if Firebase app is already initialized
-                firebase.initializeApp(firebaseConfig);
-            }
-
-            // Get a reference to the Firestore database
-            const db = firebase.firestore();
-
-            // Create a new document in the "courses" collection
-            await db.collection('courses').doc(courseCode).set({
-                courseCode,
-                courseName,
-                description
-            });
-
-            console.log('Data sent to Firebase successfully!');
-        } catch (error) {
-            console.error('Error sending data to Firebase:', error);
-        }
+    const handleSubmit = async (e) => { 
         
+        e.preventDefault();
+        if(!isCourseCodeValid(courseCode))
+            alert('Invalid Course Code. Must be 4 uppercase letters followed by 3 digits.');
+        
+        try{
+            const coursesRef = collection(db, ' courses');
+            await setDoc(doc(db, "courses", courseCode), {
+                courseCode: courseCode,
+                courseName: courseName,
+                description: description,
+                teacher: selectedTeacher
+            });
+        } catch(error){
+            console.log("Error adding course:", error);
+        }
+
         console.log('Course Code:', courseCode);
         console.log('Course Name:', courseName);
         console.log('Description:', description);
+        console.log('Selected Teacher:', selectedTeacher);
     };
 
     return (
@@ -83,10 +101,20 @@ const Page = () => {
                     />
                 </label>
                 <br />
-                <button type="submit">Submit</button>
+                <label>
+                    Teacher:
+                    <select name="teacher" value={selectedTeacher} onChange={handleInputChange}>
+                        <option value="">Select Teacher</option>
+                        {teachers.map((teacher) => (
+                            <option key={teacher.id} value={teacher.id}>{teacher.firstName} {teacher.lastName}</option>
+                        ))}
+                    </select>
+                </label>
+                <br />
+                <button className="bg-green-200" type="submit">Submit</button>
             </form>
         </div>
     );
 };
 
-export default Page;
+export default AddCoursePage;
