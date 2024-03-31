@@ -1,8 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc, setDoc } from 'firebase/firestore';
 import db from '../lib/firebase';
 import { set } from 'firebase/database';
+import AdminSidebar from '../components/AdminSidebar';
 
 const AddCoursePage = () => {
     const [courseCode, setCourseCode] = useState('');
@@ -49,23 +50,39 @@ const AddCoursePage = () => {
         e.preventDefault();
         if(!isCourseCodeValid(courseCode))
             alert('Invalid Course Code. Must be 4 uppercase letters followed by 3 digits.');
-        
+
+        const newCourseData = {
+            courseCode: courseCode,
+            courseName: courseName,
+            description: description,
+            teacher: selectedTeacher
+        };
+    
         try{
             const coursesRef = collection(db, ' courses');
-            await setDoc(doc(db, "courses", courseCode), {
-                courseCode: courseCode,
-                courseName: courseName,
-                description: description,
-                teacher: selectedTeacher
-            });
+            await setDoc(doc(db, "courses", courseCode), newCourseData);
+
+            console.log("Course added to courses collection")
+
+            const teacherRef = doc(db, 'teachers', selectedTeacher);
+            const teacherDoc = await getDoc(teacherRef);
+        
+            console.log("Got teacher snapshot")
+
+            const registeredCoursesRef = collection( teacherDoc.ref, 'registeredCourses');
+            await setDoc(doc(registeredCoursesRef, courseCode), newCourseData); 
+
+            console.log("Course added to registered courses")
+
+            setCourseCode('');
+            setCourseName('');
+            setDescription('');
+            setSelectedTeacher('');
+
         } catch(error){
             console.log("Error adding course:", error);
         }
 
-        console.log('Course Code:', courseCode);
-        console.log('Course Name:', courseName);
-        console.log('Description:', description);
-        console.log('Selected Teacher:', selectedTeacher);
     };
 
     return (
