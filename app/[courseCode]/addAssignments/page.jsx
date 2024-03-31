@@ -114,8 +114,9 @@ export default function Assignments() {
                         {formType === 'quiz' && (
                             <>
                               <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
-                            <label className="mr-2">Quiz Title:</label> {/* Input field for quiz title */}
+                            <label htmlFor='quizTitle' className="mr-2">Quiz Title:</label> {/* Input field for quiz title */}
                             <input
+                                id='quizTitle'
                                 type="text"
                                 value={quizTitle}
                                 onChange={(e) => setQuizTitle(e.target.value)} // Update quiz title state
@@ -123,8 +124,9 @@ export default function Assignments() {
                             />
                         </div>
                         <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
-                            <label className="mr-2">Due Date:</label>
+                            <label htmlFor='dueDate' className="mr-2">Due Date:</label>
                             <input
+                                id='dueDate'
                                 type="date"
                                 className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
                                 value={dueDate}
@@ -132,8 +134,8 @@ export default function Assignments() {
                             />
                         </div>
                                 <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
-                                    <label className="mr-2">Weightage of the quiz in the course:</label>
-                                    <input type="number" value={weightage} onChange={handleWeightageChange} min="0" max="100" />
+                                    <label htmlFor='Weightage' className="mr-2">Weightage of the quiz in the course:</label>
+                                    <input id='Weightage' type="number" value={weightage} onChange={handleWeightageChange} min="0" max="100" />
                                 </div>
                                 {questions.map((question, questionIndex) => (
                                     <div key={questionIndex} className="mt-4">
@@ -192,8 +194,9 @@ export default function Assignments() {
                         {formType === 'essay' && (
                             <>
                         <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
-                            <label className="mr-2">Essay Title:</label> {/* Input field for quiz title */}
+                            <label htmlFor='essayTitle' className="mr-2">Essay Title:</label> {/* Input field for quiz title */}
                             <input
+                                id='essayTitle'
                                 type="text"
                                 value={essayTitle}
                                 onChange={(e) => setEssayTitle(e.target.value)} // Update quiz title state
@@ -201,8 +204,9 @@ export default function Assignments() {
                             />
                         </div>
                         <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
-                            <label className="mr-2">Due Date:</label>
+                            <label htmlFor='dueDate' className="mr-2">Due Date:</label>
                             <input
+                                id='dueDate'
                                 type="date"
                                 className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
                                 value={dueDate}
@@ -211,12 +215,13 @@ export default function Assignments() {
                         </div>
 
                                 <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
-                                    <label className="mr-2">Weightage of the essay in the course:</label>
-                                    <input type="number" value={weightage} onChange={handleWeightageChange} min="0" max="100" />
+                                    <label htmlFor='weightage' className="mr-2">Weightage of the essay in the course:</label>
+                                    <input id='weightage' type="number" value={weightage} onChange={handleWeightageChange} min="0" max="100" />
                                 </div>
                                 <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
-                                    <label className="mr-2">Question Prompt:</label>
+                                    <label htmlFor='Question' className="mr-2">Question Prompt:</label>
                                     <textarea
+                                        id='Question'
                                         className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
                                         value={questionPrompt}
                                         onChange={handleQuestionPromptChange}
