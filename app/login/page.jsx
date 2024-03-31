@@ -35,8 +35,8 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (user) {
-          console.log("Redirect");
-          redirect('/home');
+          console.log("Redirect to admin");
+          redirect('/admin');
         }
       }, [user]);
 
