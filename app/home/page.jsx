@@ -59,20 +59,16 @@ export default function Home(){
     
                         console.log(registeredCoursesSnapshot);
                         registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
-                            console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
-                            // Here you can access the data of each document in the "registeredCourses" subcollection
-                                console.log(registeredCourseDoc.id);
-                                courses.push(registeredCourseDoc.data());                        
-    
+                            if (registeredCourseDoc.id !== "DefaultCourse") {
+                                console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                                courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );  
+                            }                         
                         });
                         console.log(courses)
                         setLoading(false);
-    
                     });
 
-
-
-                }else{
+                } else{
                     const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
                     const teacherSnapshot = await getDocs(teacher);
 
@@ -83,21 +79,15 @@ export default function Home(){
     
                         console.log(registeredCoursesSnapshot);
                         registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
-                            console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
-                            // Here you can access the data of each document in the "registeredCourses" subcollection
-                                console.log(registeredCourseDoc.id);
-                                courses.push(registeredCourseDoc.data());                        
-    
+                            if (registeredCourseDoc.id !== "DefaultCourse") {
+                                console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                                courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
+                            }                      
                         });
                         console.log(courses)
-                        setLoading(false);
-    
-                    });
-               
+                        setLoading(false);  
+                    });             
                 }
-                
-          
-                
 
             //     try{
             //         const querySnapshot = await getDocs(q);
@@ -112,7 +102,6 @@ export default function Home(){
             //     // User is signed out
             //     console.log('No user');
             }
-
             console.log(userName);
         }); 
 
@@ -128,8 +117,8 @@ export default function Home(){
                     <p>Loading...</p>
                 ) : (
                     courses.map(course => (
-                        <Link key={course.id} href={`/[courseCode]?courseCode=${course.courseCode}`}>
-                        <CourseCard data-testid="course-card" courseCode={course.courseCode} courseName={course.courseName} imageUrl={course.imageUrl}/>
+                        <Link key={course.id} href={`/[courseCode]?courseCode=${course.id}`}>
+                        <CourseCard data-testid="course-card" courseCode={course.id} courseName={course.courseName} imageUrl={course.imageUrl}/>
                         </Link>
                     ))
                 )}
