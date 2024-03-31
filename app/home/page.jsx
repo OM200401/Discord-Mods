@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
 import {fetchCourseInfo} from "../components/FetchCourseData"
 
 let Sidebar;
@@ -26,15 +26,17 @@ export default function Home(){
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-        const courseData = await fetchCourseInfo();
-        setCourses(courseData);
-        setLoading(false);
-        };
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //     const courseData = await fetchCourseInfo();
+    //     setCourses(courseData);
+    //     setLoading(false);
+    //     };
 
-        fetchData();
-    }, []);
+
+
+    //     fetchData();
+    // }, []);
 
     // create a new function that will get the CourseCard info on clicking it and then go to the
     // backend and get info about that course to redirect to the particular Course page 
@@ -44,21 +46,42 @@ export default function Home(){
             if(auth.currentUser){
               setUser(auth.currentUser);
                 console.log(user);
-                const userInfoRef = collection(db,'Userinfo');
-                const q = query(userInfoRef, where('uid','==',user.uid));
-                console.log(q);
-                try{
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                    })
-                }catch(error){
-                    console.log(error.message);
-                }
+                console.log(user.uid);
+                const student = query(collection(db, 'students'), where('uid', '==', user.uid));
 
-              }  else {
-                // User is signed out
-                console.log('No user');
+                const studentSnapshot = await getDocs(student);
+                
+                studentSnapshot.forEach(async (doc) => {
+                    // console.log(doc.id, ' => ', doc.data());
+                    const registeredCoursesRef = collection(doc.ref,'registeredCourses');
+                    const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+
+                    console.log(registeredCoursesSnapshot);
+                    registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                        console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                        // Here you can access the data of each document in the "registeredCourses" subcollection
+                            console.log(registeredCourseDoc.id);
+                            courses.push(registeredCourseDoc.data());                        
+
+                    });
+                    console.log(courses)
+                    setLoading(false);
+
+                });
+                
+
+            //     try{
+            //         const querySnapshot = await getDocs(q);
+            //         querySnapshot.forEach(async (doc) => {
+            //             setUserName(doc.data().firstName);
+            //         })
+            //     }catch(error){
+            //         console.log(error.message);
+            //     }
+
+            //   }  else {
+            //     // User is signed out
+            //     console.log('No user');
             }
 
             console.log(userName);
