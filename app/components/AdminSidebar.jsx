@@ -6,7 +6,7 @@ import { FaHome, FaBook, FaFileAlt, FaUser, FaChalkboard, FaSignOutAlt } from 'r
 
 //Creating a sidebar component to be able to use on all the pages for the app
 
-function Sidebar({ userName }) {
+function AdminSidebar({ userName }) {
     // const router = useRouter();
     // const [isClient, setIsClient] = useState(false);
 
@@ -143,4 +143,4 @@ function Sidebar({ userName }) {
 //     Sidebar = MockSidebar;
 // }
 
-export default Sidebar;
+export default AdminSidebar;
