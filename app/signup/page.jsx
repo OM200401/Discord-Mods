@@ -28,8 +28,6 @@ export default function SignUpPage() {
         }
       }, [user]);
 
-
-
     const handleSubmit = async(e) => {
         e.preventDefault();
 
@@ -39,7 +37,6 @@ export default function SignUpPage() {
             return;
         }
         // const router = useRouter();
-
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -58,9 +55,7 @@ export default function SignUpPage() {
 
             if(defaultCourseDoc.exists()) {
                  defaultCourseData = defaultCourseDoc.data();
-
             }
-
 
             const studentDocRef = await addDoc(studentCollection,{
                 firstName:firstName,
@@ -69,7 +64,6 @@ export default function SignUpPage() {
                 userType:userType,
                 uid:uid
             }) 
-
 
             const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses')
 
@@ -91,7 +85,6 @@ export default function SignUpPage() {
 
             }
 
-
             const teacherDocRef = await addDoc(teacherCollection,{
                 firstName:firstName,
                 lastName:lastName,
@@ -100,13 +93,9 @@ export default function SignUpPage() {
                 uid:uid
             })
 
-
             const registeredCoursesCollectionRef = collection(teacherDocRef, 'registeredCourses')
 
-
             await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
-
-
         }
        
        

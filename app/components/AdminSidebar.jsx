@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'firebase/auth';
+import {auth} from '../lib/firebase';
 import { FaHome, FaBook, FaFileAlt, FaUser, FaChalkboard, FaSignOutAlt } from 'react-icons/fa';
 
 //Creating a sidebar component to be able to use on all the pages for the app
