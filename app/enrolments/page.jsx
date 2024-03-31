@@ -74,7 +74,7 @@ export default function Enrolments() {
                 <div className="overflow-x-auto">
                     {enrolments.map((enrolmentRequest, index) => (
                         <div key={index} className="m-2">
-                            <EnrolmentCard userEmail={enrolmentRequest.email} courseCode={enrolmentRequest.courseCode} />
+                            <EnrolmentCard data-testid='enrolment-card' userEmail={enrolmentRequest.email} courseCode={enrolmentRequest.courseCode} />
                         </div>
                     ))}
                 </div>

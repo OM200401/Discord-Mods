@@ -121,7 +121,7 @@ const AddCoursePage = () => {
 
     return (
         <div className="flex flex-col justify-center items-center h-screen bg-gray-200">
-            <AdminSidebar data-testid="sidebar-component" userName={ userName } />
+            <AdminSidebar data-testid="adminSidebar-component" userName={ userName } />
             <h1 className='text-black mb-32 font-bold text-3xl'>Add Course</h1>
             <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
                 <div className="mb-4">
