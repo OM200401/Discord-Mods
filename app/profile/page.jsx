@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import CourseNavBar from '../components/CourseNavBar';
 import Sidebar from '../components/Sidebar';
 import { auth, firestore } from '../lib/firebase'; 
-import 'firebase/firestore';
+import { collection} from 'firebase/firestore';
 import db from '../lib/firebase';
 
 
@@ -11,16 +11,13 @@ export default function Profile() {
     const [userInfo, setUserInfo] = useState([]);    
     useEffect(() => {
         const fetchUserData = async () => {
-            const studentRef = firestore.collection('students').doc(auth.currentUser.uid);
-            const doc = await studentRef.get();
-                if (!doc.exists) {
-                    console.log('No such doc');            
-                }
+            const studentRef = collection(db,'students').doc(auth.currentUser.uid);
+            const doc = await studentRef.get();               
             if (doc.userType == 'Student'){                   
                 const data = doc.data();
                 console.log(data.firstName);
                 setUserInfo({
-                    UserId: auth.currentUser.uid,
+                    UserId: data.uid,
                     firstName: data.firstName,
                     lastName: data.lastName,
                     email: data.email,
@@ -29,13 +26,13 @@ export default function Profile() {
                 });
                 }    
                 else{
-                    const teacherRef = firestore.collection('teachers').doc(auth.currentUser.uid);
+                    const teacherRef = collection(db,'teachers').doc(auth.currentUser.uid);
                     const doc = await teacherRef.get();                
                     const data = doc.data();
                     console.log(data.firstName);
                     console.log(data.lastName);
                     setUserInfo({
-                        UserId: doc.id,
+                        UserId: data.id,
                         firstName: data.firstName,
                         lastName: data.lastName,
                         email: data.email,
