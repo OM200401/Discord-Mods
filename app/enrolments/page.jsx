@@ -1,9 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import EnrolmentCard from '../components/EnrolmentCard';
 import AdminSidebar from '../components/AdminSidebar';
 import db from '../lib/firebase'; 
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
 /*
 * This page fetches data from the enrolments collection. 
@@ -14,6 +16,8 @@ import db from '../lib/firebase';
 
 export default function Enrolments() {
     const [enrolments, setEnrolments] = useState([]);
+    const [userName, setUserName] = useState('non');
+    const [user,setUser] = useState();
 
     useEffect(() => {
         const fetchEnrolments = async () => {
@@ -32,10 +36,39 @@ export default function Enrolments() {
         fetchEnrolments();
     }, []);
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if(auth.currentUser){
+              setUser(auth.currentUser);
+                console.log(user);
+                const userInfoRef = collection(db,'admins');
+                const q = query(userInfoRef, where('uid','==',user.uid));
+                console.log(q);
+                try{
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach((doc) => {
+                        setUserName(doc.data().firstName);
+                    })
+                }catch(error){
+                    console.log(error.message);
+                }
+
+              }  else {
+                // User is signed out
+                console.log('No user');
+            }
+
+            console.log(userName);
+        }); 
+
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+    }, [userName]);
+
     return (
         // Page has a sidebar and displays enrolment cards
-        <div className="flex flex-col md:flex-row bg-blue-100">
-            <AdminSidebar />
+        <div className="flex flex-col md:flex-row bg-blue-100 min-h-screen">
+            <AdminSidebar data-testid="sidebar-component" userName={ userName } />
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Manage Enrolments</h1>
                 <div className="overflow-x-auto">

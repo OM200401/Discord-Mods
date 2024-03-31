@@ -54,8 +54,8 @@ export default function EnrolmentCard({ userEmail, courseCode }) {
                         <p className="mt-2 text-xs md:text-sm text-gray-600">{courseCode}</p>
                     </div>
                     <div className="flex space-x-2">
-                        <button onClick={handleAccept} className="px-4 py-2 bg-green-500 text-white rounded-md">Accept</button>
-                        <button onClick={handleReject} className="px-4 py-2 bg-red-500 text-white rounded-md">Reject</button>
+                        <button onClick={handleAccept} className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700">Accept</button>
+                        <button onClick={handleReject} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700">Reject</button>
                     </div>
                 </div>
             </div>
