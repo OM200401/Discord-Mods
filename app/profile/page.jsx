@@ -8,9 +8,11 @@ import db from '../lib/firebase';
 
 
 export default function Profile() {
-    const [userInfo, setUserInfo] = useState([]);    
+    const [userInfo, setUserInfo] = useState([]); 
+    const [user, setUser] = useState();
+
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchUserData = async (auth, user) => {
             const studentRef = collection(db,'students').where('uid', '==', auth.currentUser.uid);
             const doc = await studentRef.get();
             const data = doc.data();               
@@ -26,9 +28,14 @@ export default function Profile() {
                 });
                 }    
                 else{
-                    const teacherRef = collection(db,'teachers').doc(auth.currentUser.uid);
-                    const teacherDoc = await teacherRef.get();                
-                    const teacherData = teacherDoc.data();
+                    // const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
+                    // const teacherSnapshot = await getDocs(teacher);
+                    const teacherRef = collection(teacherSnapshot,'students').where('uid', '==', auth.currentUser.uid);
+                    const doc = await teacherRef.get();
+                    const teacherData = doc.data();               
+                    // const teacherRef = collection(db,'teachers').doc(auth.currentUser.uid);
+                    // const teacherDoc = await teacherRef.get();                
+                    // const teacherData = teacherDoc.data();
                     console.log(teacherData.firstName);
                     console.log(teacherData.lastName);
                     setUserInfo({
