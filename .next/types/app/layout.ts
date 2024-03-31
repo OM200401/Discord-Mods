@@ -1,4 +1,4 @@
-// File: C:\Users\OM\UBC\YEAR 3\COSC 310\discord-mods\app\layout.js
+// File: /Users/aaronbanerjee/Desktop/dc/app/layout.js
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

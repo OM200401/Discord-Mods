@@ -1,4 +1,4 @@
-// File: C:\Users\OM\UBC\YEAR 3\COSC 310\discord-mods\app\home\page.jsx
+// File: /Users/aaronbanerjee/Desktop/dc/app/home/page.jsx
 import * as entry from '../../../../app/home/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
