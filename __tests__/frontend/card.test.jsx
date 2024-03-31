@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import Card from '../../app/components/Card'
+import Card from '../../app/components/BrowseCard'
 
 test('Card component renders correctly', () => {
     const courseCode = 'CS101'

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function Card({ courseCode, courseName, handleClick, redirect }) {
+export default function BrowseCard({ courseCode, courseName, handleClick, redirect }) {
 
     return (
         <div className="w-72 h-40 flex flex-col justify-center gap-2 bg-blue-500 rounded-lg shadow p-2 m-4">
