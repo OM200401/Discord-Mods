@@ -5,7 +5,7 @@ export default function EnrolmentCard({ userEmail, courseCode }) {
 
     const deleteEnrolment = async () => {
         const enrolmentRef = collection(db, 'enrolments');
-        const q = query(enrolmentRef, where('email', '==', userEmail));
+        const q = query(enrolmentRef, where('email', '==', userEmail), where('courseCode', '==', courseCode));
         const snapshot = await getDocs(q);
 
         snapshot.forEach(async (doc) => {
