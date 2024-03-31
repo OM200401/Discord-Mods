@@ -11,10 +11,10 @@ export default function Profile() {
     const [userInfo, setUserInfo] = useState([]);    
     useEffect(() => {
         const fetchUserData = async () => {
-            const studentRef = collection(db,'students').doc(auth.currentUser.uid);
-            const doc = await studentRef.get();               
-            if (doc.userType == 'Student'){                   
-                const data = doc.data();
+            const studentRef = collection(db,'students').where('uid', '==', auth.currentUser.uid);
+            const doc = await studentRef.get();
+            const data = doc.data();               
+            if (data.userType == 'Student'){ 
                 console.log(data.firstName);
                 setUserInfo({
                     UserId: data.uid,
@@ -27,16 +27,16 @@ export default function Profile() {
                 }    
                 else{
                     const teacherRef = collection(db,'teachers').doc(auth.currentUser.uid);
-                    const doc = await teacherRef.get();                
-                    const data = doc.data();
-                    console.log(data.firstName);
-                    console.log(data.lastName);
+                    const teacherDoc = await teacherRef.get();                
+                    const teacherData = teacherDoc.data();
+                    console.log(teacherData.firstName);
+                    console.log(teacherData.lastName);
                     setUserInfo({
-                        UserId: data.id,
-                        firstName: data.firstName,
-                        lastName: data.lastName,
-                        email: data.email,
-                        oldpassword: data.password,
+                        UserId: teacherData.id,
+                        firstName: teacherData.firstName,
+                        lastName: teacherData.lastName,
+                        email: teacherData.email,
+                        oldpassword: teacherData.password,
                         // profilePicture: data.profilePicture
                     });
                 }            
