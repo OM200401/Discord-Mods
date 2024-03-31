@@ -50,24 +50,53 @@ export default function Home(){
                 const student = query(collection(db, 'students'), where('uid', '==', user.uid));
 
                 const studentSnapshot = await getDocs(student);
-                
-                studentSnapshot.forEach(async (doc) => {
-                    // console.log(doc.id, ' => ', doc.data());
-                    const registeredCoursesRef = collection(doc.ref,'registeredCourses');
-                    const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
 
-                    console.log(registeredCoursesSnapshot);
-                    registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
-                        console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
-                        // Here you can access the data of each document in the "registeredCourses" subcollection
-                            console.log(registeredCourseDoc.id);
-                            courses.push(registeredCourseDoc.data());                        
-
+                if(!studentSnapshot.empty){
+                    studentSnapshot.forEach(async (doc) => {
+                        // console.log(doc.id, ' => ', doc.data());
+                        const registeredCoursesRef = collection(doc.ref,'registeredCourses');
+                        const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+    
+                        console.log(registeredCoursesSnapshot);
+                        registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                            console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                            // Here you can access the data of each document in the "registeredCourses" subcollection
+                                console.log(registeredCourseDoc.id);
+                                courses.push(registeredCourseDoc.data());                        
+    
+                        });
+                        console.log(courses)
+                        setLoading(false);
+    
                     });
-                    console.log(courses)
-                    setLoading(false);
 
-                });
+
+
+                }else{
+                    const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
+                    const teacherSnapshot = await getDocs(teacher);
+
+                    teacherSnapshot.forEach(async (doc) => {
+                        // console.log(doc.id, ' => ', doc.data());
+                        const registeredCoursesRef = collection(doc.ref,'registeredCourses');
+                        const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+    
+                        console.log(registeredCoursesSnapshot);
+                        registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                            console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                            // Here you can access the data of each document in the "registeredCourses" subcollection
+                                console.log(registeredCourseDoc.id);
+                                courses.push(registeredCourseDoc.data());                        
+    
+                        });
+                        console.log(courses)
+                        setLoading(false);
+    
+                    });
+               
+                }
+                
+          
                 
 
             //     try{
