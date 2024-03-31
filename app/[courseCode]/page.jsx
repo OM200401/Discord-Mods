@@ -8,6 +8,8 @@ import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import CourseNavBar from '../components/CourseNavBar';
 import { getStorage, ref, getDownloadURL} from "firebase/storage";
+import { useSearchParams } from 'next/navigation';
+
 export default function CoursePage() {
 
     // Fetch course info from the database based on the courseCode
@@ -16,6 +18,11 @@ export default function CoursePage() {
     const [user,setUser] = useState(); 
     const [pdfUrl, setPdfUrl] = useState('');
     const [uploading, setUploading] = useState(false); 
+
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    console.log(params.get('courseCode'));
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
