@@ -20,9 +20,9 @@ export default function Courses() {
             <Sidebar />
             <div className="p-6 text-center ml-96">
                 <h1 className="text-3xl text-black font-semibold mb-4 ">Courses</h1>
-                <div className="flex flex-wrap justify-start">
+                <div data-testid = "course-card" className="flex flex-wrap justify-start">
                     {courses.map((course, index) => (
-                        <Card key={index} courseCode={course.courseCode} courseName={course.courseName} />
+                        <Card  key={index} courseCode={course.courseCode} courseName={course.courseName} />
                     ))}
                 </div>
             </div>

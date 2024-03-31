@@ -57,7 +57,7 @@ export default function Assignments() {
                                             {student.assignments.map((assignment, index) => (
                                                 <div key={index}>
                                                     <p>{assignment.name}: {assignment.grade}</p>
-                                                    <input type="number" min="0" max="100" defaultValue={assignment.grade} onChange={(e) => updateGrade(index, assignmentIndex, e.target.value)} />
+                                                    <input type="number" min="0" max="100" defaultValue={assignment.grade} onChange={(e) => updateGrade(index, index, e.target.value)} />
                                                 </div>
                                             ))}
                                         </div>
