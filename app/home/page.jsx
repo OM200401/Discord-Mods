@@ -26,21 +26,6 @@ export default function Home(){
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //     const courseData = await fetchCourseInfo();
-    //     setCourses(courseData);
-    //     setLoading(false);
-    //     };
-
-
-
-    //     fetchData();
-    // }, []);
-
-    // create a new function that will get the CourseCard info on clicking it and then go to the
-    // backend and get info about that course to redirect to the particular Course page 
-
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
@@ -89,18 +74,7 @@ export default function Home(){
                     });             
                 }
 
-            //     try{
-            //         const querySnapshot = await getDocs(q);
-            //         querySnapshot.forEach(async (doc) => {
-            //             setUserName(doc.data().firstName);
-            //         })
-            //     }catch(error){
-            //         console.log(error.message);
-            //     }
-
-            //   }  else {
-            //     // User is signed out
-            //     console.log('No user');
+          
             }
             console.log(userName);
         }); 
