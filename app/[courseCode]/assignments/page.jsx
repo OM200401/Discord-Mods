@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { auth } from '@/app/lib/firebase';
 import { getDoc, doc } from 'firebase/firestore';
 import db from '../../lib/firebase';
+import StudentAssignmentCard from '@/app/components/StudentAssignmentCard';
 
 export default function Assignments() {
     const { courseCode } = useParams();
