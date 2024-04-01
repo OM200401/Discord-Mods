@@ -8,7 +8,7 @@ import db from '../../app/lib/firebase';
 describe('Firebase Database Tests', () => {
     test('Test database fetch operation', async () => {
       
-      const coursesCollection = collection(db, 'Courses');        
+      const coursesCollection = collection(db, 'courses');        
       const q = query(coursesCollection);  
       // Get the documents that match the query
       const querySnapshot = await getDocs(q);  
