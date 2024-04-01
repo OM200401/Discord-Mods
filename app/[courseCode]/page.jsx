@@ -21,7 +21,7 @@ export default function CoursePage() {
 
     const search = window.location.search;
     const params = new URLSearchParams(search);
-    console.log(params.get('courseCode'));
+    const courseCode = params.get('courseCode');
 
 
     useEffect(() => {
@@ -70,7 +70,7 @@ export default function CoursePage() {
         <div className="flex flex-col md:flex-row">
           <Sidebar data-testid = "sidebar-component" userName={ userName } />
           <div className="relative md:ml-64">
-            <CourseNavBar />
+            <CourseNavBar courseCode={courseCode}/>
           </div>
           <div className="p-6 w-screen bg-blue-100 text-center">
             <h1 className="text-3xl text-black font-semibold"  data-testid="course-heading">Course Name</h1>
