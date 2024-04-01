@@ -27,7 +27,6 @@ export default function Courses() {
                                     .filter(doc => doc.id !== "DefaultCourse")
                                     .map((doc) => ({ id: doc.id, ...doc.data() }));
                 setCourses(courses);
-                console.log(courses);
 
             } catch (error) {
                 console.error('Error fetching enrolments:', error);

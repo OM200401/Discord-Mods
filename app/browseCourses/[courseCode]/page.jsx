@@ -2,25 +2,17 @@
 import { useParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '../../lib/firebase';
+import db from '../../lib/firebase';
+import { auth } from '../../lib/firebase';
 
 export default function CourseInfo() {
     const {courseCode} = useParams();
 
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState();
-    const [courses, setCourses] = useState([
-        // { courseCode: 'COSC304', courseName: 'Introduction to Databases', description: 'This course introduces the concept of databases.' },
-        // { courseCode: 'COSC310', courseName: 'Software Engineering', description: 'This course covers the fundamentals of software engineering.' },
-        // { courseCode: 'COSC222', courseName: 'Data Structures', description: 'This course teaches about various data structures.' },
-        // { courseCode: 'COSC328', courseName: 'Computer Networks', description: 'This course is about computer networking concepts.' },
-        // { courseCode: 'COSC340', courseName: 'Operating Systems', description: 'This course covers the basics of operating systems.' },
-        // { courseCode: 'COSC211', courseName: 'Computer Architecture', description: 'This course is about the architecture of computers.' },
-        // { courseCode: 'COSC360', courseName: 'Web Development', description: 'This course teaches web development techniques.' },
-        // { courseCode: 'COSC322', courseName: 'Artificial Intelligence', description: 'This course introduces the concept of artificial intelligence.' },
-    ]);
+    const [courses, setCourses] = useState([]);
 
     useEffect(() => {
         
@@ -51,25 +43,74 @@ export default function CourseInfo() {
     }, []);
 
     const course = courses.find(c => c.id === courseCode);
-    console.log(course);
 
     const handleEnroll = async () => {
-        if(user){
-            console.log(user.uid);
-            const studentsRef = collection(db, 'students');
-            const query = query(studentsRef, where('uid', '==', user.uid));
 
-            try{
-                const studentSnapshot = await getDocs(query);
-                studentSnapshot.forEach((doc) => {
-                    console.log(doc.data());
-                })
-            }catch(error){
-                console.log(error.message);
-            }
+        if(!user){
+            console.log('User not logged in');
+            return false;
         }
-        // const enrolmentRef = collection(db, 'enrolments');
-        
+
+        const studentQuery = query(collection(db, 'students'), where('uid', '==', user.uid));
+        const teacherQuery = query(collection(db, 'teachers'), where('uid', '==', user.uid));
+
+        try{
+            const enrolmentRef = collection(db, 'enrolments');
+            const enrolmentsQuery = query(enrolmentRef, where('courseCode', '==', courseCode), where('email', '==', user.email));
+            const currentEnrolmentSnapshot = await getDocs(enrolmentsQuery);
+
+            if(!currentEnrolmentSnapshot.empty){
+                console.log('User has already requested to enrol.');
+                return false;
+            }
+
+            const enrolmentData = {
+                email: user.email,
+                courseCode: courseCode
+            }
+
+            const studentSnapshot = await getDocs(studentQuery);
+            const teacherSnapshot = await getDocs(teacherQuery);
+            const existingCourse = [];
+
+            if(!studentSnapshot.empty){ 
+                studentSnapshot.forEach(async (studentDoc) => {
+                    const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
+                    const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+                    registeredCoursesSnapshot.forEach(async (doc) => {
+                        if(doc.id === courseCode){
+                            existingCourse.push(doc.id);
+                            console.log('User already enrolled in course');
+                            return false;
+                        } 
+                    });
+                    if(existingCourse.length === 0){
+                        await addDoc(enrolmentRef, enrolmentData);
+                        console.log('Enrolment added successfully.');
+                    }
+                });
+            } else {
+                teacherSnapshot.forEach(async (teacherDoc) => {
+                    const registeredCoursesRef = collection(teacherDoc.ref, 'registeredCourses');
+                    const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+                    registeredCoursesSnapshot.forEach(async (doc) => {
+                        if(doc.id === courseCode){
+                            existingCourse.push(doc.id);
+                            console.log('User already enrolled in course');
+                            return false;
+                        } 
+                    });
+                });
+                if(existingCourse.length === 0){
+                    await addDoc(enrolmentRef, enrolmentData);
+                    console.log('Enrolment added successfully.');
+                }
+            }  
+
+        } catch(error){
+            console.log('Could not add enrolment.');   
+            console.error(error.message);
+        }
     };
 
     return (

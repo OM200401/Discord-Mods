@@ -27,10 +27,10 @@ export default function Home(){
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchData = async () => {
-        const courseData = await fetchCourseInfo();
-        setCourses(courseData);
-        setLoading(false);
+            const fetchData = async () => {
+            const courseData = await fetchCourseInfo();
+            setCourses(courseData);
+            setLoading(false);
         };
 
         fetchData();
