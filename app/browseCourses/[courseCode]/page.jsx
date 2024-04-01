@@ -112,6 +112,7 @@ export default function CourseInfo() {
             console.log('Could not add enrolment.');   
             console.error(error.message);
         }
+    };
 
     useEffect(() => {
         // Simulate a network request
@@ -123,8 +124,6 @@ export default function CourseInfo() {
     if (loading) {
         return <Loader />; // Return the Loading component if loading is true
     }
-
-    };
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-blue-100">
