@@ -1,9 +1,13 @@
 'use client';
 import CourseNavBar from '../../components/CourseNavBar';
 import Sidebar from '../../components/Sidebar';
+import Loader from '../../components/Loader';
+import {useState, useEffect} from 'react';
 
 
 export default function Assignments() {
+
+    const [loading, setLoading] = useState(true);
 
     // Demo assignments array to display some assignments but will later have data 
     // displayed from the database
@@ -14,6 +18,17 @@ export default function Assignments() {
         { title: 'Assignment 4', dueDate: '2022-01-15', points: 150 },
         { title: 'Assignment 5', dueDate: '2022-01-15', points: 150 },
     ];
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 3000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">

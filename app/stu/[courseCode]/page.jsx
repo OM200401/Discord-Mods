@@ -1,5 +1,5 @@
 'use client';
-
+import Loader from '../../components/Loader';
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -13,6 +13,7 @@ import db, { auth } from '../../lib/firebase';
 export default function CoursePage() {
     const [userName, setUserName] = useState('non');
     const [pdfUrl, setPdfUrl] = useState('');
+    const [loading, setLoading] = useState(true);
     
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -30,6 +31,9 @@ export default function CoursePage() {
             } else {
                 console.log('No user');
             }
+            setTimeout(() => {
+                setLoading(false);
+            }, 3000);
         });
         return unsubscribe;
     }, []);
@@ -40,11 +44,18 @@ export default function CoursePage() {
         getDownloadURL(pdfRef)
             .then((url) => {
                 setPdfUrl(url);
+                setTimeout(() => {
+                    setLoading(false);
+                }, 3000);
             })
             .catch((error) => {
                 console.log('Error getting PDF URL:', error);
             });
     }, []);
+
+    if(loading){
+        return <Loader/>;
+    }
 
     return (
         <div className="flex flex-col md:flex-row">

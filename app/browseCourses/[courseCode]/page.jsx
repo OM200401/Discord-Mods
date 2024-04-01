@@ -1,10 +1,13 @@
 "use client";
 import { useParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Loader from '../../components/Loader';
 
 export default function CourseInfo() {
     const {courseCode} = useParams();
+
+    const [loading, setLoading] = useState(true);
 
     console.log(courseCode);
 
@@ -20,6 +23,17 @@ export default function CourseInfo() {
     ]);
 
     const course = courses.find(c => c.courseCode === courseCode);
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 3000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
 
     const handleEnroll = () => {
         // Add the backend enrollment logic here

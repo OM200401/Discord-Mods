@@ -1,9 +1,12 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import Card from '../components/Card';
+import Loader from '../components/Loader';
 
 export default function Courses() {
+    const [loading, setLoading] = useState(true);
+
     const [courses, setCourses] = useState([
         { courseCode: 'COSC304', courseName: 'Introduction to Databases', description: 'This course introduces the concept of databases.' },
         { courseCode: 'COSC310', courseName: 'Software Engineering', description: 'This course covers the fundamentals of software engineering.' },
@@ -14,6 +17,17 @@ export default function Courses() {
         { courseCode: 'COSC360', courseName: 'Web Development', description: 'This course teaches web development techniques.' },
         { courseCode: 'COSC322', courseName: 'Artificial Intelligence', description: 'This course introduces the concept of artificial intelligence.' },
     ]);
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 2000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-blue-100">

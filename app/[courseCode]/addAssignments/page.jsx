@@ -1,9 +1,11 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
+import CourseNavBar from '../../components/CourseNavBar';
 import db from '../../lib/firebase';
 import { doc, setDoc,getDoc } from 'firebase/firestore';
 import { useParams } from 'next/navigation';
+import Loader from '../../components/Loader';
 
 
 export default function Assignments() {
@@ -16,6 +18,7 @@ export default function Assignments() {
     const [formType, setFormType] = useState("");
     const [questionPrompt, setQuestionPrompt] = useState('');
     const [dueDate, setDueDate] = useState('');
+    const [loading, setLoading] = useState(true);
 
     const {courseCode} = useParams();
     console.log("my course code is " + courseCode);
@@ -157,6 +160,17 @@ export default function Assignments() {
     const handleDueDateChange = (e) => {
         setDueDate(e.target.value);
     };
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 3000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
 
     return (
         <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
