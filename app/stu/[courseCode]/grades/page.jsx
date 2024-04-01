@@ -4,7 +4,7 @@ import Sidebar from '../../../components/Sidebar';
 import { useState, useEffect } from 'react';
 import Loader from '../../../components/Loader.jsx';
 
-export default function Assignments() {
+export default function grades() {
 
     const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,7 @@ export default function Assignments() {
         <div className="flex flex-col md:flex-row bg-blue-100">
             <Sidebar />
             <div className="relative md:ml-64">
-                <CourseNavBar />
+                <CourseNavBar data-testid="course-navbar"/>
                
             </div>
             <div className="p-6 text-center w-full">
