@@ -3,7 +3,7 @@ import CourseNavBar from '../../../components/StuCourseNavBar.jsx';
 import Sidebar from '../../../components/Sidebar';
 
 
-export default function Assignments() {
+export default function grades() {
 
     // Demo assignments array to display some assignments but will later have data 
     // displayed from the database
@@ -19,7 +19,7 @@ export default function Assignments() {
         <div className="flex flex-col md:flex-row bg-blue-100">
             <Sidebar />
             <div className="relative md:ml-64">
-                <CourseNavBar />
+                <CourseNavBar data-testid="course-navbar"/>
                
             </div>
             <div className="p-6 text-center w-full">

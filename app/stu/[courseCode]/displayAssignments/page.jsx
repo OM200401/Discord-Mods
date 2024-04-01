@@ -13,21 +13,21 @@ export default function EssayDisplay() {
 
     return (
         <div className="flex h-screen bg-blue-100" style={{ minHeight: '800 px' }}>
-            <Sidebar />
+            <Sidebar data-testid="sidebar" />
             <div className="relative md:ml-64 ">
-                <CourseNavBar />
+                <CourseNavBar data-testid="course-navbar" />
             </div>
             <div className="flex-grow p-6">
                 <div className="max-w-4xl mx-auto bg-white rounded-md shadow-lg p-8">
                     <div className="flex justify-between items-center mb-4">
-                        <h1 className="text-3xl font-bold text-gray-800">{essay.title}</h1>
-                        <a href="#" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Start Assignment</a>
+                        <h1 className="text-3xl font-bold text-gray-800" data-testid="essay-title">{essay.title}</h1>
+                        <a href="#" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" data-testid="start-assignment-button">Start Assignment</a>
                     </div>
                     <div className="flex justify-between text-sm text-gray-800 mb-4">
-                        <p>Due Date: {essay.dueDate}</p>   
-                        <p>Points: {essay.weightage}</p>
+                        <p data-testid="due-date">Due Date: {essay.dueDate}</p>   
+                        <p data-testid="points">Points: {essay.weightage}</p>
                     </div>
-                    <p className="text-base text-gray-600">{essay.questionPrompt}</p>
+                    <p className="text-base text-gray-600" data-testid="question-prompt">{essay.questionPrompt}</p>
                 </div>
             </div>
         </div>
