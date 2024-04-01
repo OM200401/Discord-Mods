@@ -3,11 +3,14 @@ import { useParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import db from '../../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from '../../lib/firebase';
 
 export default function CourseInfo() {
     const {courseCode} = useParams();
 
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState();
     const [courses, setCourses] = useState([
         // { courseCode: 'COSC304', courseName: 'Introduction to Databases', description: 'This course introduces the concept of databases.' },
         // { courseCode: 'COSC310', courseName: 'Software Engineering', description: 'This course covers the fundamentals of software engineering.' },
@@ -20,6 +23,13 @@ export default function CourseInfo() {
     ]);
 
     useEffect(() => {
+        
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if(auth.currentUser){
+                setUser(auth.currentUser);
+            }
+        });
+
         const fetchCourses = async () => {
             try {
                 // Fetch all documents from the enrolments collection and map to an array
@@ -37,13 +47,28 @@ export default function CourseInfo() {
         };
 
         fetchCourses();
+        return () => unsubscribe();
     }, []);
 
     const course = courses.find(c => c.id === courseCode);
     console.log(course);
 
-    const handleEnroll = () => {
-        const enrolmentRef = collection(db, 'enrolments');
+    const handleEnroll = async () => {
+        if(user){
+            console.log(user.uid);
+            const studentsRef = collection(db, 'students');
+            const query = query(studentsRef, where('uid', '==', user.uid));
+
+            try{
+                const studentSnapshot = await getDocs(query);
+                studentSnapshot.forEach((doc) => {
+                    console.log(doc.data());
+                })
+            }catch(error){
+                console.log(error.message);
+            }
+        }
+        // const enrolmentRef = collection(db, 'enrolments');
         
     };
 
