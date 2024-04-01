@@ -27,6 +27,19 @@ export default function Home(){
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+            const fetchData = async () => {
+            const courseData = await fetchCourseInfo();
+            setCourses(courseData);
+            setLoading(false);
+        };
+
+        fetchData();
+    }, []);
+
+    // create a new function that will get the CourseCard info on clicking it and then go to the
+    // backend and get info about that course to redirect to the particular Course page 
+
+    useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
               setUser(auth.currentUser);

@@ -29,7 +29,7 @@ export default function EssayDisplay() {
     }
 
     return (
-        <div className="flex h-screen bg-blue-100" style={{ minHeight: '800 px' }}>
+        <div className="flex bg-blue-100 min-h-screen">
             <Sidebar data-testid="sidebar" />
             <div className="relative md:ml-64 ">
                 <CourseNavBar data-testid="course-navbar" />
