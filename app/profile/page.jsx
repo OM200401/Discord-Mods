@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import CourseNavBar from '../components/CourseNavBar';
 import Sidebar from '../components/Sidebar';
 import { auth, firestore } from '../lib/firebase'; 
-import { collection} from 'firebase/firestore';
+import { collection, getDocs, getDoc,query,where, doc} from 'firebase/firestore';
 import db from '../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { data } from 'autoprefixer';
 
 
 export default function Profile() {
@@ -12,44 +14,52 @@ export default function Profile() {
     const [user, setUser] = useState();
 
     useEffect(() => {
-        const fetchUserData = async (auth, user) => {
-            const studentRef = collection(db,'students').where('uid', '==', auth.currentUser.uid);
-            const doc = await studentRef.get();
-            const data = doc.data();               
-            if (data.userType == 'Student'){ 
-                console.log(data.firstName);
-                setUserInfo({
-                    UserId: data.uid,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    email: data.email,
-                    oldpassword: data.password,
-                    // profilePicture: data.profilePicture
-                });
-                }    
-                else{
-                    // const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
-                    // const teacherSnapshot = await getDocs(teacher);
-                    const teacherRef = collection(teacherSnapshot,'students').where('uid', '==', auth.currentUser.uid);
-                    const doc = await teacherRef.get();
-                    const teacherData = doc.data();               
-                    // const teacherRef = collection(db,'teachers').doc(auth.currentUser.uid);
-                    // const teacherDoc = await teacherRef.get();                
-                    // const teacherData = teacherDoc.data();
-                    console.log(teacherData.firstName);
-                    console.log(teacherData.lastName);
-                    setUserInfo({
-                        UserId: teacherData.id,
-                        firstName: teacherData.firstName,
-                        lastName: teacherData.lastName,
-                        email: teacherData.email,
-                        oldpassword: teacherData.password,
-                        // profilePicture: data.profilePicture
+        const fetchUserData = onAuthStateChanged(auth, async(user) => {
+            setUser(auth.currentUser);
+
+            // const studentRef = collection(db,'students').where('uid', '==', auth.currentUser.uid);
+            // const doc = await studentRef.get();
+            // const data = doc.data();
+            // const student =
+            if (auth.currentUser){
+                const studentRef = query(collection(db, 'students'), where('uid', '==', user.uid));
+                const querySnapshot = await getDocs(studentRef);
+                // const doc = await studentRef.getDocs();                
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        console.log(doc.data());
+                        const data = doc.data();
+                        setUserInfo({
+                            UserId: data.uid,
+                            firstName: data.firstName,
+                            lastName: data.lastName,
+                            email: data.email,
+                            oldpassword: data.password,
+                            // profilePicture: data.profilePicture
+                        });
                     });
-                }            
+                }else{
+                    const teacherRef = query(collection(db, 'teachers'), where('uid', '==', user.uid));
+                    const teacherSnapshot = await getDocs(teacherRef); 
+                    teacherSnapshot.forEach((doc) => {
+                        console.log(doc.data());
+                        const data = doc.data();
+                        setUserInfo({
+                            UserId: data.uid,
+                            firstName: data.firstName,
+                            lastName: data.lastName,
+                            email: data.email,
+                            oldpassword: data.password,
+                            // profilePicture: data.profilePicture
+                        });
+                    });
+                }                     
             }
-            fetchUserData();
-        }, []);         
+                            
+                       
+        });
+            return () => fetchUserData();            
+        });         
         
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -112,29 +122,29 @@ export default function Profile() {
                             </div>
                             <div className="border-t border-gray-200">
                                 <dl>
-                                    <div className="bg-white-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    {/* <div className="bg-white-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                         <dt className="text-sm font-medium text-gray-500">UserID</dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:col-span-2">{userInfo.UserId}</dd>
-                                    </div>
+                                    </div> */}
                                     <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                         <dt className="text-sm font-medium text-gray-500">First Name</dt>
                                         <dd className="flex justify-between items-center mt-1 sm:col-span-2">
                                             <input type="text" name="firstName" value={userInfo.firstName} onChange={handleInputChange} className="border-b border-gray-400 focus:outline-none text-black" />    
-                                            <button className="bg-blue-500 text-white hover:bg-blue-700 focus:outline-none px-3 py-1 rounded ml-2"onClick={handleSaveButtonClick}>Save</button>
+                                            <button className="bg-blue-500 text-white hover:bg-blue-700 focus:outline-none px-3 py-1 rounded ml-2"onClick={handleSaveButtonClick}>Edit</button>
                                         </dd>
                                     </div>
                                     <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                         <dt className="text-sm font-medium text-gray-500">Last Name</dt>
                                         <dd className="flex justify-between items-center mt-1 sm:col-span-2">
                                             <input type="text" name="lastName" value={userInfo.lastName} onChange={handleInputChange} className="border-b border-gray-400 focus:outline-none text-black" />
-                                            <button className="bg-blue-500 text-white hover:bg-blue-700 focus:outline-none px-3 py-1 rounded ml-2" onClick={handleSaveButtonClick}>Save</button>
+                                            <button className="bg-blue-500 text-white hover:bg-blue-700 focus:outline-none px-3 py-1 rounded ml-2" onClick={handleSaveButtonClick}>Edit</button>
                                         </dd>
                                     </div>
                                     <div className="bg-white-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                         <dt className="text-sm font-medium text-gray-500">Email</dt>
                                         <dd className="flex justify-between items-center mt-1 sm:col-span-2">
                                             <input type="email" name="email" value={userInfo.email}onChange={handleInputChange} className="border-b border-gray-400 focus:outline-none text-black" />
-                                            <button className="bg-blue-500 text-white hover:bg-blue-700 focus:outline-none px-3 py-1 rounded ml-2" onClick={handleSaveButtonClick}>Save</button>
+                                            <button className="bg-blue-500 text-white hover:bg-blue-700 focus:outline-none px-3 py-1 rounded ml-2" onClick={handleSaveButtonClick}>Edit</button>
                                         </dd>
                                     </div>
                                     <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
