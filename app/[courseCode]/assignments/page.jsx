@@ -21,13 +21,13 @@ export default function Assignments() {
                 const courseSnapshot = await getDoc(coursesRef);
 
                 if (courseSnapshot.exists()) {
-                    const courseData = courseSnapshot.data().currentAssignments || [];
+                    const assignmentNames= courseSnapshot.data().currentAssignments || [];
 
                     // Initialize an array to store all assignments
                     const assignments = [];
 
                     // Iterate through each assignment name and fetch data
-                    for (const name of courseData) {
+                    for (const name of assignmentNames) {
                         let assignmentData = null;
                         const quizRef = doc(db, 'quizzes', name);
                         const quizSnapshot = await getDoc(quizRef);
