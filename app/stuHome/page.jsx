@@ -71,12 +71,13 @@ export default function Home(){
     return (
         <div className="flex flex-col md:flex-row ml-80">
             <Sidebar data-testid="sidebar-component" userName={ userName } />
+            <h1>hello this is the stuHome</h1>
             <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
                     courses.map(course => (
-                        <Link key={course.id} href={`/[courseCode]?courseCode=${course.courseCode}`}>
+                        <Link key={course.id} href={`../[courseCode]?courseCode=${course.courseCode}`}>
                         <CourseCard data-testid="course-card" courseCode={course.courseCode} courseName={course.courseName} imageUrl={course.imageUrl}/>
                         </Link>
                     ))

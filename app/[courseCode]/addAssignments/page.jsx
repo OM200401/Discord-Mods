@@ -2,7 +2,9 @@
 import { useState } from 'react';
 import Sidebar from '../../components/Sidebar';
 import db from '../../lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc,getDoc } from 'firebase/firestore';
+import { useParams } from 'next/navigation';
+
 
 export default function Assignments() {
     const [showForm, setShowForm] = useState(false);
@@ -14,6 +16,11 @@ export default function Assignments() {
     const [formType, setFormType] = useState("");
     const [questionPrompt, setQuestionPrompt] = useState('');
     const [dueDate, setDueDate] = useState('');
+
+    const {courseCode} = useParams();
+    console.log("my course code is " + courseCode);
+
+
 
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
@@ -68,7 +75,18 @@ export default function Assignments() {
 
         try {
             const quizCollectionRef = doc(db, 'quizzes', quizTitle);
+            const courseCollectionRef = doc(db, 'courses', courseCode);
+
             await setDoc(quizCollectionRef, { questions,weightage});
+
+
+            const courseSnapshot = await getDoc(courseCollectionRef);
+            const courseData = courseSnapshot.data();
+            const currentAssignments = courseData.currentAssignments || [];
+
+            currentAssignments.push(quizCollectionRef.id);
+            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
+            console.log('it worked');
             // Optionally, you can reset the form after submission
             setQuizTitle('');
             setQuestions([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
@@ -97,7 +115,22 @@ export default function Assignments() {
 
         try {
             const essayCollectionRef = doc(db, 'essays', essayTitle);
+            const courseCollectionRef = doc(db, 'courses', courseCode);
+
             await setDoc(essayCollectionRef, { questionPrompt,weightage});
+
+
+            const courseSnapshot = await getDoc(courseCollectionRef);
+            const courseData = courseSnapshot.data();
+            const currentAssignments = courseData.currentAssignments || [];
+
+            currentAssignments.push(essayCollectionRef.id);
+            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
+            
+            console.log('it worked');
+
+
+
             // Optionally, you can reset the form after submission
             setEssayTitle('');
             setQuestionPrompt('');
