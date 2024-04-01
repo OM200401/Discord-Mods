@@ -26,8 +26,27 @@ export default function SignUpPage() {
           console.log("Redirect");
           redirect('/home');
         }
-      }, [user]);
+    }, [user]);
 
+    const getFriendlyErrorMessage = (firebaseErrorCode) => {
+        switch (firebaseErrorCode) {
+            case 'auth/invalid-email':
+                return 'The email address is not valid.';
+            case 'auth/user-disabled':
+                return 'This user account has been disabled.';
+            case 'auth/user-not-found':
+                return 'No user found with this email address.';
+            case 'auth/wrong-password':
+                return 'The password is incorrect.';
+            case 'auth/invalid-credential':
+                return 'The credentials are invalid.';
+            case 'auth/weak-password':
+                return 'Password should be at least 6 characters long.';
+            // Add more cases as needed
+            default:
+                return 'An unknown error occurred.';
+        }
+    };
 
 
     const handleSubmit = async(e) => {
@@ -38,7 +57,6 @@ export default function SignUpPage() {
             setErrorMsg('All fields are required');
             return;
         }
-        // const router = useRouter();
 
 
     try {
@@ -79,8 +97,9 @@ export default function SignUpPage() {
        
        
     } catch (error) {
-        //Handle errors if any thrown after validation
-        setErrorMsg(error.message);
+        // Handle any errors from login fields here
+        setErrorMsg(getFriendlyErrorMessage(error.code)); 
+        console.error("Error signing in with email and password", error);
     }
     }
 
