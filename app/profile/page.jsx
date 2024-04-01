@@ -85,9 +85,10 @@ export default function Profile() {
     const handleSaveButtonClick = async (field, value) => {
         let userRef;
         if (auth.currentUser.type === 'Student') {
-            userRef = doc(db, 'students', auth.currentUser.uid);
+            userRef = query(collection(db, 'students'), where('uid', '==', user.uid));
+            userInfo = 
         } else {
-            userRef = doc(db, 'teachers', auth.currentUser.uid);
+            userRef = query(collection(db, 'teacher'), where('uid', '==', user.uid));
         }
         const newUserInfo = {
             firstName: userInfo.newFirstName || userInfo.firstName,
