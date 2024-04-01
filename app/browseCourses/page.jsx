@@ -1,11 +1,15 @@
 "use client";
+
 import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import Card from '../components/Card';
 import { collection, getDocs } from 'firebase/firestore';
 import db from '../lib/firebase';
+import Loader from '../components/Loader';
 
 export default function Courses() {
+    const [loading, setLoading] = useState(true);
+
     const [courses, setCourses] = useState([
         // { courseCode: 'COSC304', courseName: 'Introduction to Databases', description: 'This course introduces the concept of databases.' },
         // { courseCode: 'COSC310', courseName: 'Software Engineering', description: 'This course covers the fundamentals of software engineering.' },
@@ -18,6 +22,7 @@ export default function Courses() {
     ]);
 
     useEffect(() => {
+
         const fetchCourses = async () => {
             try {
                 // Fetch all documents from the enrolments collection and map to an array
@@ -35,7 +40,18 @@ export default function Courses() {
 
         fetchCourses();
     }, []);
+  
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 2000);
+    }, []);
 
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
+  
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-blue-100">
             <Sidebar />

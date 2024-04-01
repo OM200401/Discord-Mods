@@ -1,19 +1,29 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
+import CourseNavBar from '../../components/CourseNavBar';
 import db from '../../lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc,getDoc } from 'firebase/firestore';
+import { useParams } from 'next/navigation';
+import Loader from '../../components/Loader';
+
 
 export default function Assignments() {
     const [showForm, setShowForm] = useState(false);
     const [quizTitle, setQuizTitle] = useState(''); // New state for quiz title
-    const [essayTitle, setEssayTitle] = useState(''); // New state for quiz title
-
+    const [essayTitle, setEssayTitle] = useState(''); // New state for essay title
+    const [errorMessage, setErrorMessage] = useState('');
     const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
     const [weightage, setWeightage] = useState(0);
     const [formType, setFormType] = useState("");
     const [questionPrompt, setQuestionPrompt] = useState('');
     const [dueDate, setDueDate] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    const {courseCode} = useParams();
+    console.log("my course code is " + courseCode);
+
+
 
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
@@ -52,9 +62,34 @@ export default function Assignments() {
 
     const handleSubmitQuiz = async (e) => {
         e.preventDefault();
+
+        //Validation checks
+        if(!quizTitle.trim()){
+            setErrorMessage('Quiz title is required');
+            return;
+        }
+        if(questions.some(question => !question.text.trim() || question.correctAnswer === null)){
+            setErrorMessage('All questions must have text and a correct answer selected');
+            return;
+        }
+        
+
+        setErrorMessage('');
+
         try {
             const quizCollectionRef = doc(db, 'quizzes', quizTitle);
+            const courseCollectionRef = doc(db, 'courses', courseCode);
+
             await setDoc(quizCollectionRef, { questions,weightage});
+
+
+            const courseSnapshot = await getDoc(courseCollectionRef);
+            const courseData = courseSnapshot.data();
+            const currentAssignments = courseData.currentAssignments || [];
+
+            currentAssignments.push(quizCollectionRef.id);
+            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
+            console.log('it worked');
             // Optionally, you can reset the form after submission
             setQuizTitle('');
             setQuestions([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
@@ -67,9 +102,38 @@ export default function Assignments() {
 
     const handleSubmitEssay = async (e) => {
         e.preventDefault();
+
+        //Validation checks
+        if(!essayTitle.trim()){
+            setErrorMessage('Essay title is required');
+            return;
+        }
+        if(!questionPrompt.trim()){
+            setErrorMessage('Question prompt is required');
+            return;
+        }
+
+        setErrorMessage('');
+        
+
         try {
             const essayCollectionRef = doc(db, 'essays', essayTitle);
+            const courseCollectionRef = doc(db, 'courses', courseCode);
+
             await setDoc(essayCollectionRef, { questionPrompt,weightage});
+
+
+            const courseSnapshot = await getDoc(courseCollectionRef);
+            const courseData = courseSnapshot.data();
+            const currentAssignments = courseData.currentAssignments || [];
+
+            currentAssignments.push(essayCollectionRef.id);
+            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
+            
+            console.log('it worked');
+
+
+
             // Optionally, you can reset the form after submission
             setEssayTitle('');
             setQuestionPrompt('');
@@ -97,6 +161,17 @@ export default function Assignments() {
         setDueDate(e.target.value);
     };
 
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 3000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
+
     return (
         <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
             <Sidebar />
@@ -108,6 +183,7 @@ export default function Assignments() {
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddEssayClick}>Add Essay</button>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddQuestion}>Add Question</button>
                 </div>
+                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
                 {showForm && (
                     <>
                       

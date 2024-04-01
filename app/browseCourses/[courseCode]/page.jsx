@@ -1,16 +1,18 @@
 "use client";
 import { useParams } from 'next/navigation';
 import Sidebar from '../../components/Sidebar';
-import { useEffect, useState } from 'react';
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../../lib/firebase';
 import { auth } from '../../lib/firebase';
+import { useState, useEffect } from 'react';
+import Loader from '../../components/Loader';
 
 export default function CourseInfo() {
     const {courseCode} = useParams();
 
     const [loading, setLoading] = useState(true);
+
     const [user, setUser] = useState();
     const [courses, setCourses] = useState([]);
 
@@ -32,7 +34,6 @@ export default function CourseInfo() {
                                     .map((doc) => ({ id: doc.id, ...doc.data() }));
                 setCourses(courses);
                 console.log(courses);
-
             } catch (error) {
                 console.error('Error fetching course data:', error);
             }
@@ -111,6 +112,18 @@ export default function CourseInfo() {
             console.log('Could not add enrolment.');   
             console.error(error.message);
         }
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 3000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
+
     };
 
     return (

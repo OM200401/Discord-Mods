@@ -1,13 +1,13 @@
 'use client';
 import Link from "next/link";
-// import Sidebar from "../components/Sidebar"; 
+import Loader from '../components/Loader';
 import dynamic from "next/dynamic";
 import CourseCard from "../components/CourseCard";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
 import {fetchCourseInfo} from "../components/FetchCourseData"
 
 let Sidebar;
@@ -44,23 +44,56 @@ export default function Home(){
             if(auth.currentUser){
               setUser(auth.currentUser);
                 console.log(user);
-                const userInfoRef = collection(db,'Userinfo');
-                const q = query(userInfoRef, where('uid','==',user.uid));
-                console.log(q);
-                try{
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                    })
-                }catch(error){
-                    console.log(error.message);
+                console.log(user.uid);
+                const student = query(collection(db, 'students'), where('uid', '==', user.uid));
+
+                const studentSnapshot = await getDocs(student);
+
+                if(!studentSnapshot.empty){
+                    studentSnapshot.forEach(async (doc) => {
+                        // console.log(doc.id, ' => ', doc.data());
+                        const registeredCoursesRef = collection(doc.ref,'registeredCourses');
+                        const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+    
+                        console.log(registeredCoursesSnapshot);
+                        registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                            if (registeredCourseDoc.id !== "DefaultCourse") {
+                                console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                                courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );  
+                            }                         
+                        });
+                        console.log(courses)
+                        setTimeout(() => {
+                            setLoading(false);
+                        }, 3000);
+                    
+                    });
+
+                } else{
+                    const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
+                    const teacherSnapshot = await getDocs(teacher);
+
+                    teacherSnapshot.forEach(async (doc) => {
+                        // console.log(doc.id, ' => ', doc.data());
+                        const registeredCoursesRef = collection(doc.ref,'registeredCourses');
+                        const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+    
+                        console.log(registeredCoursesSnapshot);
+                        registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                            if (registeredCourseDoc.id !== "DefaultCourse") {
+                                console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                                courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
+                            }                      
+                        });
+                        console.log(courses)
+                        setTimeout(() => {
+                            setLoading(false);
+                        }, 3000);
+                    });             
                 }
 
-              }  else {
-                // User is signed out
-                console.log('No user');
+          
             }
-
             console.log(userName);
         }); 
 
@@ -73,11 +106,11 @@ export default function Home(){
             <Sidebar data-testid="sidebar-component" userName={ userName } />
             <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
                 {loading ? (
-                    <p>Loading...</p>
+                    <Loader/>
                 ) : (
                     courses.map(course => (
-                        <Link key={course.id} href={`/[courseCode]?courseCode=${course.courseCode}`}>
-                        <CourseCard data-testid="course-card" courseCode={course.courseCode} courseName={course.courseName} imageUrl={course.imageUrl}/>
+                        <Link key={course.id} href={`/[courseCode]?courseCode=${course.id}`}>
+                        <CourseCard data-testid="course-card" courseCode={course.id} courseName={course.courseName} imageUrl={course.imageUrl}/>
                         </Link>
                     ))
                 )}
