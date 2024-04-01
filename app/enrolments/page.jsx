@@ -25,7 +25,9 @@ export default function Enrolments() {
                 // Fetch all documents from the enrolments collection and map to an array
                 const enrolmentsCollection = collection(db,'enrolments');
                 const snapshot = await getDocs(enrolmentsCollection);
-                const enrolmentsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })); 
+                const enrolmentsData = snapshot.docs
+                                        .filter(doc => doc.id !== "DefaultCourse")
+                                        .map((doc) => ({ id: doc.id, ...doc.data() })); 
                 setEnrolments(enrolmentsData);
 
             } catch (error) {
@@ -34,7 +36,7 @@ export default function Enrolments() {
         };
 
         fetchEnrolments();
-    }, []);
+    }, [enrolments]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -49,7 +51,7 @@ export default function Enrolments() {
                     querySnapshot.forEach((doc) => {
                         setUserName(doc.data().firstName);
                     })
-                }catch(error){
+                } catch(error){
                     console.log(error.message);
                 }
 
