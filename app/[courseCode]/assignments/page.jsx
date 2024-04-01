@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { auth } from '@/app/lib/firebase';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc,getDocs } from 'firebase/firestore';
 import db from '../../lib/firebase';
 import StudentAssignmentCard from '@/app/components/StudentAssignmentCard';
 
@@ -14,10 +14,20 @@ export default function Assignments() {
     console.log("my course code is " + courseCode);
 
     const [currentAssignments, setCurrentAssignments] = useState([]);
+    const [user,setUser] = useState(null);
+    const [userType,setUserType] = useState('user');
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
+                const student = query(collection(db, 'students'), where('uid', '==', user.uid));
+                const studentSnapshot = await getDoc(student);
+                
+                if(!studentSnapshot.empty){
+                        setUserType(studentSnapshot.data().userType);
+                }
+
+
                 const coursesRef = doc(db, 'courses', courseCode);
                 const courseSnapshot = await getDoc(coursesRef);
 
@@ -72,7 +82,7 @@ export default function Assignments() {
                 </div>
                 <div className="overflow-x-auto">
                     {currentAssignments.map((assignment, index) => (
-                        <StudentAssignmentCard assignment={assignment} />
+                      userType == 'Student' && <StudentAssignmentCard assignment={assignment} />
                     ))}
                 </div>
             </div>

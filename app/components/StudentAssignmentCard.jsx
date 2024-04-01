@@ -9,7 +9,6 @@ const StudentAssignmentCard = ({ assignment }) => {
         {/* You can add other properties from the assignment object here */}
       </div>
       <div className="flex">
-        <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">Edit</button>
         <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
       </div>
     </div>
