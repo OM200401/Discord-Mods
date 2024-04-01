@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StudentAssignmentCard = ({ assignment }) => {
+const TeacherAssignmentCard = ({ assignment }) => {
   return (
     <div className="flex items-center justify-between bg-gray-100 mb-4 p-4 rounded border border-gray-300">
       <div>
@@ -9,10 +9,10 @@ const StudentAssignmentCard = ({ assignment }) => {
         {/* Need to add due date here */}
       </div>
       <div className="flex">
-        <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-green-600">Start</button>
+        <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
       </div>
     </div>
   );
 }
 
-export default StudentAssignmentCard;
+export default TeacherAssignmentCard;
