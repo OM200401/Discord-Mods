@@ -44,7 +44,7 @@ export default function Assignments() {
                 </div>
                 <div className="overflow-x-auto">
                     {assignments.map((assignment, index) => (
-                         <a href="" key={index} >
+                         <a href="displayAssignments" key={index} >
                         <div key={index} className="flex items-center justify-between bg-gray-100 mb-4 p-4 rounded border border-gray-300">
                           
                             <div>
