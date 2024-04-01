@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
-import BrowseCard from '../components/BrowseCard';
+import Card from '../components/Card';
 import { collection, getDocs } from 'firebase/firestore';
 import db from '../lib/firebase';
 
@@ -43,7 +43,7 @@ export default function Courses() {
                 <h1 className="text-3xl text-black font-semibold mb-4 ">Courses</h1>
                 <div data-testid = "course-card" className="flex flex-wrap justify-start">
                     {courses.map((course, index) => (
-                        <BrowseCard key={index} courseCode={course.id} courseName={course.courseName} />
+                        <Card key={index} courseCode={course.id} courseName={course.courseName} />
                     ))}
                 </div>
             </div>
