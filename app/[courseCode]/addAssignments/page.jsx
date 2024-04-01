@@ -7,8 +7,8 @@ import { doc, setDoc } from 'firebase/firestore';
 export default function Assignments() {
     const [showForm, setShowForm] = useState(false);
     const [quizTitle, setQuizTitle] = useState(''); // New state for quiz title
-    const [essayTitle, setEssayTitle] = useState(''); // New state for quiz title
-
+    const [essayTitle, setEssayTitle] = useState(''); // New state for essay title
+    const [errorMessage, setErrorMessage] = useState('');
     const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
     const [weightage, setWeightage] = useState(0);
     const [formType, setFormType] = useState("");
@@ -52,6 +52,20 @@ export default function Assignments() {
 
     const handleSubmitQuiz = async (e) => {
         e.preventDefault();
+
+        //Validation checks
+        if(!quizTitle.trim()){
+            setErrorMessage('Quiz title is required');
+            return;
+        }
+        if(questions.some(question => !question.text.trim() || question.correctAnswer === null)){
+            setErrorMessage('All questions must have text and a correct answer selected');
+            return;
+        }
+        
+
+        setErrorMessage('');
+
         try {
             const quizCollectionRef = doc(db, 'quizzes', quizTitle);
             await setDoc(quizCollectionRef, { questions,weightage});
@@ -67,6 +81,20 @@ export default function Assignments() {
 
     const handleSubmitEssay = async (e) => {
         e.preventDefault();
+
+        //Validation checks
+        if(!essayTitle.trim()){
+            setErrorMessage('Essay title is required');
+            return;
+        }
+        if(!questionPrompt.trim()){
+            setErrorMessage('Question prompt is required');
+            return;
+        }
+
+        setErrorMessage('');
+        
+
         try {
             const essayCollectionRef = doc(db, 'essays', essayTitle);
             await setDoc(essayCollectionRef, { questionPrompt,weightage});
@@ -108,6 +136,7 @@ export default function Assignments() {
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddEssayClick}>Add Essay</button>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddQuestion}>Add Question</button>
                 </div>
+                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
                 {showForm && (
                     <>
                       
