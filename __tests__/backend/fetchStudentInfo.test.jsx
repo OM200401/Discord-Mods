@@ -3,7 +3,7 @@ import db from '../../app/lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 describe('Firebase Database Tests', () => {
-    test('Test database read operation for all users', async () => {
+    test('Test database read operation for students', async () => {
         // Assuming 'Userinfo' is the name of your Firestore collection
         const studentCollection = collection(db, 'students');
       

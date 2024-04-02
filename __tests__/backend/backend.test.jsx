@@ -79,6 +79,6 @@ describe('Firebase Database Tests', () => {
     expect(teacherData[0].firstName).toEqual("Test");
     expect(teacherData[0].lastName).toEqual("User");
     expect(teacherData[0].uid).toEqual("50nTQ83rxSeKXTsmZOOeQJfxSls2");
-    expect(teacherData[0].userType).toEqual("teacher");
+    expect(teacherData[0].userType).toEqual("Teacher");
   });
 });
