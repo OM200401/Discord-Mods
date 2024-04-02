@@ -8,6 +8,8 @@ import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import CourseNavBar from '../components/CourseNavBar';
 import { getStorage, ref, getDownloadURL} from "firebase/storage";
+import Loader from '../components/Loader';
+
 export default function CoursePage() {
 
     // Fetch course info from the database based on the courseCode
@@ -16,6 +18,12 @@ export default function CoursePage() {
     const [user,setUser] = useState(); 
     const [pdfUrl, setPdfUrl] = useState('');
     const [uploading, setUploading] = useState(false); 
+    const [loading, setLoading] = useState(true);
+
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    const courseCode = params.get('courseCode');
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -40,6 +48,10 @@ export default function CoursePage() {
             }
 
             console.log(userName);
+            // Simulate a network request
+            setTimeout(() => {
+              setLoading(false); // Set loading to false after 3 seconds
+            }, 1000);
         }); 
 
         // Cleanup subscription on unmount
@@ -53,17 +65,27 @@ export default function CoursePage() {
       getDownloadURL(pdfRef)
           .then((url) => {
               setPdfUrl(url);
+              useEffect(() => {
+                // Simulate a network request
+                setTimeout(() => {
+                    setLoading(false); // Set loading to false after 3 seconds
+                }, 1000);
+              }, []);
           })
           .catch((error) => {
               console.log('Error getting PDF URL:', error);
           });
     }, []);
 
+    if (loading) {
+      return <Loader />; // Return the Loading component if loading is true
+    }
+
     return (
         <div className="flex flex-col md:flex-row">
           <Sidebar data-testid = "sidebar-component" userName={ userName } />
           <div className="relative md:ml-64">
-            <CourseNavBar />
+            <CourseNavBar courseCode={courseCode}/>
           </div>
           <div className="p-6 w-screen bg-blue-100 text-center">
             <h1 className="text-3xl text-black font-semibold"  data-testid="course-heading">Course Name</h1>

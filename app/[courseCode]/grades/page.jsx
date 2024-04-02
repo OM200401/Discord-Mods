@@ -1,10 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CourseNavBar from '../../components/CourseNavBar';
 import Sidebar from '../../components/Sidebar';
+import Loader from '../../components/Loader';
 import { FaChevronDown } from 'react-icons/fa';
 
 export default function Assignments() {
+
+    const [loading, setLoading] = useState(true);
 
     // Demo students array to display some students but will later have data 
     // displayed from the database
@@ -27,6 +30,17 @@ export default function Assignments() {
         newStudents[studentIndex].assignments[assignmentIndex].grade = newGrade;
         setStudents(newStudents);
     };
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 1000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
@@ -57,7 +71,7 @@ export default function Assignments() {
                                             {student.assignments.map((assignment, index) => (
                                                 <div key={index}>
                                                     <p>{assignment.name}: {assignment.grade}</p>
-                                                    <input type="number" min="0" max="100" defaultValue={assignment.grade} onChange={(e) => updateGrade(index, assignmentIndex, e.target.value)} />
+                                                    <input type="number" min="0" max="100" defaultValue={assignment.grade} onChange={(e) => updateGrade(index, index, e.target.value)} />
                                                 </div>
                                             ))}
                                         </div>

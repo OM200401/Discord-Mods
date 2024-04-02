@@ -1,11 +1,6 @@
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function Card({ courseCode, courseName }) {
-    const router = useRouter();
-
-    const handleClick = () => {
-        router.push(`/browseCourses/${courseCode}`);
-    }
+export default function Card({ courseCode, courseName, handleClick, redirect }) {
 
     return (
         <div className="w-72 h-40 flex flex-col justify-center gap-2 bg-blue-500 rounded-lg shadow p-2 m-4">
@@ -17,9 +12,9 @@ export default function Card({ courseCode, courseName }) {
             </p>
             </div>
         </div>
-        <button onClick={handleClick} className="hover:bg-gray-300 bg-neutral-50 font-bold text-blue-500 rounded p-2">
+        <Link href={`/browseCourses/${courseCode}`} className="hover:bg-gray-300 bg-neutral-50 font-bold text-blue-500 rounded p-2">
             See more
-        </button>
+        </Link>
         </div>
 
     );

@@ -1,7 +1,8 @@
 
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
+import Loader from '../../components/Loader';
 import db from '../../lib/firebase';
 import {doc,setDoc} from 'firebase/firestore';
 
@@ -10,6 +11,7 @@ export default function Assignments() {
     const [quizTitle, setQuizTitle] = useState('');
     const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null}]);
     const [weightage, setWeightage] = useState(0);
+    const [loading, setLoading] = useState(true);
 
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
@@ -63,6 +65,17 @@ export default function Assignments() {
 
         }
     };
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 1000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
 
     return (
         <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
