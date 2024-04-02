@@ -11,8 +11,12 @@ import db from '../../../../lib/firebase';
 
 
 export default function Assignments() {
-    const {name,courseCode} = useParams();
+    let {name,courseCode} = useParams();
+    name = decodeURIComponent(name);
+    courseCode = decodeURIComponent(courseCode)
     console.log(name);
+    console.log(courseCode);
+
     // const search = window.location.search;
     // const params = new URLSearchParams(search);
     // console.log(params);
@@ -24,25 +28,14 @@ export default function Assignments() {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
                 setUser(auth.currentUser);
-
-                const assignmentRef = doc(db,'quizzes',name);
-                const assignmentSnapshot = await getDoc(assignmentRef);
-
-                if(!assignmentSnapshot.empty){
-                    console.log(assignmentSnapshot.data())
-                }else{
+              
                     const assignmentRef = doc(db,'essays',name);
                     const assignmentSnapshot = await getDoc(assignmentRef);
                     
                     if(!assignmentSnapshot.empty){
                         console.log(assignmentSnapshot.data());
                     }
-
-
-                }
-
                 
-                  
             }
         });
 
@@ -56,8 +49,8 @@ export default function Assignments() {
                 <CourseNavBar courseCode={courseCode} />
             </div>
             <div className="p-6 text-center w-full">
-                <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
-                <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading">Assignments</h2>
+                <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">{name}</h1>
+                <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading">{Assignments}</h2>
                 <div className="flex justify-end">
                     <a href="addAssignments" className="px-4 py-2 mb-3 bg-green-500 text-white rounded hover:bg-green-600">Add</a>
                 </div>
