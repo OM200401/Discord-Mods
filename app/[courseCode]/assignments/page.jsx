@@ -82,6 +82,7 @@ export default function Assignments() {
 
                     // Update currentAssignments state after all assignments are fetched
                     setCurrentAssignments(assignments);
+                    console.log(currentAssignments);
                 }
             }
         });
@@ -117,7 +118,7 @@ export default function Assignments() {
                 <div className="overflow-x-auto">
                     {currentAssignments.map((assignment, index) => (
                       (userType == 'Student' && <StudentAssignmentCard assignment={assignment} courseCode={courseCode} />) ||
-                      (userType == 'Teacher' && <TeacherAssignmentCard assignment={assignment}  />)
+                      (userType == 'Teacher' && <TeacherAssignmentCard assignment={assignment} courseCode = {courseCode} />)
                     ))}
                 </div>
             </div>

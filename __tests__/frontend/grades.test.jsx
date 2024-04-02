@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import { render, screen, fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
-import Assignments from '../../app/[courseCode]/grades/page'
+import Assignments from '../../app/[courseCode]/grades/[name]/page'
 
 test('Assignments page renders correctly', async () => {
     render(<Assignments />)
