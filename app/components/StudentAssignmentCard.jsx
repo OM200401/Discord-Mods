@@ -10,7 +10,7 @@ const StudentAssignmentCard = ({ assignment, courseCode }) => {
         {/* Need to add due date here */}
       </div>
       <div className="flex">
-        <Link href={`/${courseCode}/submitAssignment/${assignment.name}`} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Start</Link>
+        <Link href={`/stu/${courseCode}/submitAssignment/${assignment.name}`} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Start</Link>
       </div>
     </div>
   );
