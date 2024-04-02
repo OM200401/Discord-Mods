@@ -26,6 +26,8 @@ export default function SignUpPage() {
           console.log("Redirect");
           redirect('/home');
         }
+
+
     }, [user]);
 
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
@@ -48,7 +50,6 @@ export default function SignUpPage() {
         }
     };
 
-
     const handleSubmit = async(e) => {
         e.preventDefault();
 
@@ -57,7 +58,6 @@ export default function SignUpPage() {
             setErrorMsg('All fields are required');
             return;
         }
-
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -76,9 +76,7 @@ export default function SignUpPage() {
 
             if(defaultCourseDoc.exists()) {
                  defaultCourseData = defaultCourseDoc.data();
-
             }
-
 
             const studentDocRef = await addDoc(studentCollection,{
                 firstName:firstName,
@@ -88,10 +86,10 @@ export default function SignUpPage() {
                 uid:uid
             }) 
 
+            const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses')
 
             const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses')
             await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
-
  
         }else {
             const teacherCollection = collection(db,'teachers');
@@ -107,7 +105,6 @@ export default function SignUpPage() {
 
             }
 
-
             const teacherDocRef = await addDoc(teacherCollection,{
                 firstName:firstName,
                 lastName:lastName,
@@ -119,8 +116,6 @@ export default function SignUpPage() {
 
             const registeredCoursesCollectionRef = collection(teacherDocRef, 'registeredCourses')
             await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
-
-
         }
        
        

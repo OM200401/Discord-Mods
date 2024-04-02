@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { useState } from 'react';
 import { useEffect } from "react";
 import Link from "next/link";
+import {collection, getDocs,doc,where,query} from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import {auth} from '../lib/firebase';
@@ -18,6 +19,10 @@ export default function LoginPage() {
     const[password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [user,setUser] = useState(null);
+
+    const [uid,setUid] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
+
     const [errorMsg, setErrorMsg] = useState('');
 
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
@@ -86,12 +91,6 @@ export default function LoginPage() {
         } 
     };
 
-    // useEffect(() => {
-    //     if (user) {
-    //       console.log("Redirect");
-    //       redirect('/home');
-    //     }
-    // }, [user]);
 
 
     return (
