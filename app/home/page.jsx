@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import { auth } from '../lib/firebase';
-import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
+import { collection, query, where, getDocs,getDoc, documentId } from "firebase/firestore";
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
@@ -29,7 +29,6 @@ export default function Home(){
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
                 setUser(auth.currentUser);
-                console.log(user);
                 console.log(user.uid);
 
                 const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
@@ -42,10 +41,15 @@ export default function Home(){
                 const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
 
                 console.log(registeredCoursesSnapshot);
-                registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                registeredCoursesSnapshot.forEach(async (registeredCourseDoc) => {
+                    console.log(registeredCourseDoc.data());
                     if (registeredCourseDoc.id !== "DefaultCourse") {
-                        console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
-                        courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
+                        const coursesRef = collection(db,'courses');
+                        const courseQuery = query(coursesRef, where(documentId(), '==', registeredCourseDoc.id));
+                        const courseSnapshot = await getDocs(courseQuery);
+                        const course = courseSnapshot.docs[0];
+                        console.log(course.data())
+                        courses.push( {id: course.id, ...course.data()} );   
                     }                      
                 });
                 console.log(courses)

@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, documentId } from "firebase/firestore";
 // import {fetchCourseInfo} from "../components/FetchCourseData"
 import Loader from '../components/Loader';
 
@@ -36,17 +36,22 @@ export default function Home(){
                 const student = query(collection(db, 'students'), where('uid', '==', user.uid));
                 const studentSnapshot = await getDocs(student);
 
-                const doc = studentSnapshot.docs[0]
+                const doc = studentSnapshot.docs[0];
                 setUserName(doc.data().firstName);
                 // console.log(doc.id, ' => ', doc.data());
                 const registeredCoursesRef = collection(doc.ref,'registeredCourses');
                 const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
 
                 console.log(registeredCoursesSnapshot);
-                registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                registeredCoursesSnapshot.forEach(async (registeredCourseDoc) => {
+                    console.log(registeredCourseDoc.data());
                     if (registeredCourseDoc.id !== "DefaultCourse") {
-                        console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
-                        courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
+                        const coursesRef = collection(db,'courses');
+                        const courseQuery = query(coursesRef, where(documentId(), '==', registeredCourseDoc.id));
+                        const courseSnapshot = await getDocs(courseQuery);
+                        const course = courseSnapshot.docs[0];
+                        console.log(course.data())
+                        courses.push( {id: course.id, ...course.data()} );   
                     }                      
                 });
                 console.log(courses)
@@ -71,8 +76,8 @@ export default function Home(){
                     <Loader />
                 ) : (
                     courses.map(course => (
-                        <Link key={course.id} href={`../stu/[courseCode]?courseCode=${course.courseCode}`}>
-                        <CourseCard data-testid="course-card" courseCode={course.courseCode} courseName={course.courseName} imageUrl={course.imageUrl}/>
+                        <Link key={course.id} href={`../stu/[courseCode]?courseCode=${course.id}`}>
+                        <CourseCard data-testid="course-card" courseCode={course.id} courseName={course.courseName} imageUrl={course.imageUrl}/>
                         </Link>
                     ))
                 )}
