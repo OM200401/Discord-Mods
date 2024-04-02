@@ -30,37 +30,36 @@ export default function Home(){
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
-              setUser(auth.currentUser);
-                console.log(user);
-                const userInfoRef = collection(db,'Userinfo');
-                const q = query(userInfoRef, where('uid','==',user.uid));
-                console.log(q);
-                try{
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                    })
-                }catch(error){
-                    console.log(error.message);
-                }
+                setUser(auth.currentUser);
+                console.log(user.uid);
 
-              }  else {
-                // User is signed out
-                console.log('No user');
+                const student = query(collection(db, 'students'), where('uid', '==', user.uid));
+                const studentSnapshot = await getDocs(student);
+
+                const doc = studentSnapshot.docs[0]
+                setUserName(doc.data().firstName);
+                // console.log(doc.id, ' => ', doc.data());
+                const registeredCoursesRef = collection(doc.ref,'registeredCourses');
+                const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+
+                console.log(registeredCoursesSnapshot);
+                registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                    if (registeredCourseDoc.id !== "DefaultCourse") {
+                        console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                        courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
+                    }                      
+                });
+                console.log(courses)
+                setTimeout(() => {
+                    setLoading(false);
+                }, 3000);
+                
             }
-
             console.log(userName);
         }); 
 
         // Cleanup subscription on unmount
         return () => unsubscribe();
-    }, [userName]);
-
-    useEffect(() => {
-        // Simulate a network request
-        setTimeout(() => {
-            setLoading(false); // Set loading to false after 3 seconds
-        }, 1000);
     }, []);
 
     return (

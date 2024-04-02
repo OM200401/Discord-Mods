@@ -33,7 +33,7 @@ export default function CoursePage() {
             }
             setTimeout(() => {
                 setLoading(false);
-            }, 3000);
+            }, 1000);
         });
         return unsubscribe;
     }, []);
@@ -46,7 +46,7 @@ export default function CoursePage() {
                 setPdfUrl(url);
                 setTimeout(() => {
                     setLoading(false);
-                }, 3000);
+                }, 1000);
             })
             .catch((error) => {
                 console.log('Error getting PDF URL:', error);
