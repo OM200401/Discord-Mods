@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import Link from "next/link";
 import {collection, getDocs,doc,where,query} from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import {auth} from '../lib/firebase';
 import db from '../lib/firebase';
 import {useRouter} from 'next/navigation';
@@ -78,6 +77,15 @@ export default function LoginPage() {
             if(!querySnapshotTeach.empty){
                 //User is a student
                 router.push('/stuHome');
+                return;
+            }
+
+            //check if user is in the students collection
+            const aq = query(collection(db, "admins"), where("email","==", email));
+            const querySnapshotAdmin = await getDocs(aq);
+            if(!querySnapshotAdmin.empty){
+                //User is a student
+                router.push('/admin');
                 return;
             }
 
