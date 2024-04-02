@@ -8,7 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import {fetchCourseInfo} from "../components/FetchCourseData"
+// import {fetchCourseInfo} from "../components/FetchCourseData"
 import Loader from '../components/Loader';
 
 let Sidebar;
