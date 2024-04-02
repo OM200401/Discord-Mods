@@ -8,7 +8,6 @@ import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
-// import {fetchCourseInfo} from "../components/FetchCourseData"
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
