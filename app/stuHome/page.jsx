@@ -28,25 +28,6 @@ export default function Home(){
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchData = async () => {
-        const courseData = await fetchCourseInfo();
-        setCourses(courseData);
-        useEffect(() => {
-            // Simulate a network request
-            setTimeout(() => {
-                setLoading(false); // Set loading to false after 3 seconds
-            }, 3000);
-        }, []);
-    
-        };
-
-        fetchData();
-    }, []);
-
-    // create a new function that will get the CourseCard info on clicking it and then go to the
-    // backend and get info about that course to redirect to the particular Course page 
-
-    useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
               setUser(auth.currentUser);
@@ -74,6 +55,13 @@ export default function Home(){
         // Cleanup subscription on unmount
         return () => unsubscribe();
     }, [userName]);
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 1000);
+    }, []);
 
     return (
         <div className="flex flex-col md:flex-row ml-80">

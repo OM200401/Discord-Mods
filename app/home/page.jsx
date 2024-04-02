@@ -35,54 +35,27 @@ export default function Home(){
               setUser(auth.currentUser);
                 console.log(user);
                 console.log(user.uid);
-                const student = query(collection(db, 'students'), where('uid', '==', user.uid));
 
-                const studentSnapshot = await getDocs(student);
+                const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
+                const teacherSnapshot = await getDocs(teacher);
 
-                if(!studentSnapshot.empty){
-                    studentSnapshot.forEach(async (doc) => {
-                        // console.log(doc.id, ' => ', doc.data());
-                        const registeredCoursesRef = collection(doc.ref,'registeredCourses');
-                        const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
-    
-                        console.log(registeredCoursesSnapshot);
-                        registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
-                            if (registeredCourseDoc.id !== "DefaultCourse") {
-                                console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
-                                courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );  
-                            }                         
-                        });
-                        console.log(courses)
-                        setTimeout(() => {
-                            setLoading(false);
-                        }, 3000);
-                    
+                teacherSnapshot.forEach(async (doc) => {
+                    // console.log(doc.id, ' => ', doc.data());
+                    const registeredCoursesRef = collection(doc.ref,'registeredCourses');
+                    const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+
+                    console.log(registeredCoursesSnapshot);
+                    registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                        if (registeredCourseDoc.id !== "DefaultCourse") {
+                            console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                            courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
+                        }                      
                     });
-
-                } else{
-                    const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
-                    const teacherSnapshot = await getDocs(teacher);
-
-                    teacherSnapshot.forEach(async (doc) => {
-                        // console.log(doc.id, ' => ', doc.data());
-                        const registeredCoursesRef = collection(doc.ref,'registeredCourses');
-                        const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
-    
-                        console.log(registeredCoursesSnapshot);
-                        registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
-                            if (registeredCourseDoc.id !== "DefaultCourse") {
-                                console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
-                                courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
-                            }                      
-                        });
-                        console.log(courses)
-                        setTimeout(() => {
-                            setLoading(false);
-                        }, 3000);
-                    });             
-                }
-
-          
+                    console.log(courses)
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 3000);
+                });
             }
             console.log(userName);
         }); 
