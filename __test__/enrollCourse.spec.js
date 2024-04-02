@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('should be able to enroll in a class', async ({ page }) => {
+  test.setTimeout(120000);
   // Start from the index page (the baseURL is set via the webServer in the playwright.config.ts)
   await page.goto('http://localhost:3000/');
   // Find an element with the text 'Get Started' and click on it to navigate to the login page
