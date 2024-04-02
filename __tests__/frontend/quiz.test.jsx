@@ -1,9 +1,11 @@
 import { test, expect } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
 import Assignments from '../../app/[courseCode]/quiz/page'
 
-test('Quiz page renders correctly', () => {
+test('Quiz page renders correctly', async () => {
     render(<Assignments />)
+    await waitForElementToBeRemoved(() => screen.getByTestId('loader'), { timeout: 6000});
+
     
     const courseHeading = screen.getByTestId('course-heading')
     expect(courseHeading).toBeDefined()

@@ -1,9 +1,11 @@
 import { test, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import CoursePage from '../../app/[courseCode]/page';
 
-test('Sidebar component is present', () => {
+test('Sidebar component is present', async () => {
     render(<CoursePage />);
+    await waitForElementToBeRemoved(() => screen.getByTestId('loader'), { timeout: 6000});
+
     const sidebar = screen.findByTestId('sidebar-component');
     expect(sidebar).toBeDefined();
 });

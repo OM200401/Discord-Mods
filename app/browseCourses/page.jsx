@@ -49,7 +49,7 @@ export default function Courses() {
     }, []);
 
     if (loading) {
-        return <Loader />; // Return the Loading component if loading is true
+        return <Loader data-testid='loader' />; // Return the Loading component if loading is true
     }
   
     return (

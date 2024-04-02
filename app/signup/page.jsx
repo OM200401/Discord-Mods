@@ -86,7 +86,6 @@ export default function SignUpPage() {
                 uid:uid
             }) 
 
-            const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses')
 
             const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses')
             await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
