@@ -118,7 +118,7 @@ export default function CourseInfo() {
         // Simulate a network request
         setTimeout(() => {
             setLoading(false); // Set loading to false after 3 seconds
-        }, 3000);
+        }, 1000);
     }, []);
 
     if (loading) {

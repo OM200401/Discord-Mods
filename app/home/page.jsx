@@ -54,7 +54,7 @@ export default function Home(){
                         console.log(courses)
                         setTimeout(() => {
                             setLoading(false);
-                        }, 3000);
+                        }, 1000);
                     
                     });
 
@@ -77,7 +77,7 @@ export default function Home(){
                         console.log(courses)
                         setTimeout(() => {
                             setLoading(false);
-                        }, 3000);
+                        }, 1000);
                     });             
                 }
 

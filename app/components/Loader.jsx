@@ -7,7 +7,7 @@ export default function Loading() {
                 color="#0000FF"
                 height={100}
                 width={100}
-                timeout={3000}
+                timeout={1000}
             />
         </div>
     );
