@@ -8,7 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import {fetchCourseInfo} from "../components/FetchCourseData"
+// import {fetchCourseInfo} from "../components/FetchCourseData"
 import Loader from '../components/Loader';
 
 let Sidebar;
@@ -74,6 +74,13 @@ export default function Home(){
         // Cleanup subscription on unmount
         return () => unsubscribe();
     }, [userName]);
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 1000);
+    }, []);
 
     return (
         <div className="flex flex-col md:flex-row ml-80">
