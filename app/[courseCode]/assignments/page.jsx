@@ -1,6 +1,7 @@
 'use client'
 import CourseNavBar from '../../components/CourseNavBar';
 import Sidebar from '../../components/Sidebar';
+
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
@@ -9,11 +10,15 @@ import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore'
 import db from '../../lib/firebase';
 import StudentAssignmentCard from '@/app/components/StudentAssignmentCard';
 import TeacherAssignmentCard from '@/app/components/TeacherAssignmentCard';
+import Loader from '../../components/Loader';
+
+
 
 
 export default function Assignments() {
     const { courseCode } = useParams();
     console.log("my course code is " + courseCode);
+
 
     const [currentAssignments, setCurrentAssignments] = useState([]);
     const [user,setUser] = useState(null);
@@ -85,6 +90,19 @@ export default function Assignments() {
 
         return () => unsubscribe();
     }, []); // Add courseCode as a dependency
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 3000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">

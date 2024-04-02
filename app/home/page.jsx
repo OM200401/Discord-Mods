@@ -1,14 +1,14 @@
 'use client';
 import Link from "next/link";
-// import Sidebar from "../components/Sidebar"; 
+import Loader from '../components/Loader';
 import dynamic from "next/dynamic";
 import CourseCard from "../components/CourseCard";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
-import {auth} from '../lib/firebase';
+import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
-import {fetchCourseInfo} from "../components/FetchCourseData"
+// import {fetchCourseInfo} from "../components/FetchCourseData"
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
@@ -25,6 +25,9 @@ export default function Home(){
     const [user,setUser] = useState();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // create a new function that will get the CourseCard info on clicking it and then go to the
+    // backend and get info about that course to redirect to the particular Course page 
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -50,7 +53,10 @@ export default function Home(){
                             }                         
                         });
                         console.log(courses)
-                        setLoading(false);
+                        setTimeout(() => {
+                            setLoading(false);
+                        }, 3000);
+                    
                     });
 
                 } else{
@@ -70,7 +76,9 @@ export default function Home(){
                             }                      
                         });
                         console.log(courses)
-                        setLoading(false);  
+                        setTimeout(() => {
+                            setLoading(false);
+                        }, 3000);
                     });             
                 }
 
@@ -88,7 +96,7 @@ export default function Home(){
             <Sidebar data-testid="sidebar-component" userName={ userName } />
             <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
                 {loading ? (
-                    <p>Loading...</p>
+                    <Loader/>
                 ) : (
                     courses.map(course => (
                         <Link key={course.id} href={`/[courseCode]?courseCode=${course.id}`}>

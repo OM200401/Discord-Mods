@@ -2,11 +2,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'firebase/auth';
-import { FaHome, FaBook, FaPencilAlt, FaFileAlt, FaUser, FaChalkboard, FaSignOutAlt } from 'react-icons/fa';
+import {auth} from '../lib/firebase';
+import { FaHome, FaBook, FaFileAlt, FaUser, FaChalkboard, FaSignOutAlt } from 'react-icons/fa';
 
 //Creating a sidebar component to be able to use on all the pages for the app
 
-function Sidebar({ userName }) {
+function AdminSidebar({ userName }) {
     // const router = useRouter();
     // const [isClient, setIsClient] = useState(false);
 
@@ -43,27 +44,31 @@ function Sidebar({ userName }) {
     };
 
     return (
-        <div data-testid="sidebar" className={`h-screen bg-blue-400 ${isMinimized ? 'w-20' : 'w-64'} fixed top-0 left-0 overflow-y-auto transition-all duration-300`}>
+        <div data-testid="adminSidebar-component" className={`h-screen bg-blue-400 ${isMinimized ? 'w-20' : 'w-64'} fixed top-0 left-0 overflow-y-auto transition-all duration-300`}>
             <div className="px-6 py-4">
                 <h2 className="text-4xl font-bold text-gray-800">
                     <Link href="/">
                         {isMinimized ? <FaChalkboard/> : 'E-Learning Platform'} 
                     </Link>
                 </h2>
-                <p className="mt-2 font-extrabold text-gray-600">HELLO {userName}</p>
+                <p className="mt-2 font-extrabold text-gray-600">Hello {userName}</p>
             </div>
             <nav>
-                <Link href="/home">
+                <Link href="/adminDashboard">
                     <div className="block px-6 py-2 font-medium text-gray-800 hover:bg-gray-200 rounded-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-pointer">
                         {isMinimized ? <FaHome/> : 'Dashboard'}
                     </div>
                 </Link>
-                <Link href="/browseCourses">
+                <Link href="/enrolments">
                     <div className="block px-6 py-2 font-medium text-gray-800 hover:bg-gray-200 rounded-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-pointer">
-                        {isMinimized ? <FaBook/> : 'Browse'}
+                        {isMinimized ? <FaFileAlt/> : 'Enrolments'}
                     </div>
                 </Link>
-               
+                <Link href="/addCourse">
+                    <div className="block px-6 py-2 font-medium text-gray-800 hover:bg-gray-200 rounded-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-pointer">
+                        {isMinimized ? <FaBook/> : 'Add Course'}
+                    </div>
+                </Link>
                 <Link href="/profile">
                     <div className="block px-6 py-2 font-medium text-gray-800 hover:bg-gray-200 rounded-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-pointer">
                         {isMinimized ? <FaUser/> : 'Profile'}
@@ -139,4 +144,4 @@ function Sidebar({ userName }) {
 //     Sidebar = MockSidebar;
 // }
 
-export default Sidebar;
+export default AdminSidebar;

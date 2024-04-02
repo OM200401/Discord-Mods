@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react'; // Import useState hook
-import CourseNavBar from '../../components/CourseNavBar';
-import Sidebar from '../../components/Sidebar';
-import db from '../../lib/firebase';
-import {auth,firestore,storage,uploadBytes} from '../../lib/firebase';
+import CourseNavBar from '../app/components/CourseNavBar';
+import Sidebar from '../app/components/Sidebar';
+import db from '../app/lib/firebase';
+import {auth,firestore,storage,uploadBytes} from '../app/lib/firebase';
 import { addDoc,collection,updateDoc } from 'firebase/firestore';
 import {getDownloadURL, ref} from 'firebase/storage';
 import { update } from 'firebase/database';
