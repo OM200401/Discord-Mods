@@ -5,9 +5,11 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { auth } from '@/app/lib/firebase';
-import { getDoc, doc,getDocs } from 'firebase/firestore';
+import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
 import db from '../../lib/firebase';
 import StudentAssignmentCard from '@/app/components/StudentAssignmentCard';
+import TeacherAssignmentCard from '@/app/components/TeacherAssignmentCard';
+
 
 export default function Assignments() {
     const { courseCode } = useParams();
@@ -20,12 +22,28 @@ export default function Assignments() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
+                setUser(auth.currentUser);
                 const student = query(collection(db, 'students'), where('uid', '==', user.uid));
-                const studentSnapshot = await getDoc(student);
+                const studentSnapshot = await getDocs(student);
                 
                 if(!studentSnapshot.empty){
-                        setUserType(studentSnapshot.data().userType);
+                    studentSnapshot.forEach(async(student)=> {
+                        setUserType(student.data().userType);
+                        console.log(userType);
+
+                    })
+
                 }
+                else{
+                    const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
+                    const teacherSnapshot = await getDocs(teacher);
+
+                    teacherSnapshot.forEach(async(teacher) => {
+                        setUserType(teacher.data().userType);
+                        console.log(userType);
+                    })
+                }
+                console.log(userType);
 
 
                 const coursesRef = doc(db, 'courses', courseCode);
@@ -66,7 +84,7 @@ export default function Assignments() {
         });
 
         return () => unsubscribe();
-    }, [courseCode]); // Add courseCode as a dependency
+    }, []); // Add courseCode as a dependency
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
@@ -82,7 +100,10 @@ export default function Assignments() {
                 </div>
                 <div className="overflow-x-auto">
                     {currentAssignments.map((assignment, index) => (
-                      userType == 'Student' && <StudentAssignmentCard assignment={assignment} />
+                       
+                      (userType == 'Student' && <StudentAssignmentCard assignment={assignment} />) ||
+                      (userType == 'Teacher' && <TeacherAssignmentCard assignment={assignment} />)
+
                     ))}
                 </div>
             </div>
