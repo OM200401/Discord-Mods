@@ -26,37 +26,33 @@ export default function Home(){
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate a network request
-        setTimeout(() => {
-            setLoading(false); // Set loading to false after 3 seconds
-        }, 1000);
-    }, []);
-
-    useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
-                setUser(auth.currentUser);
-
+              setUser(auth.currentUser);
+                console.log(user);
                 console.log(user.uid);
+
                 const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
-                // const teacher = doc(db, 'teachers', user.uid);
                 const teacherSnapshot = await getDocs(teacher);
 
-                if(!teacherSnapshot.empty){
-                    const teacherDoc = teacherSnapshot.docs[0];
-                    setUserName(teacherDoc.data().firstName);
+                teacherSnapshot.forEach(async (doc) => {
                     // console.log(doc.id, ' => ', doc.data());
-                    const registeredCoursesRef = collection(teacherDoc.ref,'registeredCourses');
+                    const registeredCoursesRef = collection(doc.ref,'registeredCourses');
                     const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+
+                    console.log(registeredCoursesSnapshot);
                     registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
                         if (registeredCourseDoc.id !== "DefaultCourse") {
                             console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
-                            courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );  
-                        }                         
+                            courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
+                        }                      
                     });
-                } 
+                    console.log(courses)
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 3000);
+                });
             }
-            console.log(courses)
             console.log(userName);
         }); 
 
