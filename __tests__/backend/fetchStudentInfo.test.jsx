@@ -46,6 +46,11 @@ describe('Firebase Database Tests', () => {
           id: "COSC304", // Edit this out when its fixed
           imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU"
         });    
+        expect(studentData[0].email).toEqual('abcd@gmail.com');
+        expect(studentData[0].firstName).toEqual('Test');
+        expect(studentData[0].lastName).toEqual('User');
+        expect(studentData[0].uid).toEqual('e1BVk9Axbjg5dmC62XcjtDDBZcy2');
+        expect(studentData[0].userType).toEqual('Student');
 
     });
     test('Test database read operation for students', async () => {
