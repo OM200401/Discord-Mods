@@ -28,19 +28,10 @@ export default function Home(){
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchData = async () => {
-        const courseData = await fetchCourseInfo();
-        setCourses(courseData);
-        useEffect(() => {
-            // Simulate a network request
-            setTimeout(() => {
-                setLoading(false); // Set loading to false after 3 seconds
-            }, 1000);
-        }, []);
-    
-        };
-
-        fetchData();
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 1000);
     }, []);
 
     // create a new function that will get the CourseCard info on clicking it and then go to the
@@ -49,38 +40,37 @@ export default function Home(){
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
-              setUser(auth.currentUser);
-                console.log(user);
-                const userInfoRef = collection(db,'Userinfo');
-                const q = query(userInfoRef, where('uid','==',user.uid));
-                console.log(q);
-                try{
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                    })
-                }catch(error){
-                    console.log(error.message);
-                }
+                setUser(auth.currentUser);
 
-              }  else {
-                // User is signed out
-                console.log('No user');
+                console.log(user.uid);
+                const student = query(collection(db, 'students'), where('uid', '==', user.uid));
+                const studentSnapshot = await getDocs(student);
+
+                if(!studentSnapshot.empty){
+                    const studentDoc = studentSnapshot.docs[0];
+                    setUserName(studentDoc.data().firstName);
+                    // console.log(doc.id, ' => ', doc.data());
+                    const registeredCoursesRef = collection(studentDoc.ref,'registeredCourses');
+                    const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+                    console.log(registeredCoursesSnapshot);
+                    registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                        if (registeredCourseDoc.id !== "DefaultCourse") {
+                            console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                            courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );  
+                        }                         
+                        setTimeout(() => {
+                            setLoading(false);
+                        }, 1000);
+                    });
+                } 
             }
-
+            console.log(courses)
             console.log(userName);
         }); 
 
         // Cleanup subscription on unmount
         return () => unsubscribe();
     }, [userName]);
-
-    useEffect(() => {
-        // Simulate a network request
-        setTimeout(() => {
-            setLoading(false); // Set loading to false after 3 seconds
-        }, 1000);
-    }, []);
 
     return (
         <div className="flex flex-col md:flex-row ml-80">
