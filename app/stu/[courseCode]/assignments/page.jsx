@@ -1,8 +1,8 @@
 'use client';
-import CourseNavBar from '../../components/CourseNavBar';
-import Sidebar from '../../components/Sidebar';
-import Loader from '../../components/Loader';
-import {useState, useEffect} from 'react';
+import CourseNavBar from '../../../components/StuCourseNavBar.jsx';
+import Sidebar from '../../../components/Sidebar';
+import Loader from '../../../components/Loader.jsx';
+import { useState, useEffect } from 'react';
 
 
 export default function Assignments() {
@@ -35,26 +35,25 @@ export default function Assignments() {
             <Sidebar />
             <div className="relative md:ml-64">
                 <CourseNavBar />
+                <h1>this is student assignemnt view </h1>
             </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
-                <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading">Assignments</h2>
+                <h2 className="text-3xl text-black font mt-4 mb-4" data-testid="assignments-heading">Assignments</h2>
                 <div className="flex justify-end">
-                    <a href="addAssignments" className="px-4 py-2 mb-3 bg-green-500 text-white rounded hover:bg-green-600">Add</a>
                 </div>
                 <div className="overflow-x-auto">
                     {assignments.map((assignment, index) => (
+                         <a href="displayAssignments" key={index} >
                         <div key={index} className="flex items-center justify-between bg-gray-100 mb-4 p-4 rounded border border-gray-300">
+                          
                             <div>
                                 <h3 className="text-lg font-semibold text-black">{assignment.title}</h3>
                                 <p className="text-sm text-gray-600">Due Date: {assignment.dueDate}</p>
                                 <p className="text-sm text-gray-600">Points: {assignment.points}</p>
                             </div>
-                            <div className="flex">
-                                <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">Edit</button>
-                                <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
-                            </div>
                         </div>
+                        </a>
                     ))}
                 </div>
             </div>

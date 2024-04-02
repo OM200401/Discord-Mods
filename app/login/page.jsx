@@ -18,13 +18,44 @@ export default function LoginPage() {
     const[password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [user,setUser] = useState(null);
+
     const [uid,setUid] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
+
+    const [errorMsg, setErrorMsg] = useState('');
+
+    const getFriendlyErrorMessage = (firebaseErrorCode) => {
+        switch (firebaseErrorCode) {
+            case 'auth/invalid-email':
+                return 'The email address is not valid.';
+            case 'auth/user-disabled':
+                return 'This user account has been disabled.';
+            case 'auth/user-not-found':
+                return 'No user found with this email address.';
+            case 'auth/wrong-password':
+                return 'The password is incorrect.';
+            case 'auth/invalid-credential':
+                return 'The credentials are invalid.';
+            // Add more cases as needed
+            default:
+                return 'An unknown error occurred.';
+        }
+    };
+
 
     const handleSubmit = async(e) => {
         setError("");
         e.preventDefault();
-        // Handle login here
+        
+        // Check if email or password field is empty
+        if (!email.trim()) {
+            setError('Email field cannot be empty.');
+            return;
+        }
+        if (!password.trim()) {
+            setError('Password field cannot be empty.');
+            return;
+        }
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);           
@@ -44,7 +75,7 @@ export default function LoginPage() {
             }   
         } catch (error) {
             // Handle any errors from login fields here
-            setError(error.message);
+            setError(getFriendlyErrorMessage(error.code)); 
             console.error("Error signing in with email and password", error);
         } 
     };
@@ -61,6 +92,7 @@ export default function LoginPage() {
               }
         }
 
+
       }, [user,uid]);
 
     return (
@@ -75,6 +107,7 @@ export default function LoginPage() {
                                 <p className="text-sm text-gray-500 font-normal leading-relaxed">Enter your credentials to access your account.</p>
                             </div>
                         </div>
+                        {error && <p className="text-red-500 font-normal leading-relaxed ml-2">{error}</p>}
                         <div className="divide-y divide-gray-200">
                             <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                                 <div className="flex flex-col">

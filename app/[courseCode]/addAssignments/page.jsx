@@ -1,143 +1,313 @@
-'use client';
-import { useState } from 'react'; // Import useState hook
-import CourseNavBar from '../../components/CourseNavBar';
+'use client'
+import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
+import CourseNavBar from '../../components/CourseNavBar';
 import db from '../../lib/firebase';
-import {auth,firestore,storage,uploadBytes} from '../../lib/firebase';
-import { addDoc,collection,updateDoc } from 'firebase/firestore';
-import {getDownloadURL, ref} from 'firebase/storage';
-import { update } from 'firebase/database';
+import { doc, setDoc,getDoc } from 'firebase/firestore';
+import { useParams } from 'next/navigation';
+import Loader from '../../components/Loader';
+
 
 export default function Assignments() {
-    // State variables to store the title of the assignment, the selected type (quiz or essay), the due date, the worth of the assignment, and the PDF file
-    const [assignmentTitle, setAssignmentTitle] = useState('');
-    const [assignmentType, setAssignmentType] = useState('essay'); // Default type is 'essay'
+    const [showForm, setShowForm] = useState(false);
+    const [quizTitle, setQuizTitle] = useState(''); // New state for quiz title
+    const [essayTitle, setEssayTitle] = useState(''); // New state for essay title
+    const [errorMessage, setErrorMessage] = useState('');
+    const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
+    const [weightage, setWeightage] = useState(0);
+    const [formType, setFormType] = useState("");
+    const [questionPrompt, setQuestionPrompt] = useState('');
     const [dueDate, setDueDate] = useState('');
-    const [assignmentWorth, setAssignmentWorth] = useState('');
-    const [pdfFile, setPdfFile] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Function to handle file upload
-    const handleFileUpload = (e) => {
-        const file = e.target.files[0];
-        setPdfFile(file);
+    const {courseCode} = useParams();
+    console.log("my course code is " + courseCode);
+
+
+
+    const handleAddOption = (questionIndex) => {
+        setQuestions(questions.map((question, index) => {
+            if (index === questionIndex) {
+                return { ...question, options: [...question.options, `Option #${question.options.length + 1}`] };
+            }
+            return question;
+        }));
     };
 
-    // Function to handle submission of assignment details
-    const handleSubmit = async () => {
-        // Perform submission logic here
-        console.log('Assignment Details Submitted:', {
-            assignmentTitle,
-            assignmentType,
-            dueDate,
-            assignmentWorth,
-            pdfFile
-        });
-        // Clear input fields after submission
-        // setAssignmentTitle('');
-        // setDueDate('');
-        // setAssignmentWorth('');
-        // setPdfFile(null);
+    const handleDeleteQuestion = (questionIndex) => {
+        setQuestions(questions.filter((_, index) => index !== questionIndex));
+    };
+
+    const handleAddQuestion = () => {
+        setQuestions([...questions, { text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
+    };
+
+    const handleCorrectOptionChange = (questionIndex, optionIndex) => {
+        setQuestions(questions.map((question, index) => {
+            if (index === questionIndex) {
+                return { ...question, correctAnswer: optionIndex };
+            }
+            return question;
+        }));
+    };
+
+    const handleWeightageChange = (e) => {
+        const value = e.target.value;
+        if (value >= 0 && value <= 100) {
+            setWeightage(value);
+        } else {
+            alert('Weightage must be a number between 0 and 100.');
+        }
+    };
+
+    const handleSubmitQuiz = async (e) => {
+        e.preventDefault();
+
+        //Validation checks
+        if(!quizTitle.trim()){
+            setErrorMessage('Quiz title is required');
+            return;
+        }
+        if(questions.some(question => !question.text.trim() || question.correctAnswer === null)){
+            setErrorMessage('All questions must have text and a correct answer selected');
+            return;
+        }
+        
+
+        setErrorMessage('');
 
         try {
-            const colRef = collection(db,'Assignments');
+            const quizCollectionRef = doc(db, 'quizzes', quizTitle);
+            const courseCollectionRef = doc(db, 'courses', courseCode);
 
-            const assignmentDocRef = await addDoc(colRef, {
-                assignmentTitle: assignmentTitle,
-                assignmentType: assignmentType,
-                dueDate: dueDate,
-                assignmentWorth: assignmentWorth,
-            });
+            await setDoc(quizCollectionRef, { questions,weightage});
 
-            let url = '';
-            const storageRef = ref(storage, `assignments/${assignmentDocRef.id}`);
-            
-            const snapshot = await uploadBytes(storageRef,pdfFile);
 
-            getDownloadURL(snapshot.ref).then((downloadURL) => {
-                updateDoc(assignmentDocRef,{fileURL:downloadURL});
-            })
-              
-    
+            const courseSnapshot = await getDoc(courseCollectionRef);
+            const courseData = courseSnapshot.data();
+            const currentAssignments = courseData.currentAssignments || [];
+
+            currentAssignments.push(quizCollectionRef.id);
+            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
+            console.log('it worked');
+            // Optionally, you can reset the form after submission
+            setQuizTitle('');
+            setQuestions([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
+            setShowForm(false);
         } catch (error) {
-            //Handle errors if any thrown after validation
-            setErrorMsg(error.message);
+            console.error('Error adding quiz:', error);
         }
-
-
     };
 
+
+    const handleSubmitEssay = async (e) => {
+        e.preventDefault();
+
+        //Validation checks
+        if(!essayTitle.trim()){
+            setErrorMessage('Essay title is required');
+            return;
+        }
+        if(!questionPrompt.trim()){
+            setErrorMessage('Question prompt is required');
+            return;
+        }
+
+        setErrorMessage('');
+        
+
+        try {
+            const essayCollectionRef = doc(db, 'essays', essayTitle);
+            const courseCollectionRef = doc(db, 'courses', courseCode);
+
+            await setDoc(essayCollectionRef, { questionPrompt,weightage});
+
+
+            const courseSnapshot = await getDoc(courseCollectionRef);
+            const courseData = courseSnapshot.data();
+            const currentAssignments = courseData.currentAssignments || [];
+
+            currentAssignments.push(essayCollectionRef.id);
+            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
+            
+            console.log('it worked');
+
+
+
+            // Optionally, you can reset the form after submission
+            setEssayTitle('');
+            setQuestionPrompt('');
+            setShowForm(false);
+        } catch (error) {
+            console.error('Error adding quiz:', error);
+        }
+    };
+
+    const handleAddQuizClick = () => {
+        setFormType('quiz');
+        setShowForm(true);
+    };
+
+    const handleAddEssayClick = () => {
+        setFormType('essay');
+        setShowForm(true);
+    };
+
+    const handleQuestionPromptChange = (e) => {
+        setQuestionPrompt(e.target.value);
+    };
+
+    const handleDueDateChange = (e) => {
+        setDueDate(e.target.value);
+    };
+
+    useEffect(() => {
+        // Simulate a network request
+        setTimeout(() => {
+            setLoading(false); // Set loading to false after 3 seconds
+        }, 3000);
+    }, []);
+
+    if (loading) {
+        return <Loader />; // Return the Loading component if loading is true
+    }
+
     return (
-        <div className="flex flex-col h-screen bg-blue-100"> {/* Add h-screen class to ensure full height */}
+        <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
             <Sidebar />
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading"> New Assignment</h2>
-                <div className="flex flex-col items-center mt-5"> {/* Center the content vertically */}
-                    {/* Radio buttons for selecting the assignment type */}
-                    <div className="flex items-center mb-4">
-                        <input
-                            type="radio"
-                            id="quiz"
-                            name="assignmentType"
-                            value="quiz"
-                            checked={assignmentType === 'quiz'}
-                            onChange={() => setAssignmentType('quiz')} // Update the assignment type state to 'quiz'
-                            className="mr-2 text-black"
-                        />
-                        <label htmlFor="quiz" className="mr-4 text-black">Quiz</label>
-                        <input
-                            type="radio"
-                            id="essay"
-                            name="assignmentType"
-                            value="essay"
-                            checked={assignmentType === 'essay'}
-                            onChange={() => setAssignmentType('essay')} // Update the assignment type state to 'essay'
-                            className="mr-2 text-black"
-                        />
-                        <label htmlFor="essay" className="text-black">Essay</label>
-                    </div>
-                    {/* Input field for the title of the assignment */}
-                    <input
-                        type="text"
-                        placeholder="Enter assignment title"
-                        className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4" // Set text color to black and width to 96
-                        value={assignmentTitle}
-                        onChange={(e) => setAssignmentTitle(e.target.value)} // Update the assignment title state
-                    />
-                    {/* Input field for the due date of the assignment */}
-                    <input
-                        type="date"
-                        placeholder="Enter due date"
-                        className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4" // Set text color to black and width to 96
-                        value={dueDate}
-                        onChange={(e) => setDueDate(e.target.value)} // Update the due date state
-                    />
-                    {/* Input field for the worth of the assignment */}
-                    <input
-                        type="number"
-                        placeholder="Enter assignment worth"
-                        className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4" // Set text color to black and width to 96
-                        value={assignmentWorth}
-                        onChange={(e) => setAssignmentWorth(e.target.value)} // Update the assignment worth state
-                    />
-                    {/* Input field for uploading PDF file */}
-                    <input
-                        type="file"
-                        accept=".pdf"
-                        onChange={handleFileUpload} // Handle file upload
-                        className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4" // Set text color to black and width to 96
-                    />
-                    {/* Button to submit the assignment details */}
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={handleSubmit} // Handle submission of assignment details
-                    >
-                        Submit
-                    </button>
+                <div className="flex flex-row items-center justify-center p-4">
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddQuizClick}>Add Quiz</button>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddEssayClick}>Add Essay</button>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddQuestion}>Add Question</button>
                 </div>
-                <div className="overflow-x-auto">
-                    {/* Additional content can be added here */}
-                </div>
+                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+                {showForm && (
+                    <>
+                      
+                        {formType === 'quiz' && (
+                            <>
+                              <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
+                            <label htmlFor='quizTitle' className="mr-2">Quiz Title:</label> {/* Input field for quiz title */}
+                            <input
+                                id='quizTitle'
+                                type="text"
+                                value={quizTitle}
+                                onChange={(e) => setQuizTitle(e.target.value)} // Update quiz title state
+                                className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
+                            />
+                        </div>
+                        <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
+                            <label htmlFor='dueDate' className="mr-2">Due Date:</label>
+                            <input
+                                id='dueDate'
+                                type="date"
+                                className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
+                                value={dueDate}
+                                onChange={handleDueDateChange}
+                            />
+                        </div>
+                                <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
+                                    <label htmlFor='Weightage' className="mr-2">Weightage of the quiz in the course:</label>
+                                    <input id='Weightage' type="number" value={weightage} onChange={handleWeightageChange} min="0" max="100" />
+                                </div>
+                                {questions.map((question, questionIndex) => (
+                                    <div key={questionIndex} className="mt-4">
+                                        <input
+                                            type="text"
+                                            placeholder="Enter question"
+                                            className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
+                                            value={question.text}
+                                            onChange={(e) => setQuestions(questions.map((q, i) => {
+                                                if (i === questionIndex) {
+                                                    return { ...q, text: e.target.value };
+                                                }
+                                                return q;
+                                            }))}
+                                        />
+                                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-4" onClick={() => handleDeleteQuestion(questionIndex)}>Delete Question</button>
+                                        <h3 className="text-lg text-black font-semibold mb-2">Select Correct Option</h3>
+                                        {question.options.map((option, optionIndex) => (
+                                            <div key={optionIndex} className="flex flex-row justify-center items-center mt-2">
+                                                <input
+                                                    type="radio"
+                                                    className='mx-10'
+                                                    checked={question.correctAnswer === optionIndex}
+                                                    onChange={() => handleCorrectOptionChange(questionIndex, optionIndex)}
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={option}
+                                                    className="border border-gray-300 px-4 py-2 rounded-md text-black w-64 mr-4"
+                                                    onChange={(e) => setQuestions(questions.map((q, i) => {
+                                                        if (i === questionIndex) {
+                                                            return { ...q, options: q.options.map((o, j) => {
+                                                                if (j === optionIndex) {
+                                                                    return e.target.value;
+                                                                }
+                                                                return o;
+                                                            }) };
+                                                        }
+                                                        return q;
+                                                    }))}
+                                                />
+                                                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => setQuestions(questions.map((q, i) => {
+                                                    if (i === questionIndex) {
+                                                        return { ...q, options: q.options.filter((o, j) => j !== optionIndex) };
+                                                    }
+                                                    return q;
+                                                }))}>Delete Option</button>
+                                            </div>
+                                        ))}
+                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2" onClick={() => handleAddOption(questionIndex)}>Add Option</button>
+                                    </div>
+                                ))}
+                                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4" onClick={handleSubmitQuiz}>Submit Quiz</button>
+                            </>
+                        )}
+                        {formType === 'essay' && (
+                            <>
+                        <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
+                            <label htmlFor='essayTitle' className="mr-2">Essay Title:</label> {/* Input field for quiz title */}
+                            <input
+                                id='essayTitle'
+                                type="text"
+                                value={essayTitle}
+                                onChange={(e) => setEssayTitle(e.target.value)} // Update quiz title state
+                                className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
+                            />
+                        </div>
+                        <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
+                            <label htmlFor='dueDate' className="mr-2">Due Date:</label>
+                            <input
+                                id='dueDate'
+                                type="date"
+                                className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
+                                value={dueDate}
+                                onChange={handleDueDateChange}
+                            />
+                        </div>
+
+                                <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
+                                    <label htmlFor='weightage' className="mr-2">Weightage of the essay in the course:</label>
+                                    <input id='weightage' type="number" value={weightage} onChange={handleWeightageChange} min="0" max="100" />
+                                </div>
+                                <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
+                                    <label htmlFor='Question' className="mr-2">Question Prompt:</label>
+                                    <textarea
+                                        id='Question'
+                                        className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
+                                        value={questionPrompt}
+                                        onChange={handleQuestionPromptChange}
+                                    />
+                                </div>
+                                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4" onClick={handleSubmitEssay}>Submit Quiz</button>
+                            </>
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );

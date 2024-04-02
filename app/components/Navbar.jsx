@@ -16,8 +16,8 @@ const Navbar = () => {
                         </Link>
                     </a>
                     <a className="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4">
-                        <Link href="/login">
-                            Login
+                        <Link href="/signup">
+                            Sign Up
                         </Link>
                     </a>
                     <a className="block mt-4 lg:inline-block lg:mt-0 text-blue-200 hover:text-white mr-4">

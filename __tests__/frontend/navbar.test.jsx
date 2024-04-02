@@ -10,9 +10,9 @@ test('Settings link is present', () => {
 })
 
 test('Login link is present', () => {
-    const loginLink = screen.getByText(/Login/i)
+    const loginLink = screen.getByText(/Sign Up/i)
     expect(loginLink).toBeDefined()
-    expect(loginLink.closest('a').getAttribute('href')).toBe('/login')
+    expect(loginLink.closest('a').getAttribute('href')).toBe('/signup')
 })
 
 test('Profile link is present', () => {

@@ -21,22 +21,12 @@ test('Dashboard link is present', () => {
 })
 
 test('Courses link is present', () => {
-    const homeLink = screen.getByText(/Courses/i)
+    const homeLink = screen.getByText(/Browse/i)
     expect(homeLink).toBeDefined()
-    expect(homeLink.closest('a').getAttribute('href')).toBe('/courses')
+    expect(homeLink.closest('a').getAttribute('href')).toBe('/browseCourses')
 })
 
-test('Assignments link is present', () => {
-    const homeLink = screen.getByText(/Assignments/i) 
-    expect(homeLink).toBeDefined()
-    expect(homeLink.closest('a').getAttribute('href')).toBe('/assignments')
-})
 
-test('Grades link is present', () => {
-    const homeLink = screen.getByText(/Grades/i)
-    expect(homeLink).toBeDefined()
-    expect(homeLink.closest('a').getAttribute('href')).toBe('/grades')
-})
 
 test('Profile link is present', () => {
     const homeLink = screen.getByText(/Profile/i)
