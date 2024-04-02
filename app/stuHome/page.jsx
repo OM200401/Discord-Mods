@@ -30,37 +30,37 @@ export default function Home(){
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
-              setUser(auth.currentUser);
-                console.log(user);
+                setUser(auth.currentUser);
                 console.log(user.uid);
 
                 const student = query(collection(db, 'students'), where('uid', '==', user.uid));
                 const studentSnapshot = await getDocs(student);
 
-                studentSnapshot.forEach(async (doc) => {
-                    // console.log(doc.id, ' => ', doc.data());
-                    const registeredCoursesRef = collection(doc.ref,'registeredCourses');
-                    const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
+                const doc = studentSnapshot.docs[0]
+                setUserName(doc.data().firstName);
+                // console.log(doc.id, ' => ', doc.data());
+                const registeredCoursesRef = collection(doc.ref,'registeredCourses');
+                const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
 
-                    console.log(registeredCoursesSnapshot);
-                    registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
-                        if (registeredCourseDoc.id !== "DefaultCourse") {
-                            console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
-                            courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
-                        }                      
-                    });
-                    console.log(courses)
-                    setTimeout(() => {
-                        setLoading(false);
-                    }, 3000);
+                console.log(registeredCoursesSnapshot);
+                registeredCoursesSnapshot.forEach((registeredCourseDoc) => {
+                    if (registeredCourseDoc.id !== "DefaultCourse") {
+                        console.log('Registered Course ID:', registeredCourseDoc.id, ' => ', registeredCourseDoc.data());
+                        courses.push( {id: registeredCourseDoc.id, ...registeredCourseDoc.data()} );   
+                    }                      
                 });
+                console.log(courses)
+                setTimeout(() => {
+                    setLoading(false);
+                }, 3000);
+                
             }
             console.log(userName);
         }); 
 
         // Cleanup subscription on unmount
         return () => unsubscribe();
-    }, [userName]);
+    }, []);
 
     return (
         <div className="flex flex-col md:flex-row ml-80">
