@@ -3,9 +3,12 @@ import Navbar from "../components/Navbar";
 import { useState } from 'react';
 import { useEffect } from "react";
 import Link from "next/link";
+import {collection, getDocs,doc,where,query} from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {auth} from '../lib/firebase';
 import { redirect } from "next/navigation";
+import db from '../lib/firebase';
+ 
 
 // Created front end for the login page with Email and Password
 // Validation in html also added to check the type of email input and password
@@ -15,6 +18,10 @@ export default function LoginPage() {
     const[password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [user,setUser] = useState(null);
+
+    const [uid,setUid] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
+
     const [errorMsg, setErrorMsg] = useState('');
 
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
@@ -35,6 +42,7 @@ export default function LoginPage() {
         }
     };
 
+
     const handleSubmit = async(e) => {
         setError("");
         e.preventDefault();
@@ -53,7 +61,18 @@ export default function LoginPage() {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);           
             const user = userCredential.user;    
             setUser(user);
-                   
+            const q = query(collection(db, 'admins'), where('email', '==', email));
+
+            const querySnapshot = await getDocs(q);
+
+            if(!querySnapshot.empty){
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    setUid(data.uid);
+                })
+            }    else{
+                setUid('user');
+            }   
         } catch (error) {
             // Handle any errors from login fields here
             setError(getFriendlyErrorMessage(error.code)); 
@@ -62,12 +81,19 @@ export default function LoginPage() {
     };
 
     useEffect(() => {
-        if (user) {
-          console.log("Redirect");
-          redirect('/home');
+        if(user && uid) {
+            if (user.uid == uid) {
+                console.log("Redirect");
+                redirect('/admin');
+              }else{
+                console.log(user.uid);
+                console.log(uid);
+                redirect('/home')
+              }
         }
-    }, [user]);
 
+
+      }, [user,uid]);
 
     return (
         <div className="min-h-screen flex flex-col justify-start">
