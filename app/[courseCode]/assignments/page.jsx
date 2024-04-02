@@ -5,14 +5,12 @@ import Sidebar from '../../components/Sidebar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
-import { auth } from '@/app/lib/firebase';
+import { auth } from '../../lib/firebase';
 import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
-import db from '../../lib/firebase';
-import StudentAssignmentCard from '@/app/components/StudentAssignmentCard';
-import TeacherAssignmentCard from '@/app/components/TeacherAssignmentCard';
+import db from '../../lib/firebase'
+import StudentAssignmentCard from '../../components/StudentAssignmentCard';
+import TeacherAssignmentCard from '../../components/TeacherAssignmentCard';
 import Loader from '../../components/Loader';
-
-
 
 
 export default function Assignments() {

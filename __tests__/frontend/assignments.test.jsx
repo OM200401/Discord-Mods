@@ -35,7 +35,7 @@ test('Page contains the expected assignments heading text', () => {
     const heading = screen.getByTestId('assignments-heading');
     expect(heading).toBeDefined();
 });
-
+ 
 test('Page displays assignments data correctly', () => {
     
     const assignmentRows = screen.getAllByRole('heading', { name: /Assignment/i });
