@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const StudentAssignmentCard = ({ assignment }) => {
+const StudentAssignmentCard = ({ assignment, courseCode }) => {
   
   return (
     <div className="flex items-center justify-between bg-gray-100 mb-4 p-4 rounded border border-gray-300">
@@ -10,7 +10,7 @@ const StudentAssignmentCard = ({ assignment }) => {
         {/* Need to add due date here */}
       </div>
       <div className="flex">
-        <Link href={`./${assignment.name}`} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Start</Link>
+        <Link href={`/${courseCode}/submitAssignment/${assignment.name}`} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Start</Link>
       </div>
     </div>
   );
