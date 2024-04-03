@@ -16,11 +16,7 @@ export default function SubmitQuiz() {
     // const params = new URLSearchParams(search);
     // console.log(params);
 
-    // Create component to render each array
-    const [currentQuestions, setQuestions] = useState([
-        [["1","2","3"],"What is 1+1?"],
-        [["A","B","C"],"What is the first alphabet?"]
-    ]);
+   
     const [user,setUser] = useState(null);
     const [userType,setUserType] = useState('user');
 
@@ -46,9 +42,7 @@ export default function SubmitQuiz() {
                 <div className="flex justify-end">
                     <a href="addAssignments" className="px-4 py-2 mb-3 bg-green-500 text-white rounded hover:bg-green-600">Add</a>
                 </div>
-                <div className="overflow-x-auto">
-                    
-                </div>
+                
             </div>
         </div>
     );

@@ -6,7 +6,7 @@ import { FaHome, FaBook, FaPencilAlt, FaFileAlt, FaUser, FaChalkboard, FaSignOut
 
 //Creating a sidebar component to be able to use on all the pages for the app
 
-function Sidebar({ userName }) {
+function Sidebar({ userName, userType }) {
     // const router = useRouter();
     // const [isClient, setIsClient] = useState(false);
 
@@ -53,7 +53,7 @@ function Sidebar({ userName }) {
                 <p className="mt-2 font-extrabold text-gray-600">HELLO {userName}</p>
             </div>
             <nav>
-                <Link href="/home">
+                <Link href={userType === "Teacher" ? "/home" : "/stuHome"}>
                     <div className="block px-6 py-2 font-medium text-gray-800 hover:bg-gray-200 rounded-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-pointer">
                         {isMinimized ? <FaHome/> : 'Dashboard'}
                     </div>
