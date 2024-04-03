@@ -4,7 +4,6 @@ import Sidebar from '../../components/Sidebar';
 
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { useParams } from 'next/navigation';
 import { auth } from '../../lib/firebase';
 import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
 import db from '../../lib/firebase'
@@ -13,41 +12,33 @@ import TeacherAssignmentCard from '../../components/TeacherAssignmentCard';
 import Loader from '../../components/Loader';
 
 
-export default function Assignments() {
-    const { courseCode } = useParams();
-    console.log("my course code is " + courseCode);
+export default function Assignments({ params }) {
+    const courseCode = params.courseCode;
+    console.log(params);
+    console.log("Assignments page course code is " + courseCode);
 
 
     const [currentAssignments, setCurrentAssignments] = useState([]);
     const [user,setUser] = useState(null);
     const [userType,setUserType] = useState('user');
+    const [userName,setUserName] = useState('non');
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (auth.currentUser) {
+            if(auth.currentUser){
                 setUser(auth.currentUser);
-                const student = query(collection(db, 'students'), where('uid', '==', user.uid));
-                const studentSnapshot = await getDocs(student);
-                
-                if(!studentSnapshot.empty){
-                    studentSnapshot.forEach(async(student)=> {
-                        setUserType(student.data().userType);
-                        console.log(userType);
-
-                    })
-
-                }
-                else{
-                    const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
-                    const teacherSnapshot = await getDocs(teacher);
-
-                    teacherSnapshot.forEach(async(teacher) => {
-                        setUserType(teacher.data().userType);
-                        console.log(userType);
-                    })
-                }
-                console.log(userType);
-
+                  console.log(user);
+                  const userInfoRef = collection(db,'teachers');
+                  const q = query(userInfoRef, where('uid','==',user.uid));
+                  console.log(q);
+                  try{
+                      const querySnapshot = await getDocs(q);
+                      querySnapshot.forEach((doc) => {
+                          setUserName(doc.data().firstName);
+                      })
+                  }catch(error){
+                      console.log(error.message);
+                  }  
 
                 const coursesRef = doc(db, 'courses', courseCode);
                 const courseSnapshot = await getDoc(coursesRef);
@@ -105,9 +96,9 @@ export default function Assignments() {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
-            <Sidebar />
+            <Sidebar userName={userName} userType={"Teacher"}/>
             <div className="relative md:ml-64">
-                <CourseNavBar />
+                <CourseNavBar courseCode={courseCode}/>
             </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>

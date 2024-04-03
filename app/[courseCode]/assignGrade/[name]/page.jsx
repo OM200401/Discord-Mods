@@ -10,17 +10,20 @@ import {getDoc,getDocs,doc,where,query, documentId,collection} from 'firebase/fi
 import { useParams } from 'next/navigation';
 
 
-export default function assignGrade() {
+export default function assignGrade({ params }) {
 
     const [loading, setLoading] = useState(false);
     const [studentInfo,setStudentInfo] =useState([]);
+    const [userName,setUserName] = useState('non');
 
-    let { name,courseCode } = useParams();
-     name = name ? decodeURI(name) : '';
-     courseCode = courseCode ? decodeURI(courseCode) : '';
+    // let { name,courseCode } = useParams();
+    //  name = name ? decodeURI(name) : '';
+    //  courseCode = courseCode ? decodeURI(courseCode) : '';
+    // console.log(courseCode);
+    // console.log(name);
+    const courseCode = params.courseCode;
     console.log(courseCode);
-    console.log(name);
-    
+
     // Demo students array to display some students but will later have data 
     // displayed from the database
     const [students, setStudents] = useState([
@@ -86,9 +89,9 @@ export default function assignGrade() {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
-            <Sidebar />
+            <Sidebar userName={userName} userType={"Teacher"}/>
             <div className="relative md:ml-64">
-                <CourseNavBar />
+                <CourseNavBar courseCode={courseCode}/>
             </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>

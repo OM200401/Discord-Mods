@@ -10,7 +10,7 @@ import CourseNavBar from '../components/CourseNavBar';
 import { getStorage, ref, getDownloadURL} from "firebase/storage";
 import Loader from '../components/Loader';
 
-export default function CoursePage() {
+export default function CoursePage({ params }) {
 
     // Fetch course info from the database based on the courseCode
      
@@ -20,17 +20,18 @@ export default function CoursePage() {
     const [uploading, setUploading] = useState(false); 
     const [loading, setLoading] = useState(true);
 
-    const search = window.location.search;
-    const params = new URLSearchParams(search);
-    const courseCode = params.get('courseCode');
-
+    // const search = window.location.search;
+    // const params = new URLSearchParams(search);
+    console.log(params);
+    const courseCode = params.courseCode;
+    console.log("Course code is: " + courseCode);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
               setUser(auth.currentUser);
                 console.log(user);
-                const userInfoRef = collection(db,'Userinfo');
+                const userInfoRef = collection(db,'teachers');
                 const q = query(userInfoRef, where('uid','==',user.uid));
                 console.log(q);
                 try{

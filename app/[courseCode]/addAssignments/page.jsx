@@ -9,6 +9,7 @@ import Loader from '../../components/Loader';
 
 
 export default function Assignments() {
+    const [userName,setUserName] = useState('non');
     const [showForm, setShowForm] = useState(false);
     const [quizTitle, setQuizTitle] = useState(''); // New state for quiz title
     const [essayTitle, setEssayTitle] = useState(''); // New state for essay title
@@ -174,7 +175,7 @@ export default function Assignments() {
 
     return (
         <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
-            <Sidebar />
+            <Sidebar userName={userName} userType={"Teacher"}/>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading"> New Assignment</h2>

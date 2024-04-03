@@ -12,6 +12,7 @@ export default function Assignments() {
 
     const [loading, setLoading] = useState(false);
     const [studentInfo,setStudentInfo] =useState([]);
+    const [userName,setUserName] = useState('non');
 
     let { name,courseCode } = useParams();
      name = name ? decodeURI(name) : '';
@@ -84,7 +85,7 @@ export default function Assignments() {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
-            <Sidebar />
+            <Sidebar userName={userName} userType={"Teacher"}/>
             <div className="relative md:ml-64">
                 <CourseNavBar />
             </div>
