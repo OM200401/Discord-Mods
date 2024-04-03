@@ -70,7 +70,8 @@ export default function SignUpPage() {
                         firstName: firstName,
                         lastName: lastName,
                         email: email,
-                        userType: userType
+                        userType: userType,
+                        uid: cred.user.uid
                     })
                     const defaultCourse = doc(db, 'courses', 'DefaultCourse');
                     const defaultCourseDoc = await getDoc(defaultCourse);
@@ -90,7 +91,8 @@ export default function SignUpPage() {
                         firstName: firstName,
                         lastName: lastName,
                         email: email,
-                        userType: userType
+                        userType: userType,
+                        uid: cred.user.uid
                     })
                     const defaultCourse = doc(db, 'courses', 'DefaultCourse');
                     const defaultCourseDoc = await getDoc(defaultCourse);
