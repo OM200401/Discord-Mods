@@ -62,6 +62,7 @@ export default function SignUpPage() {
         
         try {
             await createUserWithEmailAndPassword(auth, email, password).then(async cred=> {
+                setUser(cred.user);
                 if(userType == 'Student'){
                     const studentCollection = collection(db,'students');
                     
