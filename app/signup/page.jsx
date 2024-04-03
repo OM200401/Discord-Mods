@@ -59,70 +59,116 @@ export default function SignUpPage() {
             return;
         }
 
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user
-        const uid = user.uid;
-        setUser(user);
-
-        // After the user is created, you can add additional user info to your Firestore collection
-        if(userType == 'Student'){
-            const studentCollection = collection(db,'students');
-            const defaultCourse = doc(db, 'courses', 'DefaultCourse')
-
-            const defaultCourseDoc = await(getDoc(defaultCourse));
-
-            let defaultCourseData = '';
-
-            if(defaultCourseDoc.exists()) {
-                 defaultCourseData = defaultCourseDoc.data();
-            }
-
-            const studentDocRef = await addDoc(studentCollection,{
-                firstName:firstName,
-                lastName:lastName,
-                email:email,
-                userType:userType,
-                uid:uid
-            }) 
-
-
-            const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses')
-            await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
- 
-        }else {
-            const teacherCollection = collection(db,'teachers');
-            
-            const defaultCourse = doc(db, 'courses', 'DefaultCourse')
-
-            const defaultCourseDoc = await(getDoc(defaultCourse));
-
-            let defaultCourseData = '';
-
-            if(defaultCourseDoc.exists()) {
-                 defaultCourseData = defaultCourseDoc.data();
-
-            }
-
-            const teacherDocRef = await addDoc(teacherCollection,{
-                firstName:firstName,
-                lastName:lastName,
-                email:email,
-                userType:userType,
-                uid:uid
+        
+        try {
+            await createUserWithEmailAndPassword(auth, email, password).then(async cred=> {
+                if(userType == 'Student'){
+                    const studentCollection = collection(db,'students');
+                    
+                    await setDoc(doc(studentCollection, cred.user.uid), {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        userType: userType
+                    })
+                    const defaultCourse = doc(db, 'courses', 'DefaultCourse');
+                    const defaultCourseDoc = await getDoc(defaultCourse);
+        
+                    let defaultCourseData = '';
+        
+                    if(defaultCourseDoc.exists()) {
+                        defaultCourseData = defaultCourseDoc.data();
+                    }
+                    const registeredCoursesCollectionRef = collection(db, 'students', cred.user.uid, 'registeredCourses');
+                    await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
+                      
+                }else {                    
+                    const teacherCollection = collection(db,'teachers');
+                    
+                    await setDoc(doc(teacherCollection, cred.user.uid), {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        userType: userType
+                    })
+                    const defaultCourse = doc(db, 'courses', 'DefaultCourse');
+                    const defaultCourseDoc = await getDoc(defaultCourse);
+        
+                    let defaultCourseData = '';
+        
+                    if(defaultCourseDoc.exists()) {
+                        defaultCourseData = defaultCourseDoc.data();
+                    }
+        
+                    const registeredCoursesCollectionRef = collection(db, 'teachers', cred.user.uid, 'registeredCourses');
+                    await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
+                      
+                } 
             })
-
-
-            const registeredCoursesCollectionRef = collection(teacherDocRef, 'registeredCourses')
-            await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
         }
+        // initial implementation
+        // const user = userCredential.user
+        // const uid = user.uid;
+        // setUser(user);
+
+        // // After the user is created, you can add additional user info to your Firestore collection
+        // if(userType == 'Student'){
+        //     const studentCollection = collection(db,'students');
+        //     const defaultCourse = doc(db, 'courses', 'DefaultCourse')
+
+        //     const defaultCourseDoc = await(getDoc(defaultCourse));
+
+        //     let defaultCourseData = '';
+
+        //     if(defaultCourseDoc.exists()) {
+        //          defaultCourseData = defaultCourseDoc.data();
+        //     }
+
+        //     const studentDocRef = await addDoc(studentCollection,{
+        //         firstName:firstName,
+        //         lastName:lastName,
+        //         email:email,
+        //         userType:userType,
+        //         uid:uid
+        //     }) 
+
+
+        //     const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses')
+        //     await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
+ 
+        // }else {
+        //     const teacherCollection = collection(db,'teachers');
+            
+        //     const defaultCourse = doc(db, 'courses', 'DefaultCourse')
+
+        //     const defaultCourseDoc = await(getDoc(defaultCourse));
+
+        //     let defaultCourseData = '';
+
+        //     if(defaultCourseDoc.exists()) {
+        //          defaultCourseData = defaultCourseDoc.data();
+
+        //     }
+
+        //     const teacherDocRef = await addDoc(teacherCollection,{
+        //         firstName:firstName,
+        //         lastName:lastName,
+        //         email:email,
+        //         userType:userType,
+        //         uid:uid
+        //     })
+
+
+        //     const registeredCoursesCollectionRef = collection(teacherDocRef, 'registeredCourses')
+        //     await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
+        // }
+        // }       
        
-       
-    } catch (error) {
-        // Handle any errors from login fields here
-        setErrorMsg(getFriendlyErrorMessage(error.code)); 
-        console.error("Error signing in with email and password", error);
-    }
+        catch (error) {
+            // Handle any errors from login fields here
+            setErrorMsg(getFriendlyErrorMessage(error.code)); 
+            console.error("Error signing in with email and password", error);
+        }
     }
 
     return (
