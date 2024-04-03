@@ -109,70 +109,13 @@ export default function SignUpPage() {
                 } 
             })
         }
-        // initial implementation
-        // const user = userCredential.user
-        // const uid = user.uid;
-        // setUser(user);
-
-        // // After the user is created, you can add additional user info to your Firestore collection
-        // if(userType == 'Student'){
-        //     const studentCollection = collection(db,'students');
-        //     const defaultCourse = doc(db, 'courses', 'DefaultCourse')
-
-        //     const defaultCourseDoc = await(getDoc(defaultCourse));
-
-        //     let defaultCourseData = '';
-
-        //     if(defaultCourseDoc.exists()) {
-        //          defaultCourseData = defaultCourseDoc.data();
-        //     }
-
-        //     const studentDocRef = await addDoc(studentCollection,{
-        //         firstName:firstName,
-        //         lastName:lastName,
-        //         email:email,
-        //         userType:userType,
-        //         uid:uid
-        //     }) 
-
-
-        //     const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses')
-        //     await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
- 
-        // }else {
-        //     const teacherCollection = collection(db,'teachers');
-            
-        //     const defaultCourse = doc(db, 'courses', 'DefaultCourse')
-
-        //     const defaultCourseDoc = await(getDoc(defaultCourse));
-
-        //     let defaultCourseData = '';
-
-        //     if(defaultCourseDoc.exists()) {
-        //          defaultCourseData = defaultCourseDoc.data();
-
-        //     }
-
-        //     const teacherDocRef = await addDoc(teacherCollection,{
-        //         firstName:firstName,
-        //         lastName:lastName,
-        //         email:email,
-        //         userType:userType,
-        //         uid:uid
-        //     })
-
-
-        //     const registeredCoursesCollectionRef = collection(teacherDocRef, 'registeredCourses')
-        //     await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
-        // }
-        // }       
+        
        
         catch (error) {
             // Handle any errors from login fields here
             setErrorMsg(getFriendlyErrorMessage(error.code)); 
             console.error("Error signing in with email and password", error);
-        }
-    }
+        }    }
 
     return (
         <div className="min-h-screen flex flex-col justify-start">
