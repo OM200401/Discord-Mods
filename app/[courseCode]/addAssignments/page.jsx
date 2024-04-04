@@ -22,7 +22,7 @@ export default function Assignments() {
     const [loading, setLoading] = useState(true);
 
     const {courseCode} = useParams();
-    console.log("my course code is " + courseCode);
+    // console.log("my course code is " + courseCode);
 
 
 
@@ -174,9 +174,12 @@ export default function Assignments() {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
+        <div className="flex flex-col md:flex-row">
             <Sidebar userName={userName} userType={"Teacher"}/>
-            <div className="p-6 text-center w-full">
+            <div className="relative md:ml-64">
+                <CourseNavBar courseCode={courseCode}/>
+            </div>
+            <div className="p-6 text-center w-screen bg-blue-100">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading"> New Assignment</h2>
                 <div className="flex flex-row items-center justify-center p-4">

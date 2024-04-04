@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import Loader from '../../components/Loader';
+import CourseNavBar from '../../components/CourseNavBar';
 import db from '../../lib/firebase';
 import {doc,setDoc} from 'firebase/firestore';
 
@@ -83,8 +84,11 @@ export default function Assignments({ params }) {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
+        <div className="flex flex-col md:flex-row bg-blue-100">
             <Sidebar userName={userName} userType={"Teacher"}/>
+            <div className="relative md:ml-64">
+                <CourseNavBar courseCode={courseCode}/>
+            </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading"> New Assignment</h2>

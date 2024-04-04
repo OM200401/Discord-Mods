@@ -162,10 +162,12 @@ export default function Profile() {
         }
     };
 
+
+
     return (
         <div className="bg-blue-100 min-h-screen">
             <div className="flex">
-                <Sidebar userName={userInput.firstName} userType={"Student"}/>
+                <Sidebar userName={userInput.firstName} userType={userInput.userType}/>
                 <div className="relative md:ml-64 w-full">
                     <div className="p-6 text-center">
                         <h1 className="text-3xl text-black font-semibold mb-4" data-testid="profile-heading">Profile</h1>

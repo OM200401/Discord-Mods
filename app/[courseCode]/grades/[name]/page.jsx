@@ -17,8 +17,8 @@ export default function Assignments() {
     let { name,courseCode } = useParams();
     name = name ? decodeURI(name) : '';
     courseCode = courseCode ? decodeURI(courseCode) : '';
-    console.log(courseCode);
-    console.log(name);
+    // console.log(courseCode);
+    // console.log(name);
     
     // Demo students array to display some students but will later have data 
     // displayed from the database
