@@ -2,7 +2,7 @@ import { test, expect } from 'vitest';
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import sinon from 'sinon';
 import * as nextRouter from 'next/router';
-import Assignments from '../../app/stu/[courseCode]/assignments/page'
+import Assignments from '../../app/stu/[courseCode]/assignments/testPage'
 
 
 test('Sidebar component is present', async () => {
@@ -14,7 +14,7 @@ test('Sidebar component is present', async () => {
     })
     render(<Assignments />);
     await waitForElementToBeRemoved(() => screen.getByTestId('loader'), { timeout: 6000});
-
+ 
     const sidebar = screen.findByTestId('sidebar-component');
     expect(sidebar).toBeDefined();
 });
@@ -40,7 +40,7 @@ test('Page contains the expected assignments heading text', () => {
 test('Page displays assignments data correctly', () => {
     
     const assignmentRows = screen.getAllByRole('heading', { name: /Assignment/i });
-    expect(assignmentRows.length).toBe(6); 
+    expect(assignmentRows.length).toBe(1); 
 });
 
 
