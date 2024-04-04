@@ -20,8 +20,6 @@ export default function CoursePage({ params }) {
     const [uploading, setUploading] = useState(false); 
     const [loading, setLoading] = useState(true);
 
-    // const search = window.location.search;
-    // const params = new URLSearchParams(search);
     console.log(params);
     let courseCode = params ? params.courseCode : 'COSC304';
 

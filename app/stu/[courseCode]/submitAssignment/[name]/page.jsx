@@ -1,6 +1,6 @@
 'use client'
 import Sidebar from '@/app/components/Sidebar';
-import CourseNavBar from '@/app/components/CourseNavBar';
+import CourseNavBar from '@/app/components/StuCourseNavBar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
@@ -25,19 +25,37 @@ export default function Assignments() {
     const [assignmentData, setAssignmentData] = useState([]);
     const [user,setUser] = useState(null);
     const [essay, setEssay] = useState('');
+    const [userType,setUserType] = useState('user');
+    const [userName,setUserName] = useState('non');
 
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
                 setUser(auth.currentUser);
-              
-                    const assignmentRef = doc(db,'essays',name);
-                    const assignmentSnapshot = await getDoc(assignmentRef);
+
+                console.log(user);
+                const userInfoRef = collection(db,'students');
+                const q = query(userInfoRef, where('uid','==',user.uid));
+              //   console.log(q);
+                try{
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach((doc) => {
+                    setUserName(doc.data().firstName);
+                    setUserType(doc.data().userType);
                     
-                    if(!assignmentSnapshot.empty){
-                        setAssignmentData({name, ...assignmentSnapshot.data()});
-                    }
+                  //   console.log(doc.data().firstName);
+                    })
+                }catch(error){
+                    console.log(error.message);
+                }  
+              
+                const assignmentRef = doc(db,'essays',name);
+                const assignmentSnapshot = await getDoc(assignmentRef);
+                
+                if(!assignmentSnapshot.empty){
+                    setAssignmentData({name, ...assignmentSnapshot.data()});
+                }
                 
             }
         });
@@ -90,7 +108,7 @@ export default function Assignments() {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
-            <Sidebar />
+            <Sidebar userName={userName} userType={userType} />
             <div className="relative md:ml-64">
                 <CourseNavBar courseCode={courseCode} />
             </div>
@@ -107,7 +125,7 @@ export default function Assignments() {
               id="essay"
               name="essay"
               rows="6"
-              className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full text-black px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               value={essay}
               onChange={handleChange}
               required

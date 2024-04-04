@@ -76,7 +76,7 @@ export default function Home(){
                     <Loader />
                 ) : (
                     courses.map(course => (
-                        <Link key={course.id} href={`../stu/[courseCode]?courseCode=${course.id}`}>
+                        <Link key={course.id} href={`../stu/${course.id}`}>
                         <CourseCard data-testid="course-card" courseCode={course.id} courseName={course.courseName} imageUrl={course.imageUrl}/>
                         </Link>
                     ))

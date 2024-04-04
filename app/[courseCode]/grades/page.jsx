@@ -10,7 +10,7 @@ export default function Assignments({ params }) {
     const [loading, setLoading] = useState(true);
     const [userName,setUserName] = useState('non');
     const courseCode = params.courseCode;
-    console.log(params);
+    // console.log(params);
 
     // Demo students array to display some students but will later have data 
     // displayed from the database

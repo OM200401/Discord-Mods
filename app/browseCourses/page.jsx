@@ -60,10 +60,10 @@ export default function Courses() {
                 const studentSnapshot = await getDocs(student);
 
                 const studentdoc = studentSnapshot.docs[0];
-                if(teacherdoc.data()){
+                if(teacherdoc && teacherdoc.data()){
                     setUserName(teacherdoc.data().firstName);
                     setUserType(teacherdoc.data().userType);
-                }else if(studentdoc.data()){
+                }else if(studentdoc && studentdoc.data()){
                     setUserName(studentdoc.data().firstName);
                     setUserType(studentdoc.data().userType);
                 }

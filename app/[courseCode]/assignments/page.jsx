@@ -1,7 +1,6 @@
 'use client'
 import CourseNavBar from '../../components/CourseNavBar';
 import Sidebar from '../../components/Sidebar';
-
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
