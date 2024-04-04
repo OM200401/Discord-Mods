@@ -4,7 +4,7 @@ import LoginPage from '../../app/login/page';
 import {RouterMock} from 'next-router-mock';
 
 test('Navbar component is present', () => {
-    render(<RouterMock> <LoginPage /> </RouterMock>);
+    render( <LoginPage /> );
     const navbar = screen.getByTestId('navbar');
     expect(navbar).toBeDefined();
 });
@@ -37,7 +37,7 @@ test('Password input field is present', () => {
     const passwordInput = passwordInputs.find(input => input.getAttribute('type') === 'password');
     expect(passwordInput).toBeTruthy(); 
 });
-
+ 
 
 
 test('Login button is present', () => {

@@ -1,10 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
-import CourseNavBar from '../../components/CourseNavBar';
-import db from '../../lib/firebase';
-import { doc, setDoc,getDoc } from 'firebase/firestore';
-import { useParams } from 'next/navigation';
 import Loader from '../../components/Loader';
 
 
@@ -21,8 +17,7 @@ export default function Assignments() {
     const [dueDate, setDueDate] = useState('');
     const [loading, setLoading] = useState(true);
 
-    const {courseCode} = useParams();
-    // console.log("my course code is " + courseCode);
+    const courseCode = "COSC304";
 
 
 
@@ -76,28 +71,7 @@ export default function Assignments() {
         
 
         setErrorMessage('');
-
-        try {
-            const quizCollectionRef = doc(db, 'quizzes', quizTitle);
-            const courseCollectionRef = doc(db, 'courses', courseCode);
-
-            await setDoc(quizCollectionRef, { questions,weightage});
-
-
-            const courseSnapshot = await getDoc(courseCollectionRef);
-            const courseData = courseSnapshot.data();
-            const currentAssignments = courseData.currentAssignments || [];
-
-            currentAssignments.push(quizCollectionRef.id);
-            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
-            console.log('it worked');
-            // Optionally, you can reset the form after submission
-            setQuizTitle('');
-            setQuestions([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
-            setShowForm(false);
-        } catch (error) {
-            console.error('Error adding quiz:', error);
-        }
+           
     };
 
 
@@ -116,32 +90,6 @@ export default function Assignments() {
 
         setErrorMessage('');
         
-
-        try {
-            const essayCollectionRef = doc(db, 'essays', essayTitle);
-            const courseCollectionRef = doc(db, 'courses', courseCode);
-
-            await setDoc(essayCollectionRef, { questionPrompt,weightage});
-
-
-            const courseSnapshot = await getDoc(courseCollectionRef);
-            const courseData = courseSnapshot.data();
-            const currentAssignments = courseData.currentAssignments || [];
-
-            currentAssignments.push(essayCollectionRef.id);
-            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
-            
-            console.log('it worked');
-
-
-
-            // Optionally, you can reset the form after submission
-            setEssayTitle('');
-            setQuestionPrompt('');
-            setShowForm(false);
-        } catch (error) {
-            console.error('Error adding quiz:', error);
-        }
     };
 
     const handleAddQuizClick = () => {
@@ -174,12 +122,9 @@ export default function Assignments() {
     }
 
     return (
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
             <Sidebar userName={userName} userType={"Teacher"}/>
-            <div className="relative md:ml-64">
-                <CourseNavBar courseCode={courseCode}/>
-            </div>
-            <div className="p-6 text-center w-screen bg-blue-100">
+            <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading"> New Assignment</h2>
                 <div className="flex flex-row items-center justify-center p-4">

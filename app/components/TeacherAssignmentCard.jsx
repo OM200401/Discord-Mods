@@ -9,7 +9,7 @@ const TeacherAssignmentCard = ({ assignment,courseCode }) => {
         {/* Need to add due date here */}
       </div>
       <div className="flex">
-        <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"><Link href={`/${courseCode}/grades/${assignment.name}`}>Grade</Link></button>
+        <button className="px-4 py-2 bg-yellow-500 text-white rounded mx-4 hover:bg-yellow-600"><Link href={`/${courseCode}/grades/${assignment.name}`}>Grade</Link></button>
         <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
       </div>
     </div>

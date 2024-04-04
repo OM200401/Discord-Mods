@@ -14,8 +14,8 @@ import Loader from '../../components/Loader';
 
 export default function Assignments({ params }) {
     const courseCode = params.courseCode;
-    console.log(params);
-    console.log("Assignments page course code is " + courseCode);
+    // console.log(params);
+    // console.log("Assignments page course code is " + courseCode);
 
 
     const [currentAssignments, setCurrentAssignments] = useState([]);
@@ -30,11 +30,13 @@ export default function Assignments({ params }) {
                   console.log(user);
                   const userInfoRef = collection(db,'teachers');
                   const q = query(userInfoRef, where('uid','==',user.uid));
-                  console.log(q);
+                //   console.log(q);
                   try{
                       const querySnapshot = await getDocs(q);
                       querySnapshot.forEach((doc) => {
                           setUserName(doc.data().firstName);
+                          setUserType(doc.data().userType);
+                        //   console.log(doc.data().firstName);
                       })
                   }catch(error){
                       console.log(error.message);
@@ -68,12 +70,13 @@ export default function Assignments({ params }) {
                         // Push assignment data to assignments array
                         if (assignmentData) {
                             assignments.push({ name, ...assignmentData });
+                            // console.log(assignments);
                         }
                     }
 
                     // Update currentAssignments state after all assignments are fetched
                     setCurrentAssignments(assignments);
-                    console.log(currentAssignments);
+                    // console.log(currentAssignments);
                 }
             }
         });

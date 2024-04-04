@@ -1,11 +1,8 @@
-
 'use client'
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import Loader from '../../components/Loader';
-import CourseNavBar from '../../components/CourseNavBar';
-import db from '../../lib/firebase';
-import {doc,setDoc} from 'firebase/firestore';
+
 
 export default function Assignments({ params }) {
     const [showForm, setShowForm] = useState(false);
@@ -15,9 +12,7 @@ export default function Assignments({ params }) {
     const [loading, setLoading] = useState(true);
     const [userName,setUserName] = useState('non');
 
-    const courseCode = params.courseCode;
-    console.log("Quiz page course code is: " + courseCode);
-    console.log(params)
+    const courseCode = "COSC304";
 
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
@@ -84,11 +79,8 @@ export default function Assignments({ params }) {
     }
 
     return (
-        <div className="flex flex-col md:flex-row bg-blue-100">
+        <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
             <Sidebar userName={userName} userType={"Teacher"}/>
-            <div className="relative md:ml-64">
-                <CourseNavBar courseCode={courseCode}/>
-            </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading"> New Assignment</h2>

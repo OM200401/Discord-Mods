@@ -15,7 +15,7 @@ test('Page contains the expected heading text', () => {
     const heading = screen.getByTestId('course-heading');
     expect(heading).toBeDefined();
 });
-
+ 
 test('Page contains the expected paragraph text', () => {
     ;
     const paragraph = screen.getByText(/Resources/i);

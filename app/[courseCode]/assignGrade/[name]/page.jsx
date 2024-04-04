@@ -10,7 +10,7 @@ import {getDoc,getDocs,doc,where,query, documentId,collection} from 'firebase/fi
 import { useParams } from 'next/navigation';
 
 
-export default function assignGrade({ params }) {
+export default function AssignGrade({ params }) {
 
     const [loading, setLoading] = useState(false);
     const [studentInfo,setStudentInfo] =useState([]);
