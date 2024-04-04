@@ -72,12 +72,10 @@ export default function CoursePage({ params }) {
       getDownloadURL(pdfRef)
           .then((url) => {
               setPdfUrl(url);
-              useEffect(() => {
-                // Simulate a network request
-                setTimeout(() => {
-                    setLoading(false); // Set loading to false after 3 seconds
-                }, 1000);
-              }, []);
+              // Simulate a network request
+              setTimeout(() => {
+                  setLoading(false); // Set loading to false after 3 seconds
+              }, 1000);
           })
           .catch((error) => {
               console.log('Error getting PDF URL:', error);

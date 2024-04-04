@@ -4,7 +4,7 @@ import Sidebar from '../../../components/Sidebar';
 import { useState, useEffect } from 'react';
 import Loader from '../../../components/Loader.jsx';
 
-export default function grades() {
+export default function Grades() {
 
     const [loading, setLoading] = useState(true);
 

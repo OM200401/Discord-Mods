@@ -107,7 +107,7 @@ export default function Assignments() {
                   <div className="p-6">
                     <h2 className="text-xl font-semibold mb-4">Write Submission</h2>
                     {currentQuestions.map((questionData, index) => (
-                      <Question key={index} questionData={questionData} />
+                      <displayQuestion key={index} questionData={questionData} />
                     ))}
                     {/* <form onSubmit={handleSubmit}>
                       <div className="mb-4">
