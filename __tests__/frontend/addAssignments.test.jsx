@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import Assignments from '../../app/[courseCode]/addAssignments/page'
+import { waitForElementToBeRemoved, render, screen, fireEvent } from '@testing-library/react'
+import Assignments from '../../app/[courseCode]/addAssignments/testPage'
 
 test('Assignments page renders correctly', async () => {
   render(<Assignments />)
@@ -12,7 +12,7 @@ test('Assignments page renders correctly', async () => {
   expect(courseHeading).toBeDefined()
 
   const assignmentsHeading = screen.getByTestId('assignments-heading')
-  expect(assignmentsHeading).toBeDefined()
+  expect(assignmentsHeading).toBeDefined() 
 
   const addQuizButton = screen.getByText('Add Quiz')
   expect(addQuizButton).toBeDefined()

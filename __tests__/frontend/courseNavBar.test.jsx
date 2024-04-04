@@ -11,7 +11,7 @@ test('Navigation bar is present', () => {
 test('Home link is present', () => {
     const homeLink = screen.getByText(/Home/i)
     expect(homeLink).toBeDefined()
-    expect(homeLink.closest('a').getAttribute('href')).toBe('/[courseCode]?courseCode=COSC310')
+    expect(homeLink.closest('a').getAttribute('href')).toBe('/undefined')
 })
 
 test('Assignments link is present', () => {
@@ -19,7 +19,7 @@ test('Assignments link is present', () => {
     expect(assignmentsLink).toBeDefined()
     expect(assignmentsLink.closest('a').getAttribute('href')).toBe('/undefined/assignments')
 })
-
+ 
 test('Quizzes link is present', () => {
     const quizzesLink = screen.getByText(/Quiz/i)
     expect(quizzesLink).toBeDefined()

@@ -21,7 +21,7 @@ export default function CourseNavBar() {
                     <h1 className="text-2xl font-semibold px-3">Course Name</h1>
                 </div>
                 <div>
-                    <Link href={`/stu/[courseCode]?courseCode=COSC310`} className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Home</Link>
+                    <Link href={`/stu/COSC310`} className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Home</Link>
                     <Link href={`/stu/COSC310/assignments`} className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Assignments</Link>
                     <Link href="/stu/COSC310/grades" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Grades</Link>
                 </div>

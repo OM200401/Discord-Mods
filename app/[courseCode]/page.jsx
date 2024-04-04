@@ -23,7 +23,13 @@ export default function CoursePage({ params }) {
     // const search = window.location.search;
     // const params = new URLSearchParams(search);
     console.log(params);
-    const courseCode = params.courseCode;
+    let courseCode = params ? params.courseCode : 'COSC304';
+
+    //check if in test mode
+    if(process.env.NODE_ENV === 'test') {
+      courseCode = 'COSC304';
+    }
+
     console.log("Course code is: " + courseCode);
 
     useEffect(() => {

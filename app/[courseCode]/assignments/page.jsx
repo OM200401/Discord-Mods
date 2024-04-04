@@ -35,6 +35,8 @@ export default function Assignments({ params }) {
                       const querySnapshot = await getDocs(q);
                       querySnapshot.forEach((doc) => {
                           setUserName(doc.data().firstName);
+                          setUserType(doc.data().userType);
+                          console.log(doc.data().firstName);
                       })
                   }catch(error){
                       console.log(error.message);
@@ -68,6 +70,7 @@ export default function Assignments({ params }) {
                         // Push assignment data to assignments array
                         if (assignmentData) {
                             assignments.push({ name, ...assignmentData });
+                            console.log(assignments);
                         }
                     }
 

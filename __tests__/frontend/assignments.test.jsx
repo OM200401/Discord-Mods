@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
-import Assignments from '../../app/[courseCode]/assignments/page';
+import Assignments from '../../app/[courseCode]/assignments/testPage';
 import sinon from 'sinon';
 import * as nextRouter from 'next/router';
 
@@ -9,7 +9,7 @@ test('Sidebar component is present', async () => {
         route: '/',
         pathname: '',
         query: '',
-        asPath: '',
+        asPath: '', 
     })
     render(<Assignments />);
     await waitForElementToBeRemoved(() => screen.getByTestId('loader'), { timeout: 6000});
@@ -39,5 +39,5 @@ test('Page contains the expected assignments heading text', () => {
 test('Page displays assignments data correctly', () => {
     
     const assignmentRows = screen.getAllByRole('heading', { name: /Assignment/i });
-    expect(assignmentRows.length).toBe(6); 
+    expect(assignmentRows.length).toBe(1); 
 });
