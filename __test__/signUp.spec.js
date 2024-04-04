@@ -19,7 +19,7 @@ test('should be able to sign up', async ({ page }) => {
     // Input firstName, lastName, email, password, confirmPassword and userType
     await page.fill('input[type="input"]', 'John');
     await page.fill('input[type="input"]', 'Doe');
-    await page.fill('input[type="email"]', 'johndoe@gmail.com');
+    await page.fill('input[type="email"]', 'johndoe1@gmail.com');//Change for every test 
     await page.fill('input[type="password"]', '123456');
     await page.fill('input[type="password"]', '123456');
     await page.selectOption('select', 'Student');
