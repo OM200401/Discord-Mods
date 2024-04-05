@@ -2,13 +2,14 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import CourseNavBar from '../../components/CourseNavBar';
-import db from '../../lib/firebase';
-import { doc, setDoc,getDoc } from 'firebase/firestore';
-import { useParams } from 'next/navigation';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
+import { setDoc, getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
+import db from '../../lib/firebase'
 import Loader from '../../components/Loader';
 
 
-export default function Assignments() {
+export default function Assignments({ params }) {
     const [userName,setUserName] = useState('non');
     const [showForm, setShowForm] = useState(false);
     const [quizTitle, setQuizTitle] = useState(''); // New state for quiz title
@@ -21,10 +22,35 @@ export default function Assignments() {
     const [dueDate, setDueDate] = useState('');
     const [loading, setLoading] = useState(true);
 
-    const {courseCode} = useParams();
+    const [user,setUser] = useState(null);
+    const [userType,setUserType] = useState('user');
+
+    const courseCode = params.courseCode;
     // console.log("my course code is " + courseCode);
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if(auth.currentUser){
+                setUser(auth.currentUser);
+                  console.log(user);
+                  const userInfoRef = collection(db,'teachers');
+                  const q = query(userInfoRef, where('uid','==',user.uid));
+                //   console.log(q);
+                  try{
+                      const querySnapshot = await getDocs(q);
+                      querySnapshot.forEach((doc) => {
+                          setUserName(doc.data().firstName);
+                          setUserType(doc.data().userType);
+                        //   console.log(doc.data().firstName);
+                      })
+                  }catch(error){
+                      console.log(error.message);
+                  }  
 
+
+            }
+        })
+    });
 
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
@@ -161,6 +187,8 @@ export default function Assignments() {
     const handleDueDateChange = (e) => {
         setDueDate(e.target.value);
     };
+
+    
 
     useEffect(() => {
         // Simulate a network request

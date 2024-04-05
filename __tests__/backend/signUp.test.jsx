@@ -3,7 +3,7 @@ import { auth } from '../../app/lib/firebase';
 
 describe('Firebase Database Tests', () => {
     test('Test signUp operation', async () => {
-        const email = 'signuptester2@example.com';// Need to change for each test
+        const email = 'signuptester10@example.com';// Need to change for each test
         const password = '123456';
         const firstName = 'John';
         const lastName = 'Doe';
