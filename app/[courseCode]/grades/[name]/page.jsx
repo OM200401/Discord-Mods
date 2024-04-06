@@ -17,8 +17,8 @@ export default function Assignments() {
     let { name,courseCode } = useParams();
     name = name ? decodeURI(name) : '';
     courseCode = courseCode ? decodeURI(courseCode) : '';
-    // console.log(courseCode);
-    // console.log(name);
+    console.log(courseCode);
+    console.log(name);
     
     // Demo students array to display some students but will later have data 
     // displayed from the database
@@ -41,6 +41,7 @@ export default function Assignments() {
     };
 
     useEffect(() => {
+        
         const fetchStudentInfo = async () => {
             try {
                 const studentRef = collection(db, 'students');
@@ -56,9 +57,11 @@ export default function Assignments() {
                             if (assignment.name === name) {
                                 studentsData.push({
                                     studentName: `${studentDoc.data().firstName} ${studentDoc.data().lastName}`,
-                                    assignmentName: assignment.name
+                                    assignmentName: assignment.name,studentUid: studentDoc.data().uid
                                 });
                                 console.log(studentsData);
+                                console.log(studentDoc.data());
+
 
                             }
                         });
@@ -98,7 +101,7 @@ export default function Assignments() {
                             <div key={index} className="bg-white rounded-lg p-6 border border-gray-300">
                                 <p className="font-semibold text-lg">{student.studentName}</p>
                                 <p className="text-gray-500 mb-4">{student.assignmentName}</p>
-                                <a href={`/${courseCode}/assignGrade/${name}`} className="inline-block bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Grade this submission</a>
+                                <a href={`/${courseCode}/assignGrade/${name}/${student.studentUid}`} className="inline-block bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Grade this submission</a>
                             </div>
                         ))}
                     </div>
