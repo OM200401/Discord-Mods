@@ -107,7 +107,7 @@ export default function Assignments({ params }) {
             const quizCollectionRef = doc(db, 'quizzes', quizTitle);
             const courseCollectionRef = doc(db, 'courses', courseCode);
 
-            await setDoc(quizCollectionRef, { questions,weightage});
+            await setDoc(quizCollectionRef, { questions,weightage,dueDate:dueDate});
 
 
             const courseSnapshot = await getDoc(courseCollectionRef);
@@ -147,7 +147,7 @@ export default function Assignments({ params }) {
             const essayCollectionRef = doc(db, 'essays', essayTitle);
             const courseCollectionRef = doc(db, 'courses', courseCode);
 
-            await setDoc(essayCollectionRef, { questionPrompt,weightage});
+            await setDoc(essayCollectionRef, { questionPrompt,weightage,dueDate:dueDate});
 
 
             const courseSnapshot = await getDoc(courseCollectionRef);

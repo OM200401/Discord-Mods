@@ -83,7 +83,7 @@ export default function Assignments({params}) {
                         } else {
                             const essayRef = doc(db, 'essays', name);
                             const essaySnapshot = await getDoc(essayRef);
-                            if (essaySnapshot.exists() && !submittedAssignments.includes(name)) {
+                            if (essaySnapshot.exists() && !submittedAssignments.includes(name) ) {
                                 assignmentData = essaySnapshot.data();
                             }
                         }
