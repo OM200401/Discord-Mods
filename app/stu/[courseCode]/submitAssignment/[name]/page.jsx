@@ -27,6 +27,7 @@ export default function Assignments() {
     const [essay, setEssay] = useState('');
     const [userType,setUserType] = useState('user');
     const [userName,setUserName] = useState('non');
+    const [assignmentType,setAssignmentType] = useState(null);
 
 
     useEffect(() => {
@@ -50,20 +51,34 @@ export default function Assignments() {
                     console.log(error.message);
                 }  
               
-                const assignmentRef = doc(db,'essays',name);
-                const assignmentSnapshot = await getDoc(assignmentRef);
-                
-                if(!assignmentSnapshot.empty){
-                    setAssignmentData({name, ...assignmentSnapshot.data()});
-                }
+                   
+            const essayRef = doc(db, 'essays', name);
+            const quizRef = doc(db, 'quizzes', name);
+
+            const essaySnapshot = await getDoc(essayRef);
+            const quizSnapshot = await getDoc(quizRef);
+
+         
+            if (essaySnapshot.data()) {
+                setAssignmentData({ name, ...essaySnapshot.data() });
+                setAssignmentType('essay');
+            } else  {
+                setAssignmentData({ name, ...quizSnapshot.data() });
+                setAssignmentType('quiz');
+            } 
+                console.log(assignmentType);
                 
             }
         });
+        console.log(assignmentType);
 
         return () => unsubscribe();
-    }, []); // Add courseCode as a dependency
-    console.log(assignmentData)
+    }, [assignmentType]); // Add courseCode as a dependency
 
+
+
+
+    
     const handleChange = (event) => {
         setEssay(event.target.value);
       };
@@ -97,8 +112,6 @@ export default function Assignments() {
                 await updateDoc(courseDocRef, updatedCourseData);
                 setEssay('');
                 window.location.href = `/stu/${courseCode}/assignments`;
-
-
                     }
                 })
 
@@ -109,7 +122,8 @@ export default function Assignments() {
 
 
     return (
-        <div className="flex flex-col md:flex-row bg-blue-100">
+      <>
+       {assignmentType != null && assignmentType== 'essay' && (<div className="flex flex-col md:flex-row bg-blue-100">
             <Sidebar userName={userName} userType={userType} />
             <div className="relative md:ml-64">
                 <CourseNavBar courseCode={courseCode} />
@@ -143,7 +157,19 @@ export default function Assignments() {
       </div>
     </div>
             </div>
-        </div>
+        </div> )} 
+
+        {assignmentType != null && assignmentType== 'quiz' && (<div className="flex flex-col md:flex-row bg-blue-100">
+            <Sidebar userName={userName} userType={userType} />
+            <div className="relative md:ml-64">
+                <CourseNavBar courseCode={courseCode} />
+            </div>
+            <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Aamir quiz</h1>
+
+        
+         
+        </div> )} 
+        </>
     );
 
 }
