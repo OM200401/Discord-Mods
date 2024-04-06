@@ -21,57 +21,49 @@ export default function Grades({params}) {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
                 setUser(auth.currentUser);
-                  console.log(user);
-                  const userInfoRef = collection(db,'students');
-                  const q = query(userInfoRef, where('uid','==',user.uid));
-                //   console.log(q);
-                  try{
-                      const querySnapshot = await getDocs(q);
-                      querySnapshot.forEach((doc) => {
-                          setUserName(doc.data().firstName);
-                          setUserType(doc.data().userType);
-                        //   console.log(doc.data().firstName);
-                      })
-                  }catch(error){
-                      console.log(error.message);
-                  }  
+                try {
+                    if (user) {
+                        // Query for the student document
+                        const studentQuerySnapshot = await getDocs(collection(db, 'students'));
+                        let studentDoc;
 
-                const coursesRef = doc(db, 'courses', courseCode);
-                const courseSnapshot = await getDoc(coursesRef);
-
-                if (courseSnapshot.exists()) {
-                    const assignmentNames= courseSnapshot.data().currentAssignments || [];
-
-                    // Initialize an array to store all assignments
-                    const assignments = [];
-
-                    // Iterate through each assignment name and fetch data
-                    for (const name of assignmentNames) {
-                        let assignmentData = null;
-                        const quizRef = doc(db, 'quizzes', name);
-                        const quizSnapshot = await getDoc(quizRef);
-
-                        if (quizSnapshot.exists()) {
-                            assignmentData = quizSnapshot.data();
-                        } else {
-                            const essayRef = doc(db, 'essays', name);
-                            const essaySnapshot = await getDoc(essayRef);
-                            if (essaySnapshot.exists()) {
-                                assignmentData = essaySnapshot.data();
+                        studentQuerySnapshot.forEach(doc => {
+                            if (doc.data().uid === user.uid) {
+                                studentDoc = doc;
                             }
+                        });
+        
+                        if (studentDoc) {
+                            // Query for the registeredCourses subcollection document
+                            const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
+                            const courseDocRef = doc(registeredCoursesRef, courseCode);
+                            const courseDocSnapshot = await getDoc(courseDocRef);
+        
+                            if (courseDocSnapshot.exists()) {
+                                // Get the submittedAssignments array
+                                const submittedAssignments = courseDocSnapshot.data().submittedAssignments || [];
+        
+                                // Filter the submittedAssignments where grade is not null
+                                const filteredAssignments = submittedAssignments.filter(assignment => assignment.grade !== null);
+        
+                                // Update the state with filtered assignments
+                                setCurrentAssignments(filteredAssignments);
+                            } else {
+                                console.log('Course document not found.');
+                            }
+                        } else {
+                            console.log('Student document not found.');
                         }
-
-                        // Push assignment data to assignments array
-                        if (assignmentData) {
-                            assignments.push({ name, ...assignmentData });
-                            // console.log(assignments);
-                        }
+                    } else {
+                        console.log('User not authenticated.');
                     }
-
-                    // Update currentAssignments state after all assignments are fetched
-                    setCurrentAssignments(assignments);
-                    console.log(currentAssignments);
+                } catch (error) {
+                    console.error('Error fetching assignments:', error);
+                } finally {
+                    setLoading(false); // Set loading to false after fetching assignments
                 }
+                    // Iterate through each assignment name and fetch data
+               
             }
         });
 
@@ -88,44 +80,39 @@ export default function Grades({params}) {
     //     { title: 'Assignment 5', dueDate: '2022-01-15', points: 150 },
     // ];
 
-    useEffect(() => {
-        // Simulate a network request
-        setTimeout(() => {
-            setLoading(false); // Set loading to false after 3 seconds
-        }, 1000);
-    }, []);
 
     if (loading) {
         return <Loader data-testid="loader" />; // Return the Loading component if loading is true
     }
 
     return (
-        <div className="flex flex-col md:flex-row bg-blue-100">
-            <Sidebar userName={userName} userType={"Student"} />
-            <div className="relative md:ml-64">
-                <CourseNavBar courseCode={courseCode} data-testid="course-navbar"/>
-               
-            </div>
-            <div className="p-6 text-center w-full">
-                <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
-                <h2 className="text-3xl text-black font mt-4 mb-6" data-testid="assignments-heading">Assignments</h2>
-                <div className="flex justify-end"></div>
-                <div className="overflow-x-auto">
-                    {currentAssignments.map((assignment, index) => (
-                        <a href="" key={index}>
-                            <div className="flex items-center justify-between bg-gray-100 mb-4 p-4 rounded border border-gray-300">
-                                <div>
-                                    <h3 className="text-lg font-semibold text-blue-400 hover:blue5-00">{assignment.title}</h3>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-gray-600">Due Date: {assignment.dueDate}</p>
-                                    <h3 className="text-l text-gray-600"> grade /{assignment.points}</h3>
+            <div className="flex flex-col md:flex-row bg-blue-100">
+                <Sidebar userName={userName} userType={"Student"} />
+                <div className="relative md:ml-64">
+                    <CourseNavBar courseCode={courseCode} data-testid="course-navbar"/>
+                   
+                </div>
+                <div className="p-6 text-center w-full">
+                    <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">{courseCode}</h1>
+                    <h2 className="text-3xl text-black font mt-4 mb-6" data-testid="assignments-heading">Assignments</h2>
+                    <div className="flex justify-end"></div>
+                    <div className="overflow-x-auto">
+                        {currentAssignments.map((assignment, index) => (
+                            <div key={index} className="bg-gray-100 mb-4 p-4 rounded border border-gray-300">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-blue-400 hover:blue5-00">{assignment.name}</h3>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-600">Grade: {assignment.grade}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </a>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+           
+                                
 }
