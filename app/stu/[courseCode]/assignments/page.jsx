@@ -24,10 +24,8 @@ export default function Assignments({params}) {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
                 setUser(auth.currentUser);
-                //   console.log(user);
                 const userInfoRef = collection(db,'students');
                 const q = query(userInfoRef, where('uid','==',user.uid));
-                //   console.log(q);
                 try{
                     const querySnapshot = await getDocs(q);
                     querySnapshot.forEach((doc) => {
@@ -41,6 +39,32 @@ export default function Assignments({params}) {
 
                 const coursesRef = doc(db, 'courses', courseCode);
                 const courseSnapshot = await getDoc(coursesRef);
+                const submittedAssignments = [];
+
+                    const studentRef = collection(db, 'students');
+                    const studentQuery = query(studentRef,where("uid","==",user.uid));
+                    const studentQuerySnapshot = await getDocs(studentQuery);
+
+                    if (!studentQuerySnapshot.empty) {
+                        const studentDoc = studentQuerySnapshot.docs[0]; // Assuming there's only one document for a given user
+                        const studentRef = studentDoc.ref; // Extracting the document reference
+                        const registeredCoursesRef = collection(studentRef, 'registeredCourses');
+                        const courseDocRef = doc(registeredCoursesRef, courseCode);
+                        const courseDocSnapshot = await getDoc(courseDocRef);
+    
+                        if (courseDocSnapshot.exists()) {
+                            const submittedAssignmentsData = courseDocSnapshot.data().submittedAssignments || [];
+                            submittedAssignmentsData.forEach((assignment) => {
+                                submittedAssignments.push(assignment.name);
+                                console.log(assignment.name);
+                            })
+                        }
+                        console.log("SUBMITTED" + submittedAssignments)
+                        } else {
+                        console.error("No student document found for the current user.");
+                    }
+
+               
 
                 if (courseSnapshot.exists()) {
                     const assignmentNames= courseSnapshot.data().currentAssignments || [];
@@ -54,12 +78,12 @@ export default function Assignments({params}) {
                         const quizRef = doc(db, 'quizzes', name);
                         const quizSnapshot = await getDoc(quizRef);
 
-                        if (quizSnapshot.exists()) {
+                        if (quizSnapshot.exists() &&  !submittedAssignments.includes(name)) {
                             assignmentData = quizSnapshot.data();
                         } else {
                             const essayRef = doc(db, 'essays', name);
                             const essaySnapshot = await getDoc(essayRef);
-                            if (essaySnapshot.exists()) {
+                            if (essaySnapshot.exists() && !submittedAssignments.includes(name)) {
                                 assignmentData = essaySnapshot.data();
                             }
                         }
@@ -67,13 +91,11 @@ export default function Assignments({params}) {
                         // Push assignment data to assignments array
                         if (assignmentData) {
                             assignments.push({ name, ...assignmentData });
-                            // console.log(assignments);
                         }
                     }
 
                     // Update currentAssignments state after all assignments are fetched
                     setCurrentAssignments(assignments);
-                    console.log(currentAssignments);
                 }
             }
         });

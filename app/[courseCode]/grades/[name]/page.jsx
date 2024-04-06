@@ -55,10 +55,12 @@ export default function Assignments() {
                         const submittedAssignments = courseDoc.data().submittedAssignments || [];
                         submittedAssignments.forEach((assignment) => {
                             if (assignment.name === name) {
+                                if(assignment.grade == null) {
                                 studentsData.push({
                                     studentName: `${studentDoc.data().firstName} ${studentDoc.data().lastName}`,
                                     assignmentName: assignment.name,studentUid: studentDoc.data().uid
                                 });
+                            }
                                 console.log(studentsData);
                                 console.log(studentDoc.data());
 

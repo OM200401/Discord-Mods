@@ -64,7 +64,10 @@ export default function assignGrade() {
                         const submittedAssignments = courseDocSnapshot.data().submittedAssignments || [];
                         const updatedSubmittedAssignments = submittedAssignments.map((assignment) => {
                             if (assignment.name === name) {
-                                return { ...assignment, grade: grade };
+                                if(assignment.grade == null){
+                                    return { ...assignment, grade: grade };
+
+                                }
                             }
                             return assignment;
                         });
@@ -72,6 +75,8 @@ export default function assignGrade() {
                         // Update the submittedAssignments array in the document
                         await updateDoc(courseDocRef, { submittedAssignments: updatedSubmittedAssignments });
                         console.log('added to database');
+                        window.location.href = `/${courseCode}/assignments`;
+
                     }
                 }
             });
@@ -88,11 +93,15 @@ export default function assignGrade() {
     useEffect(() => {
         const fetchStudentInfo = async () => {
             try {
-                const studentRef = collection(db, 'students');
+                const studentRef = collection(db,'students');
+
                 const querySnapshot = await getDocs(studentRef);
 
                 const studentsData = [];
+
                 querySnapshot.forEach(async (studentDoc) => {
+                    if(studentDoc.data().uid === studentUid){
+
                     const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
                     const coursesQuerySnapshot = await getDocs(query(registeredCoursesRef, where(documentId(), '==', courseCode)));
 
@@ -121,6 +130,9 @@ export default function assignGrade() {
                     });
                     setStudentInfo(studentsData);
 
+
+
+                }
 
                 });
                 setLoading(false);

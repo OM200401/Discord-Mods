@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { auth } from '@/app/lib/firebase';
-import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
+import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
 import db from '../../../../lib/firebase';
 import { arrayUnion } from 'firebase/firestore';
 
@@ -96,6 +96,8 @@ export default function Assignments() {
 
                 await updateDoc(courseDocRef, updatedCourseData);
                 setEssay('');
+                window.location.href = `/stu/${courseCode}/assignments`;
+
 
                     }
                 })
