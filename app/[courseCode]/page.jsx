@@ -20,10 +20,14 @@ export default function CoursePage({ params }) {
     const [uploading, setUploading] = useState(false); 
     const [loading, setLoading] = useState(true);
 
-    // const search = window.location.search;
-    // const params = new URLSearchParams(search);
     console.log(params);
-    const courseCode = params.courseCode;
+    let courseCode = params ? params.courseCode : 'COSC304';
+
+    //check if in test mode
+    if(process.env.NODE_ENV === 'test') {
+      courseCode = 'COSC304';
+    }
+
     console.log("Course code is: " + courseCode);
 
     useEffect(() => {
@@ -66,12 +70,10 @@ export default function CoursePage({ params }) {
       getDownloadURL(pdfRef)
           .then((url) => {
               setPdfUrl(url);
-              useEffect(() => {
-                // Simulate a network request
-                setTimeout(() => {
-                    setLoading(false); // Set loading to false after 3 seconds
-                }, 1000);
-              }, []);
+              // Simulate a network request
+              setTimeout(() => {
+                  setLoading(false); // Set loading to false after 3 seconds
+              }, 1000);
           })
           .catch((error) => {
               console.log('Error getting PDF URL:', error);
@@ -84,7 +86,7 @@ export default function CoursePage({ params }) {
 
     return (
         <div className="flex flex-col md:flex-row">
-          <Sidebar data-testid = "sidebar-component" userName={ userName } />
+          <Sidebar data-testid = "sidebar-component" userName={ userName } userType={"Teacher"} />
           <div className="relative md:ml-64">
             <CourseNavBar courseCode={courseCode}/>
           </div>

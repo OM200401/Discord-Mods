@@ -13,7 +13,7 @@ import {useRouter} from 'next/navigation';
 // Validation in html also added to check the type of email input and password
 
 export default function LoginPage() {
-    const router = useRouter();
+    // const router = useRouter();
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -67,7 +67,7 @@ export default function LoginPage() {
             const querySnapshotStu = await getDocs(tq);
             if(!querySnapshotStu.empty){
                 // User is a teacher
-                router.push('/home');
+                window.location.href = ('/home');
                 return;
             }
 
@@ -76,7 +76,7 @@ export default function LoginPage() {
             const querySnapshotTeach = await getDocs(sq);
             if(!querySnapshotTeach.empty){
                 //User is a student
-                router.push('/stuHome');
+                window.location.href = ('/stuHome');
                 return;
             }
 
@@ -85,7 +85,7 @@ export default function LoginPage() {
             const querySnapshotAdmin = await getDocs(aq);
             if(!querySnapshotAdmin.empty){
                 //User is a student
-                router.push('/admin');
+                window.location.href = ('/admin');
                 return;
             }
 

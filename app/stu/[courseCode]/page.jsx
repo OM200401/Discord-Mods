@@ -4,22 +4,22 @@ import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
 import Sidebar from '../../components/Sidebar';
 import CourseNavBar from '../../components/StuCourseNavBar';
-
 import db, { auth } from '../../lib/firebase';
 
-export default function CoursePage() {
+export default function CoursePage({params}) {
     const [userName, setUserName] = useState('non');
     const [pdfUrl, setPdfUrl] = useState('');
     const [loading, setLoading] = useState(true);
+
+    const courseCode = params.courseCode;
     
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
-                    const userInfoRef = collection(db, 'Userinfo');
+                    const userInfoRef = collection(db, 'students');
                     const q = query(userInfoRef, where('uid', '==', user.uid));
                     const querySnapshot = await getDocs(q);
                     querySnapshot.forEach((doc) => {
@@ -60,9 +60,9 @@ export default function CoursePage() {
     return (
         <div className='bg-blue-100'>
             <div className="flex flex-col md:flex-row">
-                <Sidebar userName={userName} />
+                <Sidebar userName={userName} userType={"Student"} />
                 <div className="relative md:ml-64">
-                    <CourseNavBar />
+                    <CourseNavBar courseCode={courseCode} />
                 </div>
                 <div className="p-6 w-screen bg-blue-100 text-center">
                     <h1 className="text-3xl text-black font-semibold mb-8" data-testid="course-heading">Course Name</h1>
