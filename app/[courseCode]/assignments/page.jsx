@@ -49,6 +49,7 @@ export default function Assignments({ params }) {
 
                     // Initialize an array to store all assignments
                     const assignments = [];
+                   
 
                     // Iterate through each assignment name and fetch data
                     for (const name of assignmentNames) {

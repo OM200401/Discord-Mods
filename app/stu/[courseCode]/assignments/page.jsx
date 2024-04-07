@@ -19,6 +19,7 @@ export default function Assignments({params}) {
     const [user,setUser] = useState(null);
     const [userType,setUserType] = useState('user');
     const [userName,setUserName] = useState('non');
+    const [submittedAssignments, setSubmittedAssignments] = useState([]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -39,7 +40,8 @@ export default function Assignments({params}) {
 
                 const coursesRef = doc(db, 'courses', courseCode);
                 const courseSnapshot = await getDoc(coursesRef);
-                const submittedAssignments = [];
+                const submittedAssignmentsNames = [];
+                const submittedAssignmentData = [];
 
                     const studentRef = collection(db, 'students');
                     const studentQuery = query(studentRef,where("uid","==",user.uid));
@@ -55,16 +57,17 @@ export default function Assignments({params}) {
                         if (courseDocSnapshot.exists()) {
                             const submittedAssignmentsData = courseDocSnapshot.data().submittedAssignments || [];
                             submittedAssignmentsData.forEach((assignment) => {
-                                submittedAssignments.push(assignment.name);
+                                submittedAssignmentsNames.push(assignment.name);
+                                submittedAssignmentData.push(assignment);
                                 console.log(assignment.name);
                             })
                         }
-                        console.log("SUBMITTED" + submittedAssignments)
+                        console.log("SUBMITTED" + submittedAssignmentsNames)
                         } else {
                         console.error("No student document found for the current user.");
                     }
 
-               
+                setSubmittedAssignments(submittedAssignmentData);
 
                 if (courseSnapshot.exists()) {
                     const assignmentNames= courseSnapshot.data().currentAssignments || [];
@@ -78,12 +81,12 @@ export default function Assignments({params}) {
                         const quizRef = doc(db, 'quizzes', name);
                         const quizSnapshot = await getDoc(quizRef);
 
-                        if (quizSnapshot.exists() &&  !submittedAssignments.includes(name)) {
+                        if (quizSnapshot.exists() &&  !submittedAssignmentsNames.includes(name)) {
                             assignmentData = quizSnapshot.data();
                         } else {
                             const essayRef = doc(db, 'essays', name);
                             const essaySnapshot = await getDoc(essayRef);
-                            if (essaySnapshot.exists() && !submittedAssignments.includes(name) ) {
+                            if (essaySnapshot.exists() && !submittedAssignmentsNames.includes(name) ) {
                                 assignmentData = essaySnapshot.data();
                             }
                         }
@@ -129,7 +132,6 @@ export default function Assignments({params}) {
             <Sidebar userName={userName} userType={"Student"} />
             <div className="relative md:ml-64">
                 <CourseNavBar courseCode={courseCode} />
-                <h1>this is student assignemnt view </h1>
             </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
@@ -153,6 +155,21 @@ export default function Assignments({params}) {
                       (userType == 'Student' && <StudentAssignmentCard assignment={assignment} courseCode={courseCode} />) ||
                       (userType == 'Teacher' && <TeacherAssignmentCard assignment={assignment} courseCode = {courseCode} />)
                     ))}
+
+            <div className="overflow-x-auto">
+                <h2 className="text-3xl font-semibold text-center mb-4">Submitted Assignments</h2>
+                <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+                    {/* Display submitted assignments */}
+                    {submittedAssignments.map((assignment, index) => (
+                        <div key={index} className="bg-white rounded-lg p-6 border border-gray-300">
+                            <p className="font-semibold text-lg">{assignment.name}</p>
+                            <p className="text-gray-500 mb-4">Grade: {assignment.grade ? assignment.grade : "Not graded yet"}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+
                 </div>
             </div>
         </div>
