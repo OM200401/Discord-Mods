@@ -18,6 +18,13 @@ export default function Enrolments() {
     const [enrolments, setEnrolments] = useState([]);
     const [userName, setUserName] = useState('non');
     const [user,setUser] = useState();
+    const [feedback, setFeedback] = useState('');
+    const [isAccepted, setIsAccepted] = useState(null);
+
+    const handleFeedback = (message, accepted) => {
+        setFeedback(message);
+        setIsAccepted(accepted);
+    }
 
     useEffect(() => {
         const fetchEnrolments = async () => {
@@ -76,10 +83,11 @@ export default function Enrolments() {
                 <div className="overflow-x-auto">
                     {enrolments.map((enrolmentRequest, index) => (
                         <div key={index} className="m-2">
-                            <EnrolmentCard data-testid='enrolment-card' userEmail={enrolmentRequest.email} courseCode={enrolmentRequest.courseCode} />
+                            <EnrolmentCard data-testid='enrolment-card' userEmail={enrolmentRequest.email} courseCode={enrolmentRequest.courseCode} onFeedback={handleFeedback}/>
                         </div>
                     ))}
                 </div>
+                {feedback && <p className={`mt-2 text-xs md:text-sm ${isAccepted ? 'text-green-600' : 'text-red-600'}`}>{feedback}</p>}
             </div>
         </div>
     );

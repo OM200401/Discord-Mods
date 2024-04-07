@@ -5,6 +5,7 @@ import { updateDoc, getDocs, query, where, collection } from 'firebase/firestore
 import { updatePassword } from 'firebase/auth';
 import { onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import Sidebar from '../components/Sidebar';
+import AdminSidebar from '../components/AdminSidebar';
 import db from '../lib/firebase';
 
 export default function Profile() {
@@ -167,7 +168,10 @@ export default function Profile() {
     return (
         <div className="bg-blue-100 min-h-screen">
             <div className="flex">
-                <Sidebar userName={userInput.firstName} userType={userInput.userType}/>
+                {userInput.userType === 'admin' ? 
+                    <AdminSidebar userName={userInput.firstName} userType={userInput.userType}/> :
+                    <Sidebar userName={userInput.firstName} userType={userInput.userType}/>
+                }
                 <div className="relative md:ml-64 w-full">
                     <div className="p-6 text-center">
                         <h1 className="text-3xl text-black font-semibold mb-4" data-testid="profile-heading">Profile</h1>
@@ -211,11 +215,8 @@ export default function Profile() {
                                     </div>
                                     <div className="bg-white-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                         <dt className="text-sm font-medium text-gray-500">Email</dt>
-                                        <dd className="flex justify-between items-center mt-1 sm:col-span-2">
-                                            {isEditing ? 
-                                                <input type="email" name="email" value={editedUserInput.email} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
-                                                <span className='text-black'>{userInput.email}</span>
-                                            }
+                                        <dd className="flex justify-between items-center mt-1 sm:col-span-2"> 
+                                            <span className='text-black'>{userInput.email}</span>
                                         </dd>
                                     </div>
                                     {isEditing ?

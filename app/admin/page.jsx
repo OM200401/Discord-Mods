@@ -61,7 +61,7 @@ export default function Admin(){
                 console.log('No user');
             }
 
-            console.log(userName);
+            // console.log(userName);
         }); 
 
         // Cleanup subscription on unmount

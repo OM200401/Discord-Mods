@@ -6,7 +6,7 @@ import { FaHome, FaBook, FaPencilAlt, FaFileAlt, FaUser, FaChalkboard, FaSignOut
 
 //Creating a sidebar component to be able to use on all the pages for the app
 
-function Sidebar({ userName, userType }) {
+function Sidebar({ userName , userType }) {
     // const router = useRouter();
     // const [isClient, setIsClient] = useState(false);
 
