@@ -100,7 +100,6 @@ export default function Assignments({ params }) {
             return;
         }
         
-
         setErrorMessage('');
 
         try {
@@ -108,7 +107,6 @@ export default function Assignments({ params }) {
             const courseCollectionRef = doc(db, 'courses', courseCode);
 
             await setDoc(quizCollectionRef, { questions,weightage,dueDate:dueDate});
-
 
             const courseSnapshot = await getDoc(courseCollectionRef);
             const courseData = courseSnapshot.data();
