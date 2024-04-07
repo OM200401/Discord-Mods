@@ -1,7 +1,6 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import SignUpPage from '../../app/signup/page';
 import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
-import firebase from '../../app/lib/firebaseMock';
 import db from '../../app/lib/firebase';
 import { addDoc, doc, getDocs, setDoc, collection, query, where} from 'firebase/firestore';
 import { auth } from '../../app/lib/firebase';
@@ -64,11 +63,11 @@ describe('Firebase Database Tests', () => {
             user = userCredential.user;
             expect(user.uid).toBeDefined(); // Ensure a user object is returned
             expect(user.email.toLowerCase()).toEqual(email.toLowerCase()); // Ensure the returned user has the correct email
-            const studentCollection = collection(db, 'teacher');
-            const stuRef = query(studentCollection, where('email', '==', user.email));
-            const stuSnapshot = await getDocs(stuRef);
-            if (!stuSnapshot.empty) {
-                stuSnapshot.forEach((doc) => {
+            const teacherCollection = collection(db, 'teacher');
+            const teachRef = query(teacherCollection, where('email', '==', user.email));
+            const teachSnapshot = await getDocs(teachRef);
+            if (!teachSnapshot.empty) {
+                teachSnapshot.forEach((doc) => {
                     console.log(doc.id, ' => ', doc.data());
                     // You can add more assertions based on your requirements
                     expect(doc.data().firstName).toBe(firstName);
@@ -81,5 +80,5 @@ describe('Firebase Database Tests', () => {
             throw new Error('Signup failed: ' + error.message);
         }
     
-    });
+    });    
 });

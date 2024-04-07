@@ -7,7 +7,7 @@ describe('Firebase Database Tests', () => {
         const adminsCollection = collection(db, 'admins');
 
         // Query for all user documents
-        const q = query(adminsCollection, where('firstName', '==', 'Aamir'));
+        const q = query(adminsCollection, where('firstName', '==', 'Admin'));
       
         // Get the documents that match the query
         const querySnapshot = await getDocs(q);
@@ -23,17 +23,17 @@ describe('Firebase Database Tests', () => {
         // Ensure that the data matches the expected data
         expect(adminsData.length).toBeGreaterThan(0); // Ensure that there is at least one document
         expect(adminsData[0]).toEqual({
-            email: "admintest@gmail.com",
-            firstName:"Aamir",
-            lastName:"Ahmed",
-            uid: "VyDkFBTo77XeaVIihTjMe04opg82",
+            email: "admintestnew@gmail.com",
+            firstName:"Admin",
+            lastName:"User",
+            uid: "eiQykSA7Y2Zq59zCf8fNBHAFBlM2",
             userType: "admin"             
         });
     });  
 
     test('Test database read operation for admin properties', async () => {
       // Assuming 'Userinfo' is the name of your Firestore collection
-      const adminsCollection = collection(db, 'students');
+      const adminsCollection = collection(db, 'admins');
 
       // Query for all user documents
       const q = query(adminsCollection);
@@ -56,8 +56,8 @@ describe('Firebase Database Tests', () => {
         expect(admin).toHaveProperty('email');
         expect(admin).toHaveProperty('firstName');
         expect(admin).toHaveProperty('lastName');
-        // expect(admin).toHaveProperty('uid');
-        // expect(admin).toHaveProperty('userType');        
+        expect(admin).toHaveProperty('uid');
+        expect(admin).toHaveProperty('userType');        
       });
     });
 

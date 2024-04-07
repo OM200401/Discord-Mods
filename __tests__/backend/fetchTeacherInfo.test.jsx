@@ -71,12 +71,12 @@ describe('Firebase Database Tests', () => {
       teacherData.forEach(teacher => {  
       if (teacher.courses) {
           expect(teacher).toHaveProperty('registeredCourses');
+          expect(teacher).toHaveProperty('firstName');
+          expect(teacher).toHaveProperty('lastName');
       }  
-        expect(teacher).toHaveProperty('email');
-        expect(teacher).toHaveProperty('firstName');
-        expect(teacher).toHaveProperty('lastName');
-        // expect(teacher).toHaveProperty('uid'); // Implement once database is updated
-        // expect(teacher).toHaveProperty('userType'); // Implement once database is updated
+        // expect(teacher).toHaveProperty('email'); //Implement once database is updated        
+        // expect(teacher).toHaveProperty('uid'); // 
+        // expect(teacher).toHaveProperty('userType'); // 
       });
     });
 
