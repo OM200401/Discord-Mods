@@ -158,7 +158,7 @@ export default function AssignGrade() {
         fetchStudentInfo();
 
 
-    }, [studentInfo, assignmentType]);
+    }, []);
 
     if (loading) {
         return <Loader />; // Return the Loading component if loading is true
@@ -181,7 +181,7 @@ export default function AssignGrade() {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {studentInfo.map((student, index) => (
 
-                                    student.assignmentFileSubmission ? (
+                                    student.assignmentFileSubmission=='false' ? (
 
                                         <div key={index} className="bg-white rounded-lg p-6 border border-gray-300">
                                             <p className="font-semibold text-lg">{student.studentName}</p>
@@ -204,8 +204,9 @@ export default function AssignGrade() {
                                             </div>
                                         </div>) : (
                                        <div key={index} className="rounded-lg p-6 border border-gray-300">
-                                       <iframe className="mb-5" src={student.assignmentSubmission} title="Downloaded PDF" width="900px" height="800px" />
-                                   
+                                       <iframe src={student.assignmentSubmission} type="pdf" className="mb-5" title="Downloaded PDF" width="900px" height="800px" />
+                                      
+
                                        <div>
                                            <p className="font-semibold text-lg">{student.studentName}</p>
                                        </div>

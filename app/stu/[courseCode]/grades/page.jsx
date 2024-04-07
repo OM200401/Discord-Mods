@@ -16,6 +16,7 @@ export default function Grades({params}) {
     const [user,setUser] = useState(null);
     const [userType,setUserType] = useState('user');
     const [userName,setUserName] = useState('non');
+    const [gradesWeight, setGradesWeight] = useState([]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -26,6 +27,7 @@ export default function Grades({params}) {
                         // Query for the student document
                         const studentQuerySnapshot = await getDocs(collection(db, 'students'));
                         let studentDoc;
+                        let gradeWeightArray = [];
 
                         studentQuerySnapshot.forEach(doc => {
                             if (doc.data().uid === user.uid) {
@@ -42,10 +44,20 @@ export default function Grades({params}) {
                             if (courseDocSnapshot.exists()) {
                                 // Get the submittedAssignments array
                                 const submittedAssignments = courseDocSnapshot.data().submittedAssignments || [];
-        
+                                
                                 // Filter the submittedAssignments where grade is not null
                                 const filteredAssignments = submittedAssignments.filter(assignment => assignment.grade !== null);
-        
+
+                                filteredAssignments.forEach((assignment) => {
+                                    const assignmentRef = doc(db,'essays',assignment.name);
+
+
+
+                                    
+                                })
+
+
+
                                 // Update the state with filtered assignments
                                 setCurrentAssignments(filteredAssignments);
                             } else {

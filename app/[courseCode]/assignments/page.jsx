@@ -21,67 +21,61 @@ export default function Assignments({ params }) {
     const [user,setUser] = useState(null);
     const [userType,setUserType] = useState('user');
     const [userName,setUserName] = useState('non');
+    const [submittedAssignments, setSubmittedAssignments] = useState([]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if(auth.currentUser){
+            if (auth.currentUser) {
                 setUser(auth.currentUser);
-                  console.log(user);
-                  const userInfoRef = collection(db,'teachers');
-                  const q = query(userInfoRef, where('uid','==',user.uid));
-                //   console.log(q);
-                  try{
-                      const querySnapshot = await getDocs(q);
-                      querySnapshot.forEach((doc) => {
-                          setUserName(doc.data().firstName);
-                          setUserType(doc.data().userType);
-                        //   console.log(doc.data().firstName);
-                      })
-                  }catch(error){
-                      console.log(error.message);
-                  }  
-
+    
+                const userInfoRef = collection(db, 'teachers');
+                const q = query(userInfoRef, where('uid', '==', user.uid));
+                try {
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach((doc) => {
+                        setUserName(doc.data().firstName);
+                        setUserType(doc.data().userType);
+                    })
+                } catch (error) {
+                    console.log(error.message);
+                }
+    
                 const coursesRef = doc(db, 'courses', courseCode);
                 const courseSnapshot = await getDoc(coursesRef);
-
+    
                 if (courseSnapshot.exists()) {
-                    const assignmentNames= courseSnapshot.data().currentAssignments || [];
-
-                    // Initialize an array to store all assignments
-                    const assignments = [];
-
-                    // Iterate through each assignment name and fetch data
-                    for (const name of assignmentNames) {
+                    const assignmentNames = courseSnapshot.data().currentAssignments || [];
+    
+                    // Initialize an array to store all promises for fetching assignment data
+                    const assignmentPromises = assignmentNames.map(async (name) => {
                         let assignmentData = null;
                         const quizRef = doc(db, 'quizzes', name);
-                        const quizSnapshot = await getDoc(quizRef);
-
+                        const essayRef = doc(db, 'essays', name);
+    
+                        const [quizSnapshot, essaySnapshot] = await Promise.all([
+                            getDoc(quizRef),
+                            getDoc(essayRef)
+                        ]);
+    
                         if (quizSnapshot.exists()) {
                             assignmentData = quizSnapshot.data();
-                        } else {
-                            const essayRef = doc(db, 'essays', name);
-                            const essaySnapshot = await getDoc(essayRef);
-                            if (essaySnapshot.exists()) {
-                                assignmentData = essaySnapshot.data();
-                            }
+                        } else if (essaySnapshot.exists()) {
+                            assignmentData = essaySnapshot.data();
                         }
-
-                        // Push assignment data to assignments array
-                        if (assignmentData) {
-                            assignments.push({ name, ...assignmentData });
-                            // console.log(assignments);
-                        }
-                    }
-
-                    // Update currentAssignments state after all assignments are fetched
+    
+                        return { name, ...assignmentData };
+                    });
+    
+                    // Await all promises and update currentAssignments state
+                    const assignments = await Promise.all(assignmentPromises);
                     setCurrentAssignments(assignments);
-                    // console.log(currentAssignments);
                 }
             }
         });
-
+    
         return () => unsubscribe();
-    }, []); // Add courseCode as a dependency
+    }, [courseCode]);
+     // Add courseCode as a dependency
 
     const [loading, setLoading] = useState(true);
 
