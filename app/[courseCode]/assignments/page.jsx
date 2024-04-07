@@ -1,29 +1,89 @@
-'use client';
+'use client'
 import CourseNavBar from '../../components/CourseNavBar';
 import Sidebar from '../../components/Sidebar';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
+import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
+import db from '../../lib/firebase'
+import StudentAssignmentCard from '../../components/StudentAssignmentCard';
+import TeacherAssignmentCard from '../../components/TeacherAssignmentCard';
 import Loader from '../../components/Loader';
-import {useState, useEffect} from 'react';
 
 
-export default function Assignments() {
+export default function Assignments({ params }) {
+    const courseCode = params.courseCode;
+    // console.log(params);
+    // console.log("Assignments page course code is " + courseCode);
+
+
+    const [currentAssignments, setCurrentAssignments] = useState([]);
+    const [user,setUser] = useState(null);
+    const [userType,setUserType] = useState('user');
+    const [userName,setUserName] = useState('non');
+    const [submittedAssignments, setSubmittedAssignments] = useState([]);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (auth.currentUser) {
+                setUser(auth.currentUser);
+    
+                const userInfoRef = collection(db, 'teachers');
+                const q = query(userInfoRef, where('uid', '==', user.uid));
+                try {
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach((doc) => {
+                        setUserName(doc.data().firstName);
+                        setUserType(doc.data().userType);
+                    })
+                } catch (error) {
+                    console.log(error.message);
+                }
+    
+                const coursesRef = doc(db, 'courses', courseCode);
+                const courseSnapshot = await getDoc(coursesRef);
+    
+                if (courseSnapshot.exists()) {
+                    const assignmentNames = courseSnapshot.data().currentAssignments || [];
+    
+                    // Initialize an array to store all promises for fetching assignment data
+                    const assignmentPromises = assignmentNames.map(async (name) => {
+                        let assignmentData = null;
+                        const quizRef = doc(db, 'quizzes', name);
+                        const essayRef = doc(db, 'essays', name);
+    
+                        const [quizSnapshot, essaySnapshot] = await Promise.all([
+                            getDoc(quizRef),
+                            getDoc(essayRef)
+                        ]);
+    
+                        if (quizSnapshot.exists()) {
+                            assignmentData = quizSnapshot.data();
+                        } else if (essaySnapshot.exists()) {
+                            assignmentData = essaySnapshot.data();
+                        }
+    
+                        return { name, ...assignmentData };
+                    });
+    
+                    // Await all promises and update currentAssignments state
+                    const assignments = await Promise.all(assignmentPromises);
+                    setCurrentAssignments(assignments);
+                }
+            }
+        });
+    
+        return () => unsubscribe();
+    }, [courseCode]);
+     // Add courseCode as a dependency
 
     const [loading, setLoading] = useState(true);
-
-    // Demo assignments array to display some assignments but will later have data 
-    // displayed from the database
-    const assignments = [
-        { title: 'Assignment 1', dueDate: '2022-01-01', points: 100 },
-        { title: 'Assignment 2', dueDate: '2022-01-15', points: 150 },
-        { title: 'Assignment 3', dueDate: '2022-01-15', points: 150 },
-        { title: 'Assignment 4', dueDate: '2022-01-15', points: 150 },
-        { title: 'Assignment 5', dueDate: '2022-01-15', points: 150 },
-    ];
 
     useEffect(() => {
         // Simulate a network request
         setTimeout(() => {
             setLoading(false); // Set loading to false after 3 seconds
-        }, 3000);
+        }, 1000);
     }, []);
 
     if (loading) {
@@ -32,9 +92,9 @@ export default function Assignments() {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
-            <Sidebar />
+            <Sidebar userName={userName} userType={"Teacher"}/>
             <div className="relative md:ml-64">
-                <CourseNavBar />
+                <CourseNavBar courseCode={courseCode}/>
             </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
@@ -43,18 +103,9 @@ export default function Assignments() {
                     <a href="addAssignments" className="px-4 py-2 mb-3 bg-green-500 text-white rounded hover:bg-green-600">Add</a>
                 </div>
                 <div className="overflow-x-auto">
-                    {assignments.map((assignment, index) => (
-                        <div key={index} className="flex items-center justify-between bg-gray-100 mb-4 p-4 rounded border border-gray-300">
-                            <div>
-                                <h3 className="text-lg font-semibold text-black">{assignment.title}</h3>
-                                <p className="text-sm text-gray-600">Due Date: {assignment.dueDate}</p>
-                                <p className="text-sm text-gray-600">Points: {assignment.points}</p>
-                            </div>
-                            <div className="flex">
-                                <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">Edit</button>
-                                <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
-                            </div>
-                        </div>
+                    {currentAssignments.map((assignment, index) => (
+                      (userType == 'Student' && <StudentAssignmentCard assignment={assignment} courseCode={courseCode} />) ||
+                      (userType == 'Teacher' && <TeacherAssignmentCard assignment={assignment} courseCode = {courseCode} />)
                     ))}
                 </div>
             </div>

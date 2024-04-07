@@ -21,7 +21,7 @@ export default function EssayDisplay() {
         // Simulate a network request
         setTimeout(() => {
             setLoading(false); // Set loading to false after 3 seconds
-        }, 2000);
+        }, 1000);
     }, []);
 
     if (loading) {

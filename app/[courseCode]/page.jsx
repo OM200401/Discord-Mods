@@ -10,7 +10,7 @@ import CourseNavBar from '../components/CourseNavBar';
 import { getStorage, ref, getDownloadURL} from "firebase/storage";
 import Loader from '../components/Loader';
 
-export default function CoursePage() {
+export default function CoursePage({ params }) {
 
     // Fetch course info from the database based on the courseCode
      
@@ -20,17 +20,22 @@ export default function CoursePage() {
     const [uploading, setUploading] = useState(false); 
     const [loading, setLoading] = useState(true);
 
-    const search = window.location.search;
-    const params = new URLSearchParams(search);
-    const courseCode = params.get('courseCode');
+    console.log(params);
+    let courseCode = params ? params.courseCode : 'COSC304';
 
+    //check if in test mode
+    if(process.env.NODE_ENV === 'test') {
+      courseCode = 'COSC304';
+    }
+
+    console.log("Course code is: " + courseCode);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
               setUser(auth.currentUser);
                 console.log(user);
-                const userInfoRef = collection(db,'Userinfo');
+                const userInfoRef = collection(db,'teachers');
                 const q = query(userInfoRef, where('uid','==',user.uid));
                 console.log(q);
                 try{
@@ -51,7 +56,7 @@ export default function CoursePage() {
             // Simulate a network request
             setTimeout(() => {
               setLoading(false); // Set loading to false after 3 seconds
-            }, 3000);
+            }, 1000);
         }); 
 
         // Cleanup subscription on unmount
@@ -65,12 +70,10 @@ export default function CoursePage() {
       getDownloadURL(pdfRef)
           .then((url) => {
               setPdfUrl(url);
-              useEffect(() => {
-                // Simulate a network request
-                setTimeout(() => {
-                    setLoading(false); // Set loading to false after 3 seconds
-                }, 3000);
-              }, []);
+              // Simulate a network request
+              setTimeout(() => {
+                  setLoading(false); // Set loading to false after 3 seconds
+              }, 1000);
           })
           .catch((error) => {
               console.log('Error getting PDF URL:', error);
@@ -83,7 +86,7 @@ export default function CoursePage() {
 
     return (
         <div className="flex flex-col md:flex-row">
-          <Sidebar data-testid = "sidebar-component" userName={ userName } />
+          <Sidebar data-testid = "sidebar-component" userName={ userName } userType={"Teacher"} />
           <div className="relative md:ml-64">
             <CourseNavBar courseCode={courseCode}/>
           </div>

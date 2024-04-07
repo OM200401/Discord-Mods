@@ -1,10 +1,10 @@
 import { expect, test } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import LoginPage from '../../app/login/page';
-import { act } from '@testing-library/react';
+import {RouterMock} from 'next-router-mock';
 
 test('Navbar component is present', () => {
-    render(<LoginPage />);
+    render( <LoginPage /> );
     const navbar = screen.getByTestId('navbar');
     expect(navbar).toBeDefined();
 });
@@ -37,7 +37,7 @@ test('Password input field is present', () => {
     const passwordInput = passwordInputs.find(input => input.getAttribute('type') === 'password');
     expect(passwordInput).toBeTruthy(); 
 });
-
+ 
 
 
 test('Login button is present', () => {

@@ -1,5 +1,4 @@
-import { render, fireEvent, waitFor } from '@testing-library/react';
-import SignUpPage from '../../app/signup/page';
+import { render, fireEvent, waitFor } from '@testing-library/react'; 
 import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
 import db from '../../app/lib/firebase';
 import { addDoc, doc, getDocs, setDoc, collection, query, where} from 'firebase/firestore';
@@ -43,11 +42,13 @@ describe('Firebase Database Tests', () => {
                     expect(doc.data().lastName).toBe(lastName);
                     expect(doc.data().email).toBe(email);                    
                 });
-            }              
+            }             
+
         } catch (error) {
             // If signup fails, fail the test
             throw new Error('Signup failed: ' + error.message);
         }
+
     
     });
     test('Test teacher signUp operation', async () => {
@@ -81,4 +82,5 @@ describe('Firebase Database Tests', () => {
         }
     
     });    
+
 });

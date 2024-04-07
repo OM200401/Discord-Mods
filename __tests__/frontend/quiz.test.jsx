@@ -1,18 +1,20 @@
 import { test, expect } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import Assignments from '../../app/[courseCode]/quiz/page'
+import { render, screen, fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
+import Assignments from '../../app/[courseCode]/quiz/testPage'
 
-test('Quiz page renders correctly', () => {
+test('Quiz page renders correctly', async () => {
     render(<Assignments />)
+    await waitForElementToBeRemoved(() => screen.getByTestId('loader'), { timeout: 6000});
+
     
     const courseHeading = screen.getByTestId('course-heading')
-    expect(courseHeading).toBeDefined()
+    expect(courseHeading).toBeDefined() 
 
     const assignmentsHeading = screen.getByTestId('assignments-heading')
     expect(assignmentsHeading).toBeDefined()
 
     const addQuizButton = screen.getByText(/add quiz/i)
-    expect(addQuizButton).toBeDefined()
+    expect(addQuizButton).toBeDefined() 
 })
 
 test('Clicking on the Add Quiz button shows the quiz form', async () => {

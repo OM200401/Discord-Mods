@@ -3,15 +3,21 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import Loader from '../../components/Loader';
+import CourseNavBar from '../../components/CourseNavBar';
 import db from '../../lib/firebase';
 import {doc,setDoc} from 'firebase/firestore';
 
-export default function Assignments() {
+export default function Assignments({ params }) {
     const [showForm, setShowForm] = useState(false);
     const [quizTitle, setQuizTitle] = useState('');
     const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null}]);
     const [weightage, setWeightage] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [userName,setUserName] = useState('non');
+
+    const courseCode = params.courseCode;
+    console.log("Quiz page course code is: " + courseCode);
+    console.log(params)
 
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
@@ -70,7 +76,7 @@ export default function Assignments() {
         // Simulate a network request
         setTimeout(() => {
             setLoading(false); // Set loading to false after 3 seconds
-        }, 3000);
+        }, 1000);
     }, []);
 
     if (loading) {
@@ -78,8 +84,11 @@ export default function Assignments() {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
-            <Sidebar />
+        <div className="flex flex-col md:flex-row bg-blue-100">
+            <Sidebar userName={userName} userType={"Teacher"}/>
+            <div className="relative md:ml-64">
+                <CourseNavBar courseCode={courseCode}/>
+            </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading"> New Assignment</h2>

@@ -1,9 +1,9 @@
 import { test, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, cleanup } from '@testing-library/react'
 import Sidebar from '../../app/components/Sidebar'
 
 test('Sidebar is present', () => {
-    render(<Sidebar />)
+    render(<Sidebar userType={"Teacher"}/>)
     const sidebar = screen.getByRole('navigation')
     expect(sidebar).toBeDefined()
 })
@@ -14,10 +14,18 @@ test('E-Learning Platform link is present', () => {
     expect(platformLink.closest('a').getAttribute('href')).toBe('/')
 })
 
-test('Dashboard link is present', () => {
+test('Dashboard link is present for teacher', () => {
     const homeLink = screen.getByText(/Dashboard/i)
-    expect(homeLink).toBeDefined()
+    expect(homeLink).toBeDefined() 
     expect(homeLink.closest('a').getAttribute('href')).toBe('/home')
+    cleanup()
+})
+
+test('Dashboard link is present for student', () => {
+    render(<Sidebar userType="student" />)
+    const homeLink = screen.getByText(/Dashboard/i)
+    expect(homeLink).toBeDefined() 
+    expect(homeLink.closest('a').getAttribute('href')).toBe('/stuHome')
 })
 
 test('Courses link is present', () => {
@@ -25,8 +33,6 @@ test('Courses link is present', () => {
     expect(homeLink).toBeDefined()
     expect(homeLink.closest('a').getAttribute('href')).toBe('/browseCourses')
 })
-
-
 
 test('Profile link is present', () => {
     const homeLink = screen.getByText(/Profile/i)

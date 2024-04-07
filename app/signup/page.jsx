@@ -23,11 +23,13 @@ export default function SignUpPage() {
 
     useEffect(() => {
         if (user) {
-          console.log("Redirect");
-          redirect('/home');
+            if(userType === 'Teacher'){
+                redirect('/home');
+            }else{
+                // console.log("Redirect");
+                redirect('/stuHome');
+            }
         }
-
-
     }, [user]);
 
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
@@ -59,72 +61,65 @@ export default function SignUpPage() {
             return;
         }
 
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user
-        const uid = user.uid;
-        setUser(user);
+    
+        
+        try {
+            await createUserWithEmailAndPassword(auth, email, password).then(async cred=> {
+                setUser(cred.user);
+                if(userType === 'Student'){
+                    const studentCollection = collection(db,'students');
+                    
+                    await setDoc(doc(studentCollection, cred.user.uid), {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        userType: userType,
+                        uid: cred.user.uid
+                    })
+                    const defaultCourse = doc(db, 'courses', 'DefaultCourse');
+                    const defaultCourseDoc = await getDoc(defaultCourse);
+        
+                    let defaultCourseData = '';
+        
+                    if(defaultCourseDoc.exists()) {
+                        defaultCourseData = defaultCourseDoc.data();
+                    }
+                    const registeredCoursesCollectionRef = collection(db, 'students', cred.user.uid, 'registeredCourses');
+                    await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
+                      
+                }else {                    
+                    const teacherCollection = collection(db,'teachers');
+                    
+                    await setDoc(doc(teacherCollection, cred.user.uid), {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        userType: userType,
+                        uid: cred.user.uid
+                    })
+                    const defaultCourse = doc(db, 'courses', 'DefaultCourse');
+                    const defaultCourseDoc = await getDoc(defaultCourse);
+        
+                    let defaultCourseData = '';
+        
+                    if(defaultCourseDoc.exists()) {
+                        defaultCourseData = defaultCourseDoc.data();
+                    }
+        
+                    const registeredCoursesCollectionRef = collection(db, 'teachers', cred.user.uid, 'registeredCourses');
+                    await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
+                      
+                } 
 
-        // After the user is created, you can add additional user info to your Firestore collection
-        if(userType == 'Student'){
-            const studentCollection = collection(db,'students');
-            const defaultCourse = doc(db, 'courses', 'DefaultCourse')
-
-            const defaultCourseDoc = await(getDoc(defaultCourse));
-
-            let defaultCourseData = '';
-
-            if(defaultCourseDoc.exists()) {
-                 defaultCourseData = defaultCourseDoc.data();
-            }
-
-            const studentDocRef = await addDoc(studentCollection,{
-                firstName:firstName,
-                lastName:lastName,
-                email:email,
-                userType:userType,
-                uid:uid
-            }) 
-
-          
-
-            const registeredCoursesCollectionRef = collection(studentDocRef, 'registeredCourses')
-            await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
- 
-        }else {
-            const teacherCollection = collection(db,'teachers');
-            
-            const defaultCourse = doc(db, 'courses', 'DefaultCourse')
-
-            const defaultCourseDoc = await(getDoc(defaultCourse));
-
-            let defaultCourseData = '';
-
-            if(defaultCourseDoc.exists()) {
-                 defaultCourseData = defaultCourseDoc.data();
-
-            }
-
-            const teacherDocRef = await addDoc(teacherCollection,{
-                firstName:firstName,
-                lastName:lastName,
-                email:email,
-                userType:userType,
-                uid:uid
             })
-
-
-            const registeredCoursesCollectionRef = collection(teacherDocRef, 'registeredCourses')
-            await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
         }
+        
        
-       
-    } catch (error) {
-        // Handle any errors from login fields here
-        setErrorMsg(getFriendlyErrorMessage(error.code)); 
-        console.error("Error signing in with email and password", error);
-    }
-    }
+        catch (error) {
+            // Handle any errors from login fields here
+            setErrorMsg(getFriendlyErrorMessage(error.code)); 
+            console.error("Error signing in with email and password", error);
+        }    }
 
     return (
         <div className="min-h-screen flex flex-col justify-start">
@@ -164,8 +159,8 @@ export default function SignUpPage() {
                                 <div className="flex flex-col">
                                     <label htmlFor='userType' className="leading-loose">User Type</label>
                                     <select id='userType' value={userType} onChange={(e) => setUserType(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
-                                        <option value="student">Student</option>
-                                        <option value="teacher">Teacher</option>
+                                        <option value="Student">Student</option>
+                                        <option value="Teacher">Teacher</option>
                                     </select>
                                 </div>                                                                
                                 <button type='submit' onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Sign Up</button>

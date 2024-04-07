@@ -1,10 +1,10 @@
 import { test, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import sinon from 'sinon';
 import * as nextRouter from 'next/router';
-import Grades from '../../app/stu/[courseCode]/grades/page'
+import Grades from '../../app/stu/[courseCode]/grades/testPage'
 
-test('Sidebar component is present', () => {
+test('Sidebar component is present', async () => {
     sinon.stub(nextRouter, 'useRouter').returns({
         route: '/',
         pathname: '',
@@ -12,6 +12,7 @@ test('Sidebar component is present', () => {
         asPath: '',
     })
     render(<Grades/>);
+    await waitForElementToBeRemoved(() => screen.getByTestId('loader'), { timeout: 6000});
     const sidebar = screen.findByTestId('sidebar-component');
     expect(sidebar).toBeDefined();
 });
@@ -26,7 +27,6 @@ test('CourseNavBar component is present', () => {
 //----------------------------------------------------
 
 test('Course heading is rendered correctly', () => {
-
     const courseHeading = screen.getByTestId('course-heading');
     expect(courseHeading).toBeDefined();
 });

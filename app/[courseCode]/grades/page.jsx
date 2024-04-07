@@ -5,9 +5,12 @@ import Sidebar from '../../components/Sidebar';
 import Loader from '../../components/Loader';
 import { FaChevronDown } from 'react-icons/fa';
 
-export default function Assignments() {
+export default function Assignments({ params }) {
 
     const [loading, setLoading] = useState(true);
+    const [userName,setUserName] = useState('non');
+    const courseCode = params.courseCode;
+    // console.log(params);
 
     // Demo students array to display some students but will later have data 
     // displayed from the database
@@ -35,7 +38,7 @@ export default function Assignments() {
         // Simulate a network request
         setTimeout(() => {
             setLoading(false); // Set loading to false after 3 seconds
-        }, 3000);
+        }, 1000);
     }, []);
 
     if (loading) {
@@ -44,9 +47,9 @@ export default function Assignments() {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
-            <Sidebar />
+            <Sidebar userName={userName} userType={"Teacher"}/>
             <div className="relative md:ml-64">
-                <CourseNavBar />
+                <CourseNavBar courseCode={courseCode} />
             </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>

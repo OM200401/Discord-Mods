@@ -2,13 +2,15 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import CourseNavBar from '../../components/CourseNavBar';
-import db from '../../lib/firebase';
-import { doc, setDoc,getDoc } from 'firebase/firestore';
-import { useParams } from 'next/navigation';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
+import { setDoc, getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
+import db from '../../lib/firebase'
 import Loader from '../../components/Loader';
 
 
-export default function Assignments() {
+export default function Assignments({ params }) {
+    const [userName,setUserName] = useState('non');
     const [showForm, setShowForm] = useState(false);
     const [quizTitle, setQuizTitle] = useState(''); // New state for quiz title
     const [essayTitle, setEssayTitle] = useState(''); // New state for essay title
@@ -20,10 +22,35 @@ export default function Assignments() {
     const [dueDate, setDueDate] = useState('');
     const [loading, setLoading] = useState(true);
 
-    const {courseCode} = useParams();
-    console.log("my course code is " + courseCode);
+    const [user,setUser] = useState(null);
+    const [userType,setUserType] = useState('user');
+
+    const courseCode = params.courseCode;
+    // console.log("my course code is " + courseCode);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if(auth.currentUser){
+                setUser(auth.currentUser);
+                  console.log(user);
+                  const userInfoRef = collection(db,'teachers');
+                  const q = query(userInfoRef, where('uid','==',user.uid));
+                //   console.log(q);
+                  try{
+                      const querySnapshot = await getDocs(q);
+                      querySnapshot.forEach((doc) => {
+                          setUserName(doc.data().firstName);
+                          setUserType(doc.data().userType);
+                        //   console.log(doc.data().firstName);
+                      })
+                  }catch(error){
+                      console.log(error.message);
+                  }  
 
 
+            }
+        })
+    });
 
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
@@ -80,7 +107,7 @@ export default function Assignments() {
             const quizCollectionRef = doc(db, 'quizzes', quizTitle);
             const courseCollectionRef = doc(db, 'courses', courseCode);
 
-            await setDoc(quizCollectionRef, { questions,weightage});
+            await setDoc(quizCollectionRef, { questions,weightage,dueDate:dueDate});
 
 
             const courseSnapshot = await getDoc(courseCollectionRef);
@@ -120,7 +147,7 @@ export default function Assignments() {
             const essayCollectionRef = doc(db, 'essays', essayTitle);
             const courseCollectionRef = doc(db, 'courses', courseCode);
 
-            await setDoc(essayCollectionRef, { questionPrompt,weightage});
+            await setDoc(essayCollectionRef, { questionPrompt,weightage,dueDate:dueDate});
 
 
             const courseSnapshot = await getDoc(courseCollectionRef);
@@ -161,21 +188,26 @@ export default function Assignments() {
         setDueDate(e.target.value);
     };
 
+    
+
     useEffect(() => {
         // Simulate a network request
         setTimeout(() => {
             setLoading(false); // Set loading to false after 3 seconds
-        }, 3000);
+        }, 1000);
     }, []);
 
     if (loading) {
-        return <Loader />; // Return the Loading component if loading is true
+        return <Loader data-testid="loader" />; // Return the Loading component if loading is true
     }
 
     return (
-        <div className="flex flex-col h-screen bg-blue-100 overflow-auto">
-            <Sidebar />
-            <div className="p-6 text-center w-full">
+        <div className="flex flex-col md:flex-row">
+            <Sidebar userName={userName} userType={"Teacher"}/>
+            <div className="relative md:ml-64">
+                <CourseNavBar courseCode={courseCode}/>
+            </div>
+            <div className="p-6 text-center w-screen bg-blue-100">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading"> New Assignment</h2>
                 <div className="flex flex-row items-center justify-center p-4">

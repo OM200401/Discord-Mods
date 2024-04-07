@@ -13,7 +13,7 @@ import {useRouter} from 'next/navigation';
 // Validation in html also added to check the type of email input and password
 
 export default function LoginPage() {
-    const router = useRouter();
+    // const router = useRouter();
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -36,6 +36,8 @@ export default function LoginPage() {
                 return 'The password is incorrect.';
             case 'auth/invalid-credential':
                 return 'The credentials are invalid.';
+            case 'auth/email-already-in-use':
+                return 'The email is already in use.';
             // Add more cases as needed
             default:
                 return 'An unknown error occurred.';
@@ -67,7 +69,7 @@ export default function LoginPage() {
             const querySnapshotStu = await getDocs(tq);
             if(!querySnapshotStu.empty){
                 // User is a teacher
-                router.push('/home');
+                window.location.href = ('/home');
                 return;
             }
 
@@ -75,22 +77,22 @@ export default function LoginPage() {
             const sq = query(collection(db, "students"), where("email","==", email));
             const querySnapshotTeach = await getDocs(sq);
             if(!querySnapshotTeach.empty){
-                //User is a student
-                router.push('/stuHome');
+                //User is a teacher
+                window.location.href = ('/stuHome');
                 return;
             }
 
-            //check if user is in the students collection
+            //check if user is in the admins collection
             const aq = query(collection(db, "admins"), where("email","==", email));
             const querySnapshotAdmin = await getDocs(aq);
             if(!querySnapshotAdmin.empty){
-                //User is a student
-                router.push('/admin');
+                //User is an admin
+                window.location.href = ('/admin');
                 return;
             }
 
             // Handle error when user is neither teacher nor student
-            setError("User is not a teacher or a student !!");
+            setError("User is not a teacher or a student");
                    
         } catch (error) {
             // Handle any errors from login fields here
