@@ -100,7 +100,8 @@ export default function Assignments() {
                           submittedAssignments: arrayUnion({
                               name: decodeURIComponent(name),
                               submission: fileURL,
-                              grade: null
+                              grade: null,
+                              fileSubmission:'true'
                           })
                       };
       
@@ -143,7 +144,8 @@ export default function Assignments() {
                         submittedAssignments: arrayUnion({
                             name: decodeURIComponent(name),
                             submission: essay,
-                            grade: null
+                            grade: null,
+                            fileSubmission:'false'
                         })
                     };
 
