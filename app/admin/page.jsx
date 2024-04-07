@@ -1,15 +1,14 @@
 'use client';
 import Link from "next/link";
-// import Sidebar from "../components/Sidebar"; 
+import AdminSidebar from "../components/AdminSidebar"; 
 import dynamic from "next/dynamic";
 import CourseCard from "../components/CourseCard";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
-import {auth} from '../lib/firebase';
+import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import {fetchCourseInfo} from "../components/FetchCourseData"
-import Loader from '../components/Loader';
+// import { fetchAllCourses } from "../components/FetchAllCourses";
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
@@ -21,27 +20,21 @@ if (process.env.NODE_ENV === 'test') {
 }
 // Home Page that will be seen by the student user on logging in
 
-export default function Home(){
+export default function Admin(){
     const [userName, setUserName] = useState('non');
     const [user,setUser] = useState();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-        const courseData = await fetchCourseInfo();
-        setCourses(courseData);
-        useEffect(() => {
-            // Simulate a network request
-            setTimeout(() => {
-                setLoading(false); // Set loading to false after 3 seconds
-            }, 3000);
-        }, []);
-    
-        };
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const courseData = await fetchAllCourses();
+    //         setCourses(courseData);
+    //         setLoading(false);
+    //     };
 
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
 
     // create a new function that will get the CourseCard info on clicking it and then go to the
     // backend and get info about that course to redirect to the particular Course page 
@@ -51,7 +44,7 @@ export default function Home(){
             if(auth.currentUser){
               setUser(auth.currentUser);
                 console.log(user);
-                const userInfoRef = collection(db,'Userinfo');
+                const userInfoRef = collection(db,'admins');
                 const q = query(userInfoRef, where('uid','==',user.uid));
                 console.log(q);
                 try{
@@ -77,19 +70,18 @@ export default function Home(){
 
     return (
         <div className="flex flex-col md:flex-row ml-80">
-            <Sidebar data-testid="sidebar-component" userName={ userName } />
-            {/* <h1>hello this is the stuHome</h1> */}
-            <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
+            <AdminSidebar data-testid="sidebar-component" userName={ userName } />
+            {/* <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
                 {loading ? (
-                    <Loader />
+                    <p>Loading...</p>
                 ) : (
                     courses.map(course => (
-                        <Link key={course.id} href={`../stu/[courseCode]?courseCode=${course.courseCode}`}>
+                        <Link key={course.id} href={`/[courseCode]?courseCode=${course.courseCode}`}>
                         <CourseCard data-testid="course-card" courseCode={course.courseCode} courseName={course.courseName} imageUrl={course.imageUrl}/>
                         </Link>
                     ))
                 )}
-            </div>
+            </div> */}
         </div>
     );
 }

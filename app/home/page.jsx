@@ -6,9 +6,9 @@ import CourseCard from "../components/CourseCard";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
-import {auth} from '../lib/firebase';
+import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs,getDoc,doc } from "firebase/firestore";
-import {fetchCourseInfo} from "../components/FetchCourseData"
+// import {fetchCourseInfo} from "../components/FetchCourseData"
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
@@ -25,16 +25,6 @@ export default function Home(){
     const [user,setUser] = useState();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-            const fetchData = async () => {
-            const courseData = await fetchCourseInfo();
-            setCourses(courseData);
-            setLoading(false);
-        };
-
-        fetchData();
-    }, []);
 
     // create a new function that will get the CourseCard info on clicking it and then go to the
     // backend and get info about that course to redirect to the particular Course page 

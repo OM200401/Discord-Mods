@@ -3,18 +3,25 @@ import Navbar from "../components/Navbar";
 import { useState } from 'react';
 import { useEffect } from "react";
 import Link from "next/link";
+import {collection, getDocs,doc,where,query} from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {auth} from '../lib/firebase';
-import { redirect } from "next/navigation";
+import db from '../lib/firebase';
+import {useRouter} from 'next/navigation';
 
 // Created front end for the login page with Email and Password
 // Validation in html also added to check the type of email input and password
 
 export default function LoginPage() {
+    const router = useRouter();
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [user,setUser] = useState(null);
+
+    const [uid,setUid] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
+
     const [errorMsg, setErrorMsg] = useState('');
 
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
@@ -35,6 +42,7 @@ export default function LoginPage() {
         }
     };
 
+
     const handleSubmit = async(e) => {
         setError("");
         e.preventDefault();
@@ -53,6 +61,36 @@ export default function LoginPage() {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);           
             const user = userCredential.user;    
             setUser(user);
+
+            //check if user is in the teachers collection
+            const tq = query(collection(db, "teachers"), where("email","==", email));
+            const querySnapshotStu = await getDocs(tq);
+            if(!querySnapshotStu.empty){
+                // User is a teacher
+                router.push('/home');
+                return;
+            }
+
+            //check if user is in the students collection
+            const sq = query(collection(db, "students"), where("email","==", email));
+            const querySnapshotTeach = await getDocs(sq);
+            if(!querySnapshotTeach.empty){
+                //User is a student
+                router.push('/stuHome');
+                return;
+            }
+
+            //check if user is in the students collection
+            const aq = query(collection(db, "admins"), where("email","==", email));
+            const querySnapshotAdmin = await getDocs(aq);
+            if(!querySnapshotAdmin.empty){
+                //User is a student
+                router.push('/admin');
+                return;
+            }
+
+            // Handle error when user is neither teacher nor student
+            setError("User is not a teacher or a student !!");
                    
         } catch (error) {
             // Handle any errors from login fields here
@@ -61,12 +99,6 @@ export default function LoginPage() {
         } 
     };
 
-    useEffect(() => {
-        if (user) {
-          console.log("Redirect");
-          redirect('/home');
-        }
-    }, [user]);
 
 
     return (
