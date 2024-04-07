@@ -60,6 +60,8 @@ export default function Assignments() {
                                     studentName: `${studentDoc.data().firstName} ${studentDoc.data().lastName}`,
                                     assignmentName: assignment.name,studentUid: studentDoc.data().uid
                                 });
+                                setUserName(studentDoc.data().firstName);
+                                console.log(userName);
                             }
                                 console.log(studentsData);
                                 console.log(studentDoc.data());

@@ -63,7 +63,7 @@ export default function Assignments({params}) {
                         </a>
                     ))} */}
                     {assignments.map((assignment, index) => (
-                      (<StudentAssignmentCard assignment={assignment} courseCode={courseCode} />)
+                      (<StudentAssignmentCard key={index} assignment={assignment} courseCode={courseCode} />)
                     ))}
                 </div>
             </div>

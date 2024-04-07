@@ -10,8 +10,7 @@ import { getDoc, getDocs, doc, where, query, documentId, collection, updateDoc, 
 import { useParams } from 'next/navigation';
 
 
-export default function assignGrade() {
-    console.log('hi');
+export default function AssignGrade() {
     const [loading, setLoading] = useState(false);
     const [studentInfo, setStudentInfo] = useState([]);
     const [grade, setGrade] = useState('');
