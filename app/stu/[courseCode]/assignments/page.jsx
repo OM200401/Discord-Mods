@@ -94,7 +94,7 @@ export default function Assignments({params}) {
         });
 
         return () => unsubscribe();
-    }, [courseCode]); // Add courseCode as a dependency
+    }, []); // Add courseCode as a dependency
 
     // Demo assignments array to display some assignments but will later have data 
     // displayed from the database
