@@ -11,7 +11,6 @@ import { useParams } from 'next/navigation';
 
 
 export default function AssignGrade() {
-    console.log('hi');
     const [loading, setLoading] = useState(false);
     const [studentInfo, setStudentInfo] = useState([]);
     const [grade, setGrade] = useState('');
