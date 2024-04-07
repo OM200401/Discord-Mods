@@ -61,6 +61,7 @@ export default function SignUpPage() {
             return;
         }
 
+    
         
         try {
             await createUserWithEmailAndPassword(auth, email, password).then(async cred=> {
@@ -109,6 +110,7 @@ export default function SignUpPage() {
                     await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
                       
                 } 
+
             })
         }
         
