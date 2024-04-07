@@ -49,7 +49,11 @@ export default function Grades({params}) {
                                 const filteredAssignments = submittedAssignments.filter(assignment => assignment.grade !== null);
 
                                 filteredAssignments.forEach((assignment) => {
-                                    const assignmentRef = doc(db,)
+                                    const assignmentRef = doc(db,'essays',assignment.name);
+
+
+
+                                    
                                 })
 
 

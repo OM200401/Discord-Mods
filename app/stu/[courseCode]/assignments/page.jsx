@@ -12,7 +12,7 @@ import TeacherAssignmentCard from '../../../components/TeacherAssignmentCard.jsx
 
 export default function Assignments({params}) {
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const courseCode = params.courseCode;
 
     const [currentAssignments, setCurrentAssignments] = useState([]);
@@ -23,88 +23,78 @@ export default function Assignments({params}) {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if(auth.currentUser){
+            if (auth.currentUser) {
                 setUser(auth.currentUser);
-                const userInfoRef = collection(db,'students');
-                const q = query(userInfoRef, where('uid','==',user.uid));
-                try{
+                const userInfoRef = collection(db, 'students');
+                const q = query(userInfoRef, where('uid', '==', user.uid));
+                try {
                     const querySnapshot = await getDocs(q);
                     querySnapshot.forEach((doc) => {
                         setUserName(doc.data().firstName);
                         setUserType(doc.data().userType);
-                    //   console.log(doc.data().firstName);
                     })
-                }catch(error){
+                } catch (error) {
                     console.log(error.message);
-                }  
+                }
 
                 const coursesRef = doc(db, 'courses', courseCode);
                 const courseSnapshot = await getDoc(coursesRef);
+
                 const submittedAssignmentsNames = [];
                 const submittedAssignmentData = [];
 
-                    const studentRef = collection(db, 'students');
-                    const studentQuery = query(studentRef,where("uid","==",user.uid));
-                    const studentQuerySnapshot = await getDocs(studentQuery);
+                const studentRef = collection(db, 'students');
+                const studentQuery = query(studentRef, where("uid", "==", user.uid));
+                const studentQuerySnapshot = await getDocs(studentQuery);
 
-                    if (!studentQuerySnapshot.empty) {
-                        const studentDoc = studentQuerySnapshot.docs[0]; // Assuming there's only one document for a given user
-                        const studentRef = studentDoc.ref; // Extracting the document reference
-                        const registeredCoursesRef = collection(studentRef, 'registeredCourses');
-                        const courseDocRef = doc(registeredCoursesRef, courseCode);
-                        const courseDocSnapshot = await getDoc(courseDocRef);
-    
-                        if (courseDocSnapshot.exists()) {
-                            const submittedAssignmentsData = courseDocSnapshot.data().submittedAssignments || [];
-                            submittedAssignmentsData.forEach((assignment) => {
-                                submittedAssignmentsNames.push(assignment.name);
-                                submittedAssignmentData.push(assignment);
-                                console.log(assignment.name);
-                            })
-                        }
-                        console.log("SUBMITTED" + submittedAssignmentsNames)
-                        } else {
-                        console.error("No student document found for the current user.");
+                if (!studentQuerySnapshot.empty) {
+                    const studentDoc = studentQuerySnapshot.docs[0];
+                    const studentRef = studentDoc.ref;
+                    const registeredCoursesRef = collection(studentRef, 'registeredCourses');
+                    const courseDocRef = doc(registeredCoursesRef, courseCode);
+                    const courseDocSnapshot = await getDoc(courseDocRef);
+
+                    if (courseDocSnapshot.exists()) {
+                        const submittedAssignmentsData = courseDocSnapshot.data().submittedAssignments || [];
+                        submittedAssignmentsData.forEach((assignment) => {
+                            submittedAssignmentsNames.push(assignment.name);
+                            submittedAssignmentData.push(assignment);
+                        })
                     }
-
+                }
                 setSubmittedAssignments(submittedAssignmentData);
 
                 if (courseSnapshot.exists()) {
-                    const assignmentNames= courseSnapshot.data().currentAssignments || [];
-
-                    // Initialize an array to store all assignments
-                    const assignments = [];
-
-                    // Iterate through each assignment name and fetch data
-                    for (const name of assignmentNames) {
+                    const assignmentNames = courseSnapshot.data().currentAssignments || [];
+                    
+                    const assignmentPromises = assignmentNames.map(async (name) => {
                         let assignmentData = null;
                         const quizRef = doc(db, 'quizzes', name);
-                        const quizSnapshot = await getDoc(quizRef);
+                        const essayRef = doc(db, 'essays', name);
 
-                        if (quizSnapshot.exists() &&  !submittedAssignmentsNames.includes(name)) {
+                        const [quizSnapshot, essaySnapshot] = await Promise.all([
+                            getDoc(quizRef),
+                            getDoc(essayRef)
+                        ]);
+
+                        if (quizSnapshot.exists() && !submittedAssignmentsNames.includes(name)) {
                             assignmentData = quizSnapshot.data();
-                        } else {
-                            const essayRef = doc(db, 'essays', name);
-                            const essaySnapshot = await getDoc(essayRef);
-                            if (essaySnapshot.exists() && !submittedAssignmentsNames.includes(name) ) {
-                                assignmentData = essaySnapshot.data();
-                            }
+                        } else if (!submittedAssignmentsNames.includes(name)) {
+                            assignmentData = essaySnapshot.data();
                         }
 
-                        // Push assignment data to assignments array
-                        if (assignmentData) {
-                            assignments.push({ name, ...assignmentData });
-                        }
-                    }
+                        return { name, ...assignmentData };
+                    });
 
-                    // Update currentAssignments state after all assignments are fetched
+                    const assignments = await Promise.all(assignmentPromises);
                     setCurrentAssignments(assignments);
+                    setLoading(false);
                 }
             }
         });
 
         return () => unsubscribe();
-    }, []); // Add courseCode as a dependency
+    }, [courseCode]); // Add courseCode as a dependency
 
     // Demo assignments array to display some assignments but will later have data 
     // displayed from the database
