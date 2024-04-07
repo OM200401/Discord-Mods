@@ -184,7 +184,6 @@ export default function Assignments() {
                                         className="w-full text-black px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                         value={essay}
                                         onChange={handleChange}
-                                        
                                     ></textarea>
                                 </div>
                                 
@@ -197,7 +196,7 @@ export default function Assignments() {
                             </form>
 
                             <form onSubmit={handleFileChange}>
-                            <div className="mb-4">
+                                <div className="mb-4">
                                     <label htmlFor="file" className="block text-gray-700">Upload file:</label>
                                     <input
                                         type="file"
@@ -206,7 +205,7 @@ export default function Assignments() {
                                         className="w-full text-black px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                         onChange={handleChangedFile} // Bind the function to the onChange event
 
-                                   />
+                                    />
                                 </div>
 
                                 <button
