@@ -1,7 +1,6 @@
 import { expect, test } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import LoginPage from '../../app/login/page';
-import {RouterMock} from 'next-router-mock';
 
 test('Navbar component is present', () => {
     render( <LoginPage /> );
@@ -26,14 +25,14 @@ test('Page contains the expected paragraph text', () => {
 
 test('Email input field is present', () => {
   
-    const emailInputs = screen.getAllByPlaceholderText('Email');
+    const emailInputs = screen.getAllByPlaceholderText('you@example.com');
     const emailInput = emailInputs.find(input => input.getAttribute('type') === 'email');
     expect(emailInput).toBeTruthy(); 
 });
 
 
 test('Password input field is present', () => {
-    const passwordInputs = screen.getAllByPlaceholderText('Password');
+    const passwordInputs = screen.getAllByPlaceholderText('Enter your password');
     const passwordInput = passwordInputs.find(input => input.getAttribute('type') === 'password');
     expect(passwordInput).toBeTruthy(); 
 });
