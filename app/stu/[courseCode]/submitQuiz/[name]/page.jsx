@@ -1,14 +1,13 @@
 'use client'
 import Sidebar from '@/app/components/Sidebar';
-import CourseNavBar from '@/app/components/CourseNavBar';
+import CourseNavBar from '@/app/components/StuCourseNavBar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { auth } from '@/app/lib/firebase';
-import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
+import { getDoc,doc,getDocs,query,collection,where,arrayUnion,updateDoc } from 'firebase/firestore';
 import db from '../../../../lib/firebase';
 import QuizQuestionCard from '../../../../components/QuizQuestionCard.jsx';
-
 
 export default function Assignments() {
     let {name,courseCode} = useParams();
@@ -16,9 +15,9 @@ export default function Assignments() {
     courseCode = decodeURIComponent(courseCode);
 
     // Create component to render each array
-    const [questions, setQuestions] = useState([]);
     const [user,setUser] = useState(null);
     const [userName,setUserName] = useState('non');
+    const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState([]);
     const [score, setScore] = useState(null);
 
@@ -54,19 +53,54 @@ export default function Assignments() {
       const updatedAnswers = [...answers];
       updatedAnswers[questionIndex] = optionIndex;
       setAnswers(updatedAnswers);
-      console.log(answers);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+      let blankAns = false;
       console.log("Submission: " + answers);
       console.log("Correct Answers: " + questions.map(question => question.correctAnswer));
       let score = 0; 
       for(let i = 0; i < questions.length; i++){
-        if(answers[i] !== null && questions[i].correctAnswer === answers[i]){
-          score++;
+        if(answers[i] !== null){
+          if(questions[i].correctAnswer === answers[i])
+            score++;
+        } else {
+          blankAns = true;
         }
       }
-      setScore(score);
+
+      if(blankAns){
+        alert("Please answer all questions before submitting");
+        return;
+      }
+
+      setScore(score); 
+
+      const percentage = (score / questions.length) * 100;
+
+      const studentsRef = collection(db, 'students');
+      const studentQuery = query(studentsRef, where('uid', '==', user.uid));
+      // const studentDoc = doc(studentsRef, user.uid);
+      const studentSnapshot = await getDocs(studentQuery);
+
+      const registeredCoursesRef = collection(studentSnapshot.docs[0].ref, 'registeredCourses');
+      const registeredCourseDoc = doc(registeredCoursesRef, courseCode);
+      const registeredCourseSnapshot = await getDoc(registeredCourseDoc);
+
+      if (registeredCourseSnapshot.exists()) {
+
+        const updatedCourseData = {
+            submittedAssignments: arrayUnion({
+                name: name,
+                submission: answers,
+                grade: Math.round(percentage),
+                fileSubmission:'false'
+            })
+        };
+
+        await updateDoc(registeredCourseDoc, updatedCourseData);
+        window.location.href = `/stu/${courseCode}/assignments`;
+      }
     }
 
     return (
