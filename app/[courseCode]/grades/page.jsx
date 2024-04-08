@@ -4,23 +4,20 @@ import CourseNavBar from '../../components/CourseNavBar';
 import Sidebar from '../../components/Sidebar';
 import Loader from '../../components/Loader';
 import { FaChevronDown } from 'react-icons/fa';
+import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
+import db from '../../lib/firebase'
 
 export default function Assignments({ params }) {
 
     const [loading, setLoading] = useState(true);
     const [userName,setUserName] = useState('non');
+    const [studentAssignments, setStudentAssignments] = useState(null);
     const courseCode = params.courseCode;
-    // console.log(params);
+    console.log(params);
 
     // Demo students array to display some students but will later have data 
     // displayed from the database
-    const [students, setStudents] = useState([
-        { firstName: 'John', lastName: 'Doe', grade: 'A', assignments: [{ name: 'Assignment 1', grade: 90 }, { name: 'Assignment 2', grade: 85 }] },
-        { firstName: 'Jane', lastName: 'Doe', grade: 'B', assignments: [{ name: 'Assignment 1', grade: 80 }, { name: 'Assignment 2', grade: 75 }] },
-        { firstName: 'Jim', lastName: 'Smith', grade: 'C', assignments: [{ name: 'Assignment 1', grade: 70 }, { name: 'Assignment 2', grade: 65 }] },
-        { firstName: 'Jill', lastName: 'Johnson', grade: 'A', assignments: [{ name: 'Assignment 1', grade: 95 }, { name: 'Assignment 2', grade: 90 }] },
-        { firstName: 'Jack', lastName: 'Brown', grade: 'B', assignments: [{ name: 'Assignment 1', grade: 85 }, { name: 'Assignment 2', grade: 80 }] },
-    ]);
+ 
 
     const toggleAssignments = index => {
         const newStudents = [...students];
@@ -35,11 +32,32 @@ export default function Assignments({ params }) {
     };
 
     useEffect(() => {
-        // Simulate a network request
-        setTimeout(() => {
-            setLoading(false); // Set loading to false after 3 seconds
-        }, 1000);
+        const fetchData = async () => {
+            try {
+                const coursesDoc = doc(db, 'courses', courseCode);
+                const coursesDocSnapshot = await getDoc(coursesDoc);
+    
+                let studentGrades = [];
+    
+                if (!coursesDocSnapshot.empty) {
+                    let gradedAssignments = coursesDocSnapshot.data().gradedAssignments;
+                    gradedAssignments.forEach((assignment) => {
+                        studentGrades.push({ ...assignment })
+                    });
+                }
+    
+                setStudentAssignments(studentGrades);
+            } catch (error) {
+                console.error('Error fetching course data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+    
+        fetchData();
     }, []);
+
+
 
     if (loading) {
         return <Loader />; // Return the Loading component if loading is true
@@ -47,43 +65,21 @@ export default function Assignments({ params }) {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
-            <Sidebar userName={userName} userType={"Teacher"}/>
+            <Sidebar userName={userName} userType={"Teacher"} />
             <div className="relative md:ml-64">
                 <CourseNavBar courseCode={courseCode} />
             </div>
             <div className="p-6 text-center w-full">
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading">Students</h2>
-                <div className="overflow-x-auto">
-                    <table className="table-auto w-full text-black">
-                        <thead>
-                            <tr>
-                                <th className="px-4 py-2">Full Name</th>
-                                <th className="px-4 py-2">Grade</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {students.map((student, index) => (
-                                <tr key={index} className="bg-gray-100 mb-4 p-4 rounded border border-gray-300">
-                                    <td className="px-4 py-2">
-                                        {student.firstName + " " + student.lastName}
-                                        <button onClick={() => toggleAssignments(index)}>
-                                            <FaChevronDown />
-                                        </button>
-                                        <div style={{ display: student.showAssignments ? 'block':'none'}}>
-                                            {student.assignments.map((assignment, index) => (
-                                                <div key={index}>
-                                                    <p>{assignment.name}: {assignment.grade}</p>
-                                                    <input type="number" min="0" max="100" defaultValue={assignment.grade} onChange={(e) => updateGrade(index, index, e.target.value)} />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2">{student.grade}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+                    {studentAssignments.map((student, index) => (
+                        <div key={index} className="bg-white rounded-md shadow-md p-4">
+                            <h3 className="text-xl font-semibold mb-2">{student.assignmentName}</h3>
+                            <p className="text-gray-600">{student.email}</p>
+                            <p className="text-gray-600">Grade: {student.grade}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
