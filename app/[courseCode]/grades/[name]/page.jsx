@@ -84,7 +84,7 @@ export default function Assignments() {
         fetchStudentInfo();
 
       
-    }, [studentInfo]);
+    }, []);
 
     if (loading) {
         return <Loader />; // Return the Loading component if loading is true
