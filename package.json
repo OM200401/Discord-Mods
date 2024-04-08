@@ -11,6 +11,7 @@
     "backendtest": "jest backend"
   },
   "dependencies": {
+    "@nextui-org/react": "^2.2.10",
     "debug": "^4.3.4",
     "firebase": "^10.10.0",
     "next": "14.1.1",

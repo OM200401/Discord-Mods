@@ -1,13 +1,16 @@
 'use client';
 import Navbar from "../components/Navbar";
 import { useState } from 'react';
-import { useEffect } from "react";
+import {Button} from "@nextui-org/react";
 import Link from "next/link";
 import {collection, getDocs,doc,where,query} from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {auth} from '../lib/firebase';
 import db from '../lib/firebase';
-import {useRouter} from 'next/navigation';
+import {Input} from "@nextui-org/react";
+import {MailIcon} from '../Icons/MailIcon';
+import { EyeFilledIcon } from "../Icons/EyeFilledIcon";
+import { EyeSlashFilledIcon } from "../Icons/EyeSlashedFilledIcon";
 
 // Created front end for the login page with Email and Password
 // Validation in html also added to check the type of email input and password
@@ -23,6 +26,10 @@ export default function LoginPage() {
     const [isAdmin, setIsAdmin] = useState(false);
 
     const [errorMsg, setErrorMsg] = useState('');
+
+    const [isVisible, setIsVisible] = useState(false);
+
+    const toggleVisibility = () => setIsVisible(!isVisible);
 
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
         switch (firebaseErrorCode) {
@@ -119,14 +126,38 @@ export default function LoginPage() {
                         <div className="divide-y divide-gray-200">
                             <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                                 <div className="flex flex-col">
-                                    <label className="leading-loose">Email</label>
-                                    <input type="email" className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                    {/* <label className="leading-loose">Email</label> */}
+                                    <Input 
+                                        label="Email" 
+                                        type="email" 
+                                        placeholder="you@example.com" 
+                                        labelPlacements="outside" 
+                                        value={email} 
+                                        onChange={(e) => setEmail(e.target.value)} 
+                                    />
                                 </div>
                                 <div className="flex flex-col">
-                                    <label className="leading-loose">Password</label>
-                                    <input type="password" className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    {/* <label className="leading-loose">Password</label> */}
+                                    <Input 
+                                        label="Password"
+                                        variant="flat"
+                                        placeholder="Enter your password"
+                                        endContent={
+                                          <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                                            {isVisible ? (
+                                              <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                            ) : (
+                                              <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                                            )}
+                                          </button>
+                                        }
+                                        type={isVisible ? "text" : "password"}
+                                        className="max-w-xs" 
+                                        value={password} 
+                                        onChange={(e) => setPassword(e.target.value)} 
+                                    />
                                 </div>
-                                <button onClick={(e) => (handleSubmit(e))} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Login</button>
+                                <Button color="primary" variant="shadow" size="lg" onClick={(e) => (handleSubmit(e))}>Login</Button>
                                 <div className="mt-4">
                                     <p>Don&apos;t have an account? <a className="text-blue-600 hover:text-blue-700"><Link href="/signup">Sign up</Link></a></p>
                                 </div>

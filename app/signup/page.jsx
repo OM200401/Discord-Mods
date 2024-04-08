@@ -7,6 +7,7 @@ import db from '../lib/firebase';
 import {auth} from '../lib/firebase';
 import { redirect } from 'next/navigation';
 import { addDoc,doc,getDoc,setDoc } from 'firebase/firestore';
+import {Input} from '@nextui-org/react';
 
 //Created signup page for users that do not have an account on the platform
 // Added html validation for input of email and password
@@ -121,55 +122,86 @@ export default function SignUpPage() {
             console.error("Error signing in with email and password", error);
         }    }
 
-    return (
-        <div className="min-h-screen flex flex-col justify-start">
-            
-            <Navbar />
-            <div className="relative py-3 sm:max-w-xl sm:mx-auto mt-10">
-                <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
-                    <div className="max-w-md mx-auto">
-                        <div className="flex items-center space-x-5">
-                            <div className="block pl-2 font-semibold text-xl self-start text-gray-700">
-                                <h2 className="leading-relaxed">Sign Up</h2>
-                                <p className="text-sm text-gray-500 font-normal leading-relaxed">Enter your information to create your account.</p>
-                            </div>
+return (
+    <div className="min-h-screen flex flex-col justify-start">
+        <Navbar />
+        <div className="relative py-3 sm:max-w-xl sm:mx-auto mt-10">
+            <div className="relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10">
+                <div className="max-w-md mx-auto">
+                    <div className="flex items-center space-x-5">
+                        <div className="block pl-2 font-semibold text-xl self-start text-gray-700">
+                            <h2 className="leading-relaxed">Sign Up</h2>
+                            <p className="text-sm text-gray-500 font-normal leading-relaxed">Enter your information to create your account.</p>
                         </div>
-                        <form data-testid='signup-form' onSubmit={handleSubmit} className="divide-y divide-gray-200">
-                            <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                                <div className="flex flex-col">
-                                    <label htmlFor='FirstName' className="leading-loose">First Name</label>
-                                    <input id='FirstName' type='input' onChange={e => setFirstName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={firstName} required />
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor='LastName' className="leading-loose">Last Name</label>
-                                    <input id='LastName' type='input' onChange={e => setLastName(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Name" value={lastName} required/>
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor='Email' className="leading-loose">Email</label>
-                                    <input id='Email' type="email" onChange={e => setEmail(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Email" value={email}  required/>
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor='Password' className="leading-loose">Password</label>
-                                    <input id='Password' type="password" onChange={e => setPassword(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Password" value={password} required/>
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor='confirmPassword' className="leading-loose">Confirm Password</label>
-                                    <input id='confirmPassword' type="password" onChange={(e) => setConfirmPassword(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Confirm Password" value={confirmPassword} required/>
-                                </div>
-                                <div className="flex flex-col">
-                                    <label htmlFor='userType' className="leading-loose">User Type</label>
-                                    <select id='userType' value={userType} onChange={(e) => setUserType(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
-                                        <option value="Student">Student</option>
-                                        <option value="Teacher">Teacher</option>
-                                    </select>
-                                </div>                                                                
-                                <button type='submit' onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Sign Up</button>
-                            </div>
-                        </form>
-                        {errorMsg && <p className="text-red-500">{errorMsg}</p>}
                     </div>
+                    <form data-testid='signup-form' onSubmit={handleSubmit} className="divide-y divide-gray-200">
+                        <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                            <div className="flex flex-col">
+                                <Input 
+                                    label="First Name" 
+                                    type="text" 
+                                    variant="flat"
+                                    placeholder="First Name" 
+                                    value={firstName} 
+                                    onChange={(e) => setFirstName(e.target.value)} 
+                                    required 
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <Input 
+                                    label="Last Name" 
+                                    type="text" 
+                                    placeholder="Last Name" 
+                                    value={lastName} 
+                                    onChange={(e) => setLastName(e.target.value)} 
+                                    required 
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <Input 
+                                    label="Email" 
+                                    type="email" 
+                                    placeholder="Email" 
+                                    value={email} 
+                                    onChange={(e) => setEmail(e.target.value)} 
+                                    required 
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <Input 
+                                    label="Password" 
+                                    type="password" 
+                                    placeholder="Password" 
+                                    value={password} 
+                                    onChange={(e) => setPassword(e.target.value)} 
+                                    required 
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <Input 
+                                    label="Confirm Password" 
+                                    type="password" 
+                                    placeholder="Confirm Password" 
+                                    value={confirmPassword} 
+                                    onChange={(e) => setConfirmPassword(e.target.value)} 
+                                    required 
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <label htmlFor='userType' className="leading-loose">User Type</label>
+                                <select id='userType' value={userType} onChange={(e) => setUserType(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
+                                    <option value="Student">Student</option>
+                                    <option value="Teacher">Teacher</option>
+                                </select>
+                            </div>                                                                
+                            <button type='submit' onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Sign Up</button>
+                        </div>
+                    </form>
+                    {errorMsg && <p className="text-red-500">{errorMsg}</p>}
                 </div>
             </div>
         </div>
-    );
+    </div>
+);
+
 }
