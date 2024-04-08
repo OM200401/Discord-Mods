@@ -13,8 +13,8 @@ export default function CourseNavBar({courseCode}) {
             <button onClick={() => setIsOpen(!isOpen)} className="relative top-0 left-0 m-6 z-10 bg-black">
                 <FiMenu />
             </button>
-            <nav className="bg-blue-200 text-black w-64 h-screen mt-20 py-7 px-2 absolute inset-y-0 left-0 overflow-clip transform md:relative md:translate-x-0 transition-transform duration-200 ease-in-out "
-                style={{ transform: isOpen ? 'translateX(0)' : 'translateX(-100%)', zIndex: isOpen ? '10' : '-10'}} data-testid="course-navbar">
+            <nav className="bg-blue-200 text-black w-64 mt-20 py-7 px-2 absolute inset-y-0 left-0 overflow-clip transform md:relative md:translate-x-0 transition-transform duration-200 ease-in-out "
+                style={{ transform: isOpen ? 'translateX(0)' : 'translateX(-100%)', zIndex: isOpen ? '10' : '-10', marginTop: '5rem', height: 'calc(100vh - 4rem'}} data-testid="course-navbar">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold px-3">Course Name</h1>
                 </div>

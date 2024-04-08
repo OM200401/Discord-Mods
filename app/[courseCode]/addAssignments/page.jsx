@@ -7,6 +7,8 @@ import { auth } from '../../lib/firebase';
 import { setDoc, getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
 import db from '../../lib/firebase'
 import Loader from '../../components/Loader';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faMinusCircle, faPlusCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 
 export default function Assignments({ params }) {
@@ -213,7 +215,7 @@ export default function Assignments({ params }) {
                 <div className="flex flex-row items-center justify-center p-4">
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddQuizClick}>Add Quiz</button>
                     <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddEssayClick}>Add Essay</button>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddQuestion}>Add Question</button>
+                    {formType === 'quiz' && <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mx-5" onClick={handleAddQuestion}>Add Question</button>}
                 </div>
                 {errorMessage && <p className="text-red-500">{errorMessage}</p>}
                 {showForm && (
@@ -221,45 +223,49 @@ export default function Assignments({ params }) {
                       
                         {formType === 'quiz' && (
                             <>
-                              <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
-                            <label htmlFor='quizTitle' className="mr-2">Quiz Title:</label> {/* Input field for quiz title */}
-                            <input
-                                id='quizTitle'
-                                type="text"
-                                value={quizTitle}
-                                onChange={(e) => setQuizTitle(e.target.value)} // Update quiz title state
-                                className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
-                            />
-                        </div>
-                        <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
-                            <label htmlFor='dueDate' className="mr-2">Due Date:</label>
-                            <input
-                                id='dueDate'
-                                type="date"
-                                className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
-                                value={dueDate}
-                                onChange={handleDueDateChange}
-                            />
-                        </div>
+                                <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
+                                    <label htmlFor='quizTitle' className="mr-2">Quiz Title:</label> {/* Input field for quiz title */}
+                                    <input
+                                        id='quizTitle'
+                                        type="text"
+                                        value={quizTitle}
+                                        onChange={(e) => setQuizTitle(e.target.value)} // Update quiz title state
+                                        className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
+                                    />
+                                </div>
+                                <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
+                                    <label htmlFor='dueDate' className="mr-2">Due Date:</label>
+                                    <input
+                                        id='dueDate'
+                                        type="date"
+                                        className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
+                                        value={dueDate}
+                                        onChange={handleDueDateChange}
+                                    />
+                                </div>
                                 <div className="flex flex-row items-center justify-center p-4 text-black font-semibold">
                                     <label htmlFor='Weightage' className="mr-2">Weightage of the quiz in the course:</label>
                                     <input id='Weightage' type="number" value={weightage} onChange={handleWeightageChange} min="0" max="100" />
                                 </div>
                                 {questions.map((question, questionIndex) => (
-                                    <div key={questionIndex} className="mt-4">
-                                        <input
-                                            type="text"
-                                            placeholder="Enter question"
-                                            className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
-                                            value={question.text}
-                                            onChange={(e) => setQuestions(questions.map((q, i) => {
-                                                if (i === questionIndex) {
-                                                    return { ...q, text: e.target.value };
-                                                }
-                                                return q;
-                                            }))}
-                                        />
-                                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-4" onClick={() => handleDeleteQuestion(questionIndex)}>Delete Question</button>
+                                    <div key={questionIndex} className="mt-4 p-4 bg-gray-100 rounded shadow">
+                                        <div className="flex justify-between items-center">
+                                            <input
+                                                type="text"
+                                                placeholder="Enter question"
+                                                className="border border-gray-300 px-4 py-2 rounded-md text-black w-96 mb-4"
+                                                value={question.text}
+                                                onChange={(e) => setQuestions(questions.map((q, i) => {
+                                                    if (i === questionIndex) {
+                                                        return { ...q, text: e.target.value };
+                                                    }
+                                                    return q;
+                                                }))}
+                                            />
+                                            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-4" onClick={() => handleDeleteQuestion(questionIndex)}>
+                                                <FontAwesomeIcon icon={faTrash}/>
+                                            </button>
+                                        </div>
                                         <h3 className="text-lg text-black font-semibold mb-2">Select Correct Option</h3>
                                         {question.options.map((option, optionIndex) => (
                                             <div key={optionIndex} className="flex flex-row justify-center items-center mt-2">
@@ -272,7 +278,7 @@ export default function Assignments({ params }) {
                                                 <input
                                                     type="text"
                                                     value={option}
-                                                    className="border border-gray-300 px-4 py-2 rounded-md text-black w-64 mr-4"
+                                                    className={`border border-gray-300 px-4 py-2 rounded-md text-black w-64 mr-4 ${question.correctAnswer === optionIndex ? 'bg-green-200' : ''}`}
                                                     onChange={(e) => setQuestions(questions.map((q, i) => {
                                                         if (i === questionIndex) {
                                                             return { ...q, options: q.options.map((o, j) => {
@@ -290,13 +296,21 @@ export default function Assignments({ params }) {
                                                         return { ...q, options: q.options.filter((o, j) => j !== optionIndex) };
                                                     }
                                                     return q;
-                                                }))}>Delete Option</button>
+                                                }))}>
+                                                    <FontAwesomeIcon icon={faMinusCircle}/>
+                                                </button>
                                             </div>
                                         ))}
-                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2" onClick={() => handleAddOption(questionIndex)}>Add Option</button>
+                                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2" onClick={() => handleAddOption(questionIndex)}>
+                                            <FontAwesomeIcon icon={faPlusCircle}/> Add Option
+                                        </button>
                                     </div>
                                 ))}
-                                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4" onClick={handleSubmitQuiz}>Submit Quiz</button>
+                                <div className="flex justify-center items-center mt-4">
+                                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={handleSubmitQuiz}>
+                                        <FontAwesomeIcon icon={faCheckCircle}/> Submit Quiz
+                                    </button>
+                                </div>
                             </>
                         )}
                         {formType === 'essay' && (

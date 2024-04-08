@@ -87,7 +87,7 @@ export default function CoursePage({ params }) {
     return (
         <div className="flex flex-col md:flex-row">
           <Sidebar data-testid = "sidebar-component" userName={ userName } userType={"Teacher"} />
-          <div className="relative md:ml-64">
+          <div className="relative md:ml-64 ">
             <CourseNavBar courseCode={courseCode}/>
           </div>
           <div className="p-6 w-screen bg-blue-100 text-center">

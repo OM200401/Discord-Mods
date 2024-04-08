@@ -8,6 +8,7 @@ import { collection } from 'firebase/firestore';
 import { onSnapshot } from 'firebase/firestore';
 import * as React from "react";
 import {Button} from "@nextui-org/react"; 
+import TypeWriter from 'typewriter-effect';
 
 export default function Home() {
   const colRef = collection(db, 'Students');
@@ -30,14 +31,22 @@ export default function Home() {
       <Navbar/> 
       <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
         <h1 className="text-6xl font-bold pt-10 font-mono">
-          Welcome to our E-Learning Platform
-          {/* <h2>{students.length > 0 && students.map(student => (
-            <h1 className=' text-white'>{student.Name}</h1>
-          ))}</h2> */}
-
+          <TypeWriter
+            options={{
+              strings: ['Welcome to our E-Learning Platform'],
+              autoStart: true,
+              loop: true,
+            }}
+          />
         </h1>
         <p className="mt-3 text-2xl font-mono">
-          Join us and explore the world of knowledge.
+          <TypeWriter
+            options={{
+              strings: ['Join us and explore the world of knowledge.'],
+              autoStart: true,
+              loop: true,
+            }}
+          />
         </p>
         <div className="flex mt-6 justify-center">
           <Button color='primary' variant='shadow' size='lg'>
