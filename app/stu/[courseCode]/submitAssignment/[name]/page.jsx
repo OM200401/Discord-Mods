@@ -16,9 +16,7 @@ export default function Assignments() {
     let {name,courseCode} = useParams();
 
     name = decodeURIComponent(name);
-    courseCode = decodeURIComponent(courseCode)
-    console.log(name);
-    console.log(courseCode);
+    courseCode = decodeURIComponent(courseCode);
 
     const [assignmentData, setAssignmentData] = useState([]);
     const [user,setUser] = useState(null);
@@ -47,20 +45,20 @@ export default function Assignments() {
                     console.log(error.message);
                 }  
               
-            const essayRef = doc(db, 'essays', name);
-            const quizRef = doc(db, 'quizzes', name);
+                const essayRef = doc(db, 'essays', name);
+                const quizRef = doc(db, 'quizzes', name);
 
-            const essaySnapshot = await getDoc(essayRef);
-            const quizSnapshot = await getDoc(quizRef);
+                const essaySnapshot = await getDoc(essayRef);
+                const quizSnapshot = await getDoc(quizRef);
 
-            if (essaySnapshot.data()) {
-                setAssignmentData({ name, ...essaySnapshot.data() });
-                setAssignmentType('essay');
-            } else  {
-                setAssignmentData({ name, ...quizSnapshot.data() });
-                setAssignmentType('quiz');
-            } 
-                console.log(assignmentType);
+                if (essaySnapshot.data()) {
+                    setAssignmentData({ name, ...essaySnapshot.data() });
+                    setAssignmentType('essay');
+                } else  {
+                    setAssignmentData({ name, ...quizSnapshot.data() });
+                    setAssignmentType('quiz');
+                } 
+
             }
         });
 

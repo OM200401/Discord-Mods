@@ -8,7 +8,6 @@ import { auth } from '../../../lib/firebase.js';
 import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
 import db from '../../../lib/firebase';
 import StudentAssignmentCard from '../../../components/StudentAssignmentCard.jsx';
-import TeacherAssignmentCard from '../../../components/TeacherAssignmentCard.jsx';
 
 export default function Assignments({params}) {
 
@@ -69,6 +68,7 @@ export default function Assignments({params}) {
                     
                     const assignmentPromises = assignmentNames.map(async (name) => {
                         let assignmentData = null;
+                        let assignmentType = null;
                         const quizRef = doc(db, 'quizzes', name);
                         const essayRef = doc(db, 'essays', name);
 
@@ -79,13 +79,14 @@ export default function Assignments({params}) {
 
                         if (quizSnapshot.exists() && !submittedAssignmentsNames.includes(name)) {
                             assignmentData = quizSnapshot.data();
+                            assignmentType = "quiz";
                         } else if (!submittedAssignmentsNames.includes(name)) {
                             assignmentData = essaySnapshot.data();
+                            assignmentType = "essay";
                         }
-
-                        return { name, ...assignmentData };
+                        return { name, ...assignmentData, assignmentType };
                     });
-
+                    
                     const assignments = await Promise.all(assignmentPromises);
                     setCurrentAssignments(assignments);
                     setLoading(false);
@@ -94,7 +95,7 @@ export default function Assignments({params}) {
         });
 
         return () => unsubscribe();
-    }, [courseCode]); // Add courseCode as a dependency
+    }, []); // Add courseCode as a dependency
 
     // Demo assignments array to display some assignments but will later have data 
     // displayed from the database
@@ -129,21 +130,8 @@ export default function Assignments({params}) {
                 <div className="flex justify-end">
                 </div>
                 <div className="overflow-x-auto">
-                    {/* {assignments.map((assignment, index) => (
-                         <a href="displayAssignments" key={index} >
-                        <div key={index} className="flex items-center justify-between bg-gray-100 mb-4 p-4 rounded border border-gray-300">
-                          
-                            <div>
-                                <h3 className="text-lg font-semibold text-black">{assignment.title}</h3>
-                                <p className="text-sm text-gray-600">Due Date: {assignment.dueDate}</p>
-                                <p className="text-sm text-gray-600">Points: {assignment.points}</p>
-                            </div>
-                        </div>
-                        </a>
-                    ))} */}
                     {currentAssignments.map((assignment, index) => (
-                      (userType == 'Student' && <StudentAssignmentCard key={index} assignment={assignment} courseCode={courseCode} />) ||
-                      (userType == 'Teacher' && <TeacherAssignmentCard key={index} assignment={assignment} courseCode = {courseCode} />)
+                      <StudentAssignmentCard assignment={assignment} courseCode={courseCode} assignmentType={assignment.assignmentType}/>
                     ))}
 
                     <div className="overflow-x-auto">

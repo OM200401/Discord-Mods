@@ -2,22 +2,25 @@
 import Loader from '../../components/Loader';
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs,deleteDoc,doc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import Sidebar from '../../components/Sidebar';
 import CourseNavBar from '../../components/StuCourseNavBar';
 import db, { auth } from '../../lib/firebase';
+import { redirect } from 'next/navigation';
 
 export default function CoursePage({params}) {
     const [userName, setUserName] = useState('non');
     const [pdfUrl, setPdfUrl] = useState('');
     const [loading, setLoading] = useState(true);
+    const [user,setUser] = useState(null);
 
     const courseCode = params.courseCode;
     
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
+                setUser(user);
                 try {
                     const userInfoRef = collection(db, 'students');
                     const q = query(userInfoRef, where('uid', '==', user.uid));
@@ -53,6 +56,26 @@ export default function CoursePage({params}) {
             });
     }, []);
 
+
+    const handleDrop = async (e) => {
+        e.preventDefault();
+        const confirmation = window.confirm("Are you sure you want to drop this course?");
+
+        if(confirmation && user){
+        const studentCollection = collection(db,'students');
+        const q = query(studentCollection, where('uid', '==', user.uid));
+
+        const student = await getDocs(q);
+        if(!student.empty){
+
+            const registeredCoursesCollection= collection(student.docs[0].ref, 'registeredCourses');
+
+            await deleteDoc(doc(registeredCoursesCollection,courseCode));
+            window.location.href='/stuHome';
+            }
+        }
+    }
+
     if(loading){
         return <Loader/>;
     }
@@ -81,8 +104,16 @@ export default function CoursePage({params}) {
                             </li>
                         </ul>
                     </div> */}
+
+                <button onClick={(e) => {handleDrop(e)}} className="w-24 h-24 bg-red-500 hover:bg-red-600 text-white font-bold rounded focus:outline-none focus:shadow-outline">
+                Drop this course
+                </button>
                 </div>
+
+         
             </div>
+
+
         </div>
     );
 }
