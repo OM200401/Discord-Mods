@@ -142,7 +142,7 @@ export default function AssignGrade() {
                             });
                         });
                         setStudentInfo(studentsData);
-
+                        console.log(studentInfo);
 
 
                     }
@@ -170,7 +170,7 @@ export default function AssignGrade() {
         <>
             {assignmentType = 'essay' && <>
                 <div className="flex flex-col md:flex-row bg-blue-100">
-                    <Sidebar />
+                    <Sidebar  />
                     <div className="relative md:ml-64">
                         <CourseNavBar />
                     </div>

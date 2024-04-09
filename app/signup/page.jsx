@@ -23,11 +23,13 @@ export default function SignUpPage() {
 
     useEffect(() => {
         if (user) {
-          console.log("Redirect");
-          redirect('/home');
+            if(userType === 'Teacher'){
+                redirect('/home');
+            }else{
+                // console.log("Redirect");
+                redirect('/stuHome');
+            }
         }
-
-
     }, [user]);
 
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
@@ -59,11 +61,12 @@ export default function SignUpPage() {
             return;
         }
 
+    
         
         try {
             await createUserWithEmailAndPassword(auth, email, password).then(async cred=> {
                 setUser(cred.user);
-                if(userType == 'Student'){
+                if(userType === 'Student'){
                     const studentCollection = collection(db,'students');
                     
                     await setDoc(doc(studentCollection, cred.user.uid), {
@@ -107,6 +110,7 @@ export default function SignUpPage() {
                     await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
                       
                 } 
+
             })
         }
         
@@ -155,8 +159,8 @@ export default function SignUpPage() {
                                 <div className="flex flex-col">
                                     <label htmlFor='userType' className="leading-loose">User Type</label>
                                     <select id='userType' value={userType} onChange={(e) => setUserType(e.target.value)} className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600">
-                                        <option value="student">Student</option>
-                                        <option value="teacher">Teacher</option>
+                                        <option value="Student">Student</option>
+                                        <option value="Teacher">Teacher</option>
                                     </select>
                                 </div>                                                                
                                 <button type='submit' onClick={handleSubmit} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Sign Up</button>

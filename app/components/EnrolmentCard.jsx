@@ -1,7 +1,10 @@
+'use client';
 import db from '../lib/firebase';
+import { useState } from 'react';
 import { collection, getDocs, deleteDoc, setDoc, getDoc, query, where, doc } from 'firebase/firestore';
 
-export default function EnrolmentCard({ userEmail, courseCode }) {
+export default function EnrolmentCard({ userEmail, courseCode, onFeedback }) {
+
 
     const deleteEnrolment = async () => {
         const enrolmentRef = collection(db, 'enrolments');
@@ -37,12 +40,12 @@ export default function EnrolmentCard({ userEmail, courseCode }) {
     const handleAccept = () => {
         registerStudent();
         deleteEnrolment();
-        console.log(`Enrolment for ${userEmail} in ${courseCode} accepted`);
+        onFeedback(`Enrolment for ${userEmail} in ${courseCode} accepted`, true);
     };
 
     const handleReject = () => {
         deleteEnrolment();
-        console.log(`Enrolment for ${userEmail} in ${courseCode} rejected`);
+        onFeedback(`Enrolment for ${userEmail} in ${courseCode} rejected`, false);
     };
 
     return (
@@ -58,6 +61,7 @@ export default function EnrolmentCard({ userEmail, courseCode }) {
                         <button onClick={handleReject} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700">Reject</button>
                     </div>
                 </div>
+      
             </div>
         </div>
     );

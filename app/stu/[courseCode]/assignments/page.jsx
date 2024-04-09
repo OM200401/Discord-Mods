@@ -121,18 +121,19 @@ export default function Assignments({params}) {
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
             <Sidebar userName={userName} userType={"Student"} />
-            <div className="relative md:ml-64">
+            <div className="md:ml-64 fixed">
                 <CourseNavBar courseCode={courseCode} />
             </div>
-            <div className="p-6 text-center w-full">
-                <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
-                <h2 className="text-3xl text-black font mt-4 mb-4" data-testid="assignments-heading">Assignments</h2>
+            <div className="p-6 text-center w-full md:pl-64 md:ml-72">
+                <h1 className="text-3xl text-black font-bold mb-4" data-testid="course-heading">Course Name</h1>
+                <h2 className="text-3xl text-black font-semibold mt-4 mb-4" data-testid="assignments-heading">Assignments</h2>
                 <div className="flex justify-end">
                 </div>
                 <div className="overflow-x-auto">
                     {currentAssignments.map((assignment, index) => (
                       <StudentAssignmentCard assignment={assignment} courseCode={courseCode} assignmentType={assignment.assignmentType}/>
                     ))}
+
 
                     <div className="overflow-x-auto">
                         <h2 className="text-3xl font-semibold text-center mb-4">Submitted Assignments</h2>
@@ -144,6 +145,7 @@ export default function Assignments({params}) {
                                     <p className="text-gray-500 mb-4">Grade: {assignment.grade ? assignment.grade : "Not graded yet"}</p>
                                 </div>
                             ))}
+
                         </div>
                     </div>
                 </div>
