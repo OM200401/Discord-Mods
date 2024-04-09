@@ -100,27 +100,29 @@ export default function Assignments({ params }) {
             return;
         }
         
-
         setErrorMessage('');
 
         try {
             const quizCollectionRef = doc(db, 'quizzes', quizTitle);
             const courseCollectionRef = doc(db, 'courses', courseCode);
-
-            await setDoc(quizCollectionRef, { questions,weightage,dueDate:dueDate});
-
-
             const courseSnapshot = await getDoc(courseCollectionRef);
+
+            if((courseSnapshot.data().currentWeight + parseInt(weightage)) <= 100){
+                await setDoc(quizCollectionRef, { questions,weightage,dueDate:dueDate});
+
             const courseData = courseSnapshot.data();
             const currentAssignments = courseData.currentAssignments || [];
 
             currentAssignments.push(quizCollectionRef.id);
-            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
+            await setDoc(courseCollectionRef,{...courseData,currentWeight:courseSnapshot.data().currentWeight+parseInt(weightage)});
             console.log('it worked');
             // Optionally, you can reset the form after submission
             setQuizTitle('');
             setQuestions([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
             setShowForm(false);
+            }else{
+                alert('The weightage of all your assignments is greater than 100!');
+            }
         } catch (error) {
             console.error('Error adding quiz:', error);
         }
@@ -147,6 +149,10 @@ export default function Assignments({ params }) {
             const essayCollectionRef = doc(db, 'essays', essayTitle);
             const courseCollectionRef = doc(db, 'courses', courseCode);
 
+            const courseSnapshot = await getDoc(courseCollectionRef);
+
+            if((courseSnapshot.data().currentWeight + parseInt(weightage)) <= 100){
+
             await setDoc(essayCollectionRef, { questionPrompt,weightage,dueDate:dueDate});
 
 
@@ -155,16 +161,15 @@ export default function Assignments({ params }) {
             const currentAssignments = courseData.currentAssignments || [];
 
             currentAssignments.push(essayCollectionRef.id);
-            await setDoc(courseCollectionRef,{...courseData,currentAssignments});
-            
+            await setDoc(courseCollectionRef,{...courseData,currentAssignments,currentWeight:courseSnapshot.data().currentWeight+parseInt(weightage)});
             console.log('it worked');
-
-
-
             // Optionally, you can reset the form after submission
             setEssayTitle('');
             setQuestionPrompt('');
             setShowForm(false);
+            }else{
+                alert('The weightage of all your assignments is greater than 100!');
+            }
         } catch (error) {
             console.error('Error adding quiz:', error);
         }

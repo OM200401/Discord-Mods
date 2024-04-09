@@ -1,136 +1,133 @@
 'use client'
 import Sidebar from '@/app/components/Sidebar';
-import CourseNavBar from '@/app/components/CourseNavBar';
+import CourseNavBar from '@/app/components/StuCourseNavBar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { auth } from '@/app/lib/firebase';
-import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
+import { getDoc,doc,getDocs,query,collection,where,arrayUnion,updateDoc } from 'firebase/firestore';
 import db from '../../../../lib/firebase';
-import { arrayUnion } from 'firebase/firestore';
-import displayQuestion from '../../../../components/displayQuestion';
-
+import QuizQuestionCard from '../../../../components/QuizQuestionCard.jsx';
 
 export default function Assignments() {
     let {name,courseCode} = useParams();
+    name = decodeURIComponent(name);
+    courseCode = decodeURIComponent(courseCode);
 
     // Create component to render each array
-    const [currentQuestions, setQuestions] = useState([
-      [["1","2","3"],"What is 1+1?"],
-      [["A","B","C"],"What is the first alphabet?"]
-    ]);
-    name = decodeURIComponent(name);
-    courseCode = decodeURIComponent(courseCode)
-    console.log(name);
-    console.log(courseCode);
-
-    // const search = window.location.search;
-    // const params = new URLSearchParams(search);
-    // console.log(params);
-
-    const [assignmentData, setAssignmentData] = useState([]);
     const [user,setUser] = useState(null);
-    const [essay, setEssay] = useState('');
-
+    const [userName,setUserName] = useState('non');
+    const [questions, setQuestions] = useState([]);
+    const [answers, setAnswers] = useState([]);
+    const [score, setScore] = useState(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (auth.currentUser) {
-                setUser(auth.currentUser);
-              
-                    const assignmentRef = doc(db,'essays',name);
-                    const assignmentSnapshot = await getDoc(assignmentRef);
-                    
-                    if(!assignmentSnapshot.empty){
-                        setAssignmentData({name, ...assignmentSnapshot.data()});
-                    }
-                
-            }
-        });
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if (auth.currentUser) {
+          setUser(auth.currentUser);
+          const studentRef = collection(db, 'students');
+          const q = query(studentRef, where('uid', '==', user.uid)); 
+          try{
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+              setUserName(doc.data().firstName);
+            });
+          } catch (error) {
+            console.log(error.message);
+          }
+        
+          const assignmentRef = doc(db,'quizzes',name);
+          const assignmentSnapshot = await getDoc(assignmentRef);
 
-        return () => unsubscribe();
-    }, []); // Add courseCode as a dependency
-    console.log(assignmentData)
+          if(!assignmentSnapshot.empty){
+            setQuestions(assignmentSnapshot.data().questions);
+            setAnswers(new Array(assignmentSnapshot.data().questions.length).fill(null));
+          }
+        }
+      });
 
-    const handleChange = (event) => {
-        setEssay(event.target.value);
-      };
+      return () => unsubscribe();
+    }, []); 
 
+    const handleOptionSelect = (questionIndex, optionIndex) => {
+      const updatedAnswers = [...answers];
+      updatedAnswers[questionIndex] = optionIndex;
+      setAnswers(updatedAnswers);
+    };
 
-      const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        const studentRef = query(collection(db,'students'), where('uid','==',user.uid));
-        const studentSnapshot = await getDocs(studentRef);
-
-        if(!studentSnapshot.empty){
-            studentSnapshot.forEach(async(studentDoc) => {
-            const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
-
-            const courseDocRef = doc(registeredCoursesRef, courseCode);
-
-
-                const courseDocSnapshot = await getDoc(courseDocRef);
-
-                if (courseDocSnapshot.exists()) {
-                // Update the submittedAssignments array with the submitted essay
-                const updatedCourseData = {
-                    submittedAssignments: arrayUnion({
-                        name: decodeURIComponent(name),
-                        submission: essay,
-                        grade: null
-                    })
-                };
-
-                await updateDoc(courseDocRef, updatedCourseData);
-                setEssay('');
-
-                    }
-                })
-
-        // Here you can do something with the submitted essay, like send it to a server
-        console.log('Submitted essay:', essay);
-      };
+    const handleSubmit = async () => {
+      let blankAns = false;
+      console.log("Submission: " + answers);
+      console.log("Correct Answers: " + questions.map(question => question.correctAnswer));
+      let score = 0; 
+      for(let i = 0; i < questions.length; i++){
+        if(answers[i] !== null){
+          if(questions[i].correctAnswer === answers[i])
+            score++;
+        } else {
+          blankAns = true;
+        }
       }
 
+      if(blankAns){
+        alert("Please answer all questions before submitting");
+        return;
+      }
+
+      setScore(score); 
+
+      const percentage = (score / questions.length) * 100;
+
+      const studentsRef = collection(db, 'students');
+      const studentQuery = query(studentsRef, where('uid', '==', user.uid));
+      // const studentDoc = doc(studentsRef, user.uid);
+      const studentSnapshot = await getDocs(studentQuery);
+
+      const registeredCoursesRef = collection(studentSnapshot.docs[0].ref, 'registeredCourses');
+      const registeredCourseDoc = doc(registeredCoursesRef, courseCode);
+      const registeredCourseSnapshot = await getDoc(registeredCourseDoc);
+
+      if (registeredCourseSnapshot.exists()) {
+
+        const updatedCourseData = {
+            submittedAssignments: arrayUnion({
+                name: name,
+                submission: answers,
+                grade: Math.round(percentage),
+                fileSubmission:'false'
+            })
+        };
+
+        await updateDoc(registeredCourseDoc, updatedCourseData);
+        window.location.href = `/stu/${courseCode}/assignments`;
+      }
+    }
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100">
-            <Sidebar />
+            <Sidebar userName={userName} userType={"Student"}/>
             <div className="relative md:ml-64">
                 <CourseNavBar courseCode={courseCode} />
             </div>
+            <div className="text-xl font-bold mb-4 bg-blue-100 px-4 py-2 rounded-lg">
+                {name}
+            </div>
             <div className="p-6 text-center w-full">
-                <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">{assignmentData && assignmentData.name}</h1>
-                <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading">Prompt: {assignmentData && assignmentData.questionPrompt}</h2>
-                <div className="max-w-md mx-auto mt-8 bg-white rounded-lg shadow-md overflow-hidden">
-                  <div className="p-6">
-                    <h2 className="text-xl font-semibold mb-4">Write Submission</h2>
-                    {currentQuestions.map((questionData, index) => (
-                      <displayQuestion key={index} questionData={questionData} />
-                    ))}
-                    {/* <form onSubmit={handleSubmit}>
-                      <div className="mb-4">
-                        <label htmlFor="essay" className="block text-gray-700">Take your Quiz:</label>
-                        <textarea
-                          id="essay"
-                          name="essay"
-                          rows="6"
-                          className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                          value={essay}
-                          onChange={handleChange}
-                          required
-                        ></textarea>
-                      </div>
-                      <button
-                        type="submit"
-                        className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-                      >
-                        Submit
-                      </button>
-                    </form> */}
-                  </div>
-                </div>
+                {questions.map((question, index) => (
+                    <QuizQuestionCard 
+                        key={index} 
+                        questionData={question} 
+                        onOptionSelect={(optionIndex) => handleOptionSelect(index, optionIndex)}
+                    />
+                ))}
+                <button onClick={handleSubmit} className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-200">
+                    Submit Quiz
+                </button>
+                {score !== null && (
+                    <div className="mt-4 text-xl font-bold">
+                        Score: {score} / {questions.length}
+                    </div>
+                )}
             </div>
         </div>
     );
