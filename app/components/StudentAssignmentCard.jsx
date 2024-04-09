@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const StudentAssignmentCard = ({ assignment, courseCode }) => {
+const   StudentAssignmentCard = ({ assignment, courseCode }) => {
   const dueDate = new Date(assignment.dueDate);
   const currentDate = new Date();
 
@@ -10,7 +10,7 @@ const StudentAssignmentCard = ({ assignment, courseCode }) => {
   const type = assignment.assignmentType;
 
   return currentDate < dueDate ? (
-    <div className="flex items-center justify-between bg-gray-100 mb-4 p-4 rounded border border-gray-300">
+    <div className="flex items-center justify-between bg-white mb-4 p-4 rounded-lg shadow-md border border-gray-200">
       <div>
         <h3 className="text-lg font-semibold text-black">{assignment.name}</h3>
         <p className="text-sm text-gray-600">Weightage: {assignment.weightage}</p>

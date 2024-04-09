@@ -105,7 +105,7 @@ export default function Assignments({ params }) {
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading">Assignments</h2>
                 <div className="flex justify-end">
-                    <a href="addAssignments" className="px-4 py-2 mb-3 bg-green-500 text-white rounded hover:bg-green-600">Add</a>
+                    <a href="addAssignments" className="px-4 py-2 mb-3 bg-green-500 text-white rounded hover:bg-green-600 hover:scale-110 transition ease-in-out duration-200   ">Add</a>
                 </div>
                 <div className="overflow-x-auto">
                     {currentAssignments.map((assignment, index) => (

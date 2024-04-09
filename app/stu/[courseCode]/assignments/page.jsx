@@ -119,7 +119,7 @@ export default function Assignments({params}) {
     }
 
     return (
-        <div className="flex flex-col md:flex-row bg-blue-100">
+        <div className="flex flex-col md:flex-row bg-blue-100 min-h-screen">
             <Sidebar userName={userName} userType={"Student"} />
             <div className="md:ml-64 fixed">
                 <CourseNavBar courseCode={courseCode} />
@@ -134,18 +134,16 @@ export default function Assignments({params}) {
                       <StudentAssignmentCard assignment={assignment} courseCode={courseCode} assignmentType={assignment.assignmentType}/>
                     ))}
 
-
                     <div className="overflow-x-auto">
-                        <h2 className="text-3xl font-semibold text-center mb-4">Submitted Assignments</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+                        <h2 className="text-3xl text-black font-semibold text-center mb-4">Submitted Assignments</h2>
+                        <div className="grid grid-cols-2 text-black md:grid-cols-2 lg:grid-cols-2 gap-4">
                             {/* Display submitted assignments */}
                             {submittedAssignments.map((assignment, index) => (
-                                <div key={index} className="bg-white rounded-lg p-6 border border-gray-300">
+                                <div key={index} className="bg-white rounded-lg shadow-md p-4 border flex flex-col items-center border-gray-200 hover:shadow-2xl hover:border-gray-600 transition-all duration-200">
                                     <p className="font-semibold text-lg">{assignment.name}</p>
                                     <p className="text-gray-500 mb-4">Grade: {assignment.grade ? assignment.grade : "Not graded yet"}</p>
                                 </div>
                             ))}
-
                         </div>
                     </div>
                 </div>
