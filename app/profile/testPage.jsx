@@ -9,11 +9,11 @@ import db from '../lib/firebase';
 
 export default function Profile() {
     const [userInput, setUserInput] = useState({
-        email: '',
-        firstName: '',
-        lastName: '',
-        uid: "",
-        userType:""
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        uid: "123456",
+        userType: "user"
     });
     const [user,setUser] = useState();
     const [userType,setUserType] = useState('user');
@@ -21,11 +21,11 @@ export default function Profile() {
     const [newPassword, setNewPassword] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
     const [editedUserInput, setEditedUserInput] = useState({
-        email: '',
-        firstName: '',
-        lastName: '',
-        uid: "",
-        userType:""
+        email: 'input@example.com',
+        firstName: 'input',
+        lastName: 'Does',
+        uid: "456789",
+        userType: "user"
     });
 
     useEffect(() => {
@@ -195,7 +195,7 @@ export default function Profile() {
                                         <dt className="text-sm font-medium text-gray-500">First Name</dt>
                                         <dd className="flex justify-between items-center mt-1 sm:col-span-2">
                                             {isEditing ? 
-                                                <input type="text" name="firstName"  data-testid="firstNameField" value={editedUserInput.firstName} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
+                                                <input type="text" name="firstName"  data-testid="firstNameFieldInput" value={editedUserInput.firstName} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
                                                 <span className='text-black' data-testid="firstNameField" >{userInput.firstName}</span>
                                             }
                                         </dd>
@@ -205,7 +205,7 @@ export default function Profile() {
                                         <dd className="flex justify-between items-center mt-1 sm:col-span-2">
                                             {isEditing ? 
                                                     <input type="text" name="lastName" value={editedUserInput.lastName} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
-                                                    <span className='text-black'>{userInput.lastName}</span>
+                                                    <span className='text-black' data-testid="lastNameField">{userInput.lastName}</span>
                                             }                                       
                                         </dd>
                                     </div>
@@ -214,7 +214,7 @@ export default function Profile() {
                                         <dd className="flex justify-between items-center mt-1 sm:col-span-2">
                                             {isEditing ? 
                                                 <input type="email" name="email" value={editedUserInput.email} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
-                                                <span className='text-black'>{userInput.email}</span>
+                                                <span className='text-black' data-testid="EmailField">{userInput.email}</span>
                                             }
                                         </dd>
                                     </div>
@@ -223,7 +223,7 @@ export default function Profile() {
                                             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-500">Current Password</dt>
                                                 <dd className="flex justify-between items-center mt-1 sm:col-span-2">
-                                                    <input type="password" name="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} className="border-b border-gray-400 focus:outline-none text-black" />
+                                                    <input type="password" name="currentPassword" data-testid="passwordInput" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} className="border-b border-gray-400 focus:outline-none text-black" />
                                                 </dd>
                                             </div>
                                             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
