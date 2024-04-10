@@ -4,7 +4,7 @@ import Sidebar from '../../components/Sidebar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
-import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
+import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
 import db from '../../lib/firebase'
 import StudentAssignmentCard from '../../components/StudentAssignmentCard';
 import TeacherAssignmentCard from '../../components/TeacherAssignmentCard';
@@ -22,6 +22,8 @@ export default function Assignments({ params }) {
     const [userType,setUserType] = useState('user');
     const [userName,setUserName] = useState('non');
     const [submittedAssignments, setSubmittedAssignments] = useState([]);
+    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -74,10 +76,11 @@ export default function Assignments({ params }) {
         });
     
         return () => unsubscribe();
-    }, [courseCode]);
+    }, [courseCode,currentAssignments]);
      // Add courseCode as a dependency
 
-    const [loading, setLoading] = useState(true);
+
+
 
     useEffect(() => {
         // Simulate a network request
@@ -86,6 +89,8 @@ export default function Assignments({ params }) {
         }, 1000);
     }, []);
 
+
+   
     if (loading) {
         return <Loader />; // Return the Loading component if loading is true
     }
@@ -100,11 +105,10 @@ export default function Assignments({ params }) {
                 <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">Course Name</h1>
                 <h2 className="text-3xl text-black font mt-4" data-testid="assignments-heading">Assignments</h2>
                 <div className="flex justify-end">
-                    <a href="addAssignments" className="px-4 py-2 mb-3 bg-green-500 text-white rounded hover:bg-green-600">Add</a>
+                    <a href="addAssignments" className="px-4 py-2 mb-3 bg-green-500 text-white rounded hover:bg-green-600 hover:scale-110 transition ease-in-out duration-200   ">Add</a>
                 </div>
                 <div className="overflow-x-auto">
                     {currentAssignments.map((assignment, index) => (
-                      (userType == 'Student' && <StudentAssignmentCard assignment={assignment} courseCode={courseCode} />) ||
                       (userType == 'Teacher' && <TeacherAssignmentCard assignment={assignment} courseCode = {courseCode} />)
                     ))}
                 </div>

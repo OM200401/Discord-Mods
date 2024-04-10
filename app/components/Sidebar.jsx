@@ -43,7 +43,7 @@ function Sidebar({ userName , userType }) {
     };
 
     return (
-        <div data-testid="sidebar" className={`h-screen bg-blue-400 ${isMinimized ? 'w-20' : 'w-64'} fixed top-0 left-0 overflow-y-auto transition-all duration-300`}>
+        <div data-testid="sidebar" className={`min-h-screen bg-blue-400 ${isMinimized ? 'w-20' : 'w-64'} fixed top-0 left-0 overflow-y-auto transition-all duration-300`}>
             <div className="px-6 py-4">
                 <h2 className="text-4xl font-bold text-gray-800">
                     <Link href="/">

@@ -8,6 +8,7 @@ import db from '../lib/firebase';
 import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import Loader from '../components/Loader';
+import { motion } from 'framer-motion';
 
 export default function Courses() {
     const [loading, setLoading] = useState(true);
@@ -71,7 +72,7 @@ export default function Courses() {
                 // console.log(doc.id, ' => ', doc.data());
                 setTimeout(() => {
                     setLoading(false);
-                }, 3000);
+                }, 1000);
                 
             }
             // console.log(userName);
@@ -92,9 +93,16 @@ export default function Courses() {
                 <h1 className="text-3xl text-black font-semibold mb-4 ">Courses</h1>
                 <div data-testid = "course-card" className="flex flex-wrap justify-start">
                     {courses.map((course, index) => (
-                        <Card key={index} courseCode={course.id} courseName={course.courseName} />
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100  }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5, delay: index * 0.2 }}
+                        >
+                            <Card key={index} courseCode={course.id} courseName={course.courseName} />
+                        </motion.div>
                     ))}
-                </div>
+                </div>  
             </div>
         </div>
     );
