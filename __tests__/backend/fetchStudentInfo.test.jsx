@@ -36,13 +36,7 @@ describe('Firebase Database Tests', () => {
       
       
         // Ensure that the data matches the expected data
-        expect(studentData.length).toBeGreaterThan(0); // Ensure that there is at least one document      
-        // Test student abcd
-        // expect(studentData[0].registeredCourses[1]).toEqual({                
-        //   courseName: "Default Course",
-        //   description: "This course is added as the first course in the subcollection (since a collection requires at least one document) and should not be counted.",
-        //   imageUrl: ""   
-        // });    
+        expect(studentData.length).toBeGreaterThan(0); // Ensure that there is at least one document                 
         expect(studentData[0].email).toEqual('uid52@gmail.com');
         expect(studentData[0].firstName).toEqual('uid');
         expect(studentData[0].lastName).toEqual('test');
@@ -78,9 +72,7 @@ describe('Firebase Database Tests', () => {
       }  
         expect(student).toHaveProperty('email');
         expect(student).toHaveProperty('firstName');
-        expect(student).toHaveProperty('lastName');
-        // expect(student).toHaveProperty('uid'); // Implement when database is updated
-        // expect(student).toHaveProperty('userType'); // Implement when database is updated
+        expect(student).toHaveProperty('lastName');        
       });
     });
 

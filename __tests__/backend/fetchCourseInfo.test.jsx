@@ -22,11 +22,9 @@ describe('Firebase Database Tests', () => {
       expect(courseData.length).toBeGreaterThan(0); // Ensure that there is at least one document
       // Test each course
       courseData.forEach(course => {          
-        expect(course).toHaveProperty('courseName');
-        // expect(course).toHaveProperty('CurrentAssignments'); //Implement this once database is updated.  
-        expect(course).toHaveProperty('description'); //Implement this once database is updated.
-        // expect(course).toHaveProperty('imageUrl'); //Implement this once database is updated.
-        // expect(course).toHaveProperty('teacher'); //Implement this once database is updated.
+        expect(course).toHaveProperty('courseName');         
+        expect(course).toHaveProperty('description');         
+        // expect(course).toHaveProperty('teacher'); //implement this once database is updated. 
       });   
     });
 
@@ -45,8 +43,8 @@ describe('Firebase Database Tests', () => {
   
       // Ensure that the data matches the expected data
       expect(courseData.length).toBeGreaterThan(0); // Ensure that there is at least one document
-      // Test COSC304
-      // expect(courseData[0]).toEqual({        //implement this once database is updated.
+      // Test COSC304 once database is updated
+      // expect(courseData[0]).toEqual({        
       //   courseName: 'Introduction to Databases',
       //   currentAssignments: ['test test essay', 'second essay test test test', 'tester quiz shi'],
       //   description: 'Databases from a user\'s perspective: querying with SQL, designing with UML, and using programs to analyze data. Construction of database-driven applications and websites and experience with current database technologies. Completion of COSC 121 is recommended.',
