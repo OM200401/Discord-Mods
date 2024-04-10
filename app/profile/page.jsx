@@ -168,9 +168,9 @@ export default function Profile() {
     return (
             <div className="bg-blue-100 min-h-screen">
                 <div className="flex">  
-                    {userInput.userType === 'admin' ? 
-                        <AdminSidebar userName={userInput.firstName} userType={userInput.userType}/> :
-                        <Sidebar userName={userInput.firstName} userType={userInput.userType}/>
+                    {userInput.userType === 'Teacher' || userInput.userType === 'Student' ? 
+                        <Sidebar userName={userInput.firstName} userType={userInput.userType}/> :
+                        <AdminSidebar userName={userInput.firstName} userType={userInput.userType}/> 
                     }
                     <div className="relative md:ml-64 w-full">
                         <div className="p-6 text-center">

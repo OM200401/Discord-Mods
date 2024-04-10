@@ -61,8 +61,6 @@ export default function SignUpPage() {
             setErrorMsg('All fields are required');
             return;
         }
-
-    
         
         try {
             await createUserWithEmailAndPassword(auth, email, password).then(async cred=> {

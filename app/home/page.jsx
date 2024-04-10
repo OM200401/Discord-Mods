@@ -5,9 +5,9 @@ import dynamic from "next/dynamic";
 import CourseCard from "../components/CourseCard";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
-import db from '../lib/firebase'; 
 import { auth } from '../lib/firebase';
-import { collection, query, where, getDocs,getDoc, documentId } from "firebase/firestore";
+import { createUser, getTeacherDoc } from '../models/User';
+import { getRegisteredCourses } from "../utilities/RegisteredCourses";
 
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'test') {
 // Home Page that will be seen by the teacher user on logging in
 
 export default function Home(){
-    const [userName, setUserName] = useState('non');
+
     const [user,setUser] = useState();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,53 +28,32 @@ export default function Home(){
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
-                setUser(auth.currentUser);
-                console.log(user.uid);
+                const user = await createUser(auth.currentUser.uid, "Teacher");
+                setUser(user)
 
-                const teacher = query(collection(db, 'teachers'), where('uid', '==', user.uid));
-                const teacherSnapshot = await getDocs(teacher);
+                const teacher = await getTeacherDoc(user.uid);
+                const registeredCourses = await getRegisteredCourses(teacher);
+                setCourses(registeredCourses);
 
-                const doc = teacherSnapshot.docs[0];
-                setUserName(doc.data().firstName);
-                // console.log(doc.id, ' => ', doc.data());
-                const registeredCoursesRef = collection(doc.ref,'registeredCourses');
-                const registeredCoursesSnapshot = await getDocs(registeredCoursesRef);
-
-                console.log(registeredCoursesSnapshot);
-                registeredCoursesSnapshot.forEach(async (registeredCourseDoc) => {
-                    console.log(registeredCourseDoc.data());
-                    if (registeredCourseDoc.id !== "DefaultCourse") {
-                        const coursesRef = collection(db,'courses');
-                        const courseQuery = query(coursesRef, where(documentId(), '==', registeredCourseDoc.id));
-                        const courseSnapshot = await getDocs(courseQuery);
-                        const course = courseSnapshot.docs[0];
-                        console.log(course.data())
-                        courses.push( {id: course.id, ...course.data()} );   
-                    }                      
-                });
-                console.log(courses)
                 setTimeout(() => {
                     setLoading(false);
-                }, 3000);
-                
+                }, 500);
             }
-            console.log(userName);
         }); 
-
         // Cleanup subscription on unmount
         return () => unsubscribe();
     }, []);
 
     return (
         <div className="bg-black min-h-screen flex flex-col md:flex-row ml-80 ">
-            <Sidebar data-testid="sidebar-component" userName={ userName } userType={"Teacher"} />
+            <Sidebar data-testid="sidebar-component" userName={ user?.firstName } userType={"Teacher"} />
             <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
                 {loading ? (
                     <Loader/>
                 ) : (
                     courses.map(course => (
                         <Link key={course.id} href={`${course.id}`}>
-                        <CourseCard data-testid="course-card" courseCode={course.id} courseName={course.courseName} imageUrl={course.imageUrl}/>
+                            <CourseCard data-testid="course-card" courseCode={course.id} courseName={course.courseName} imageUrl={course.imageUrl}/>
                         </Link>
                     ))
                 )}
