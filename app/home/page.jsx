@@ -46,7 +46,7 @@ export default function Home(){
     return (
         <div className="bg-black min-h-screen flex flex-col md:flex-row ml-80 ">
             <Sidebar data-testid="sidebar-component" userName={ user?.firstName } userType={"Teacher"} />
-            <HomePageView courses={courses} loading={loading} />
+            <HomePageView courses={courses} loading={loading} userType={"Teacher"} />
         </div>
     );
 }

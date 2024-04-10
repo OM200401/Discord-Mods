@@ -24,7 +24,7 @@ export default function Home(){
 
     useEffect(() => {
         // When Auth state changes, create a new User object, use their uid to get the student document, use the document reference to get their registered courses (courses they are taking)
-        
+
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
                 const user = await createUser(auth.currentUser.uid, "Student");
@@ -44,8 +44,8 @@ export default function Home(){
 
     return (
         <div className="bg-black min-h-screen flex flex-col md:flex-row ml-80 ">
-            <Sidebar data-testid="sidebar-component" userName={ user?.firstName } userType={"Teacher"} />
-            <HomePageView courses={courses} loading={loading} />
+            <Sidebar data-testid="sidebar-component" userName={ user?.firstName } userType={"Student"} />
+            <HomePageView courses={courses} loading={loading} userType={"Student"} />
         </div>
     );
 }
