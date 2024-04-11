@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('should be able to enroll in a class', async ({ page }) => {
+test('Students should be able to request to enroll for a course', async ({ page }) => {
   test.setTimeout(120000);
 
   // Navigate to the index page
@@ -8,18 +8,23 @@ test('should be able to enroll in a class', async ({ page }) => {
   
   // Click on "Get Started" to navigate to the login page
   await page.click('text=Get Started');
-  
+
+  //Wait for navigation to complete
+  await page.waitForNavigation();  
   // Verify navigation to the login page
   await expect(page).toHaveURL('http://localhost:3000/login');
 
-  // Fill in email and password and click on the login button
-  await page.fill('input[type="email"]', 'endtoend@gmail.com');
+  // Fill in email and password 
+  await page.fill('input[type="email"]', 'abcde@gmail.com');
   await page.fill('input[type="password"]', '123456');
-  await page.click('button', { text: 'Login' });
+  // Click on the login button
+  await page.click('button:has-text("Login")');
 
   // Wait for successful login and navigation to student home page
-  await page.waitForNavigation();
-  await expect(page).toHaveURL('http://localhost:3000/stuHome');
+  // Add a delay to ensure redirection is completed
+  await page.waitForTimeout(10000); // Adjust the delay time as needed
+  const url = page.url();
+  expect(url).toBe('http://localhost:3000/stuHome');
 
   // Click on the "Browse" link to navigate to the course browsing page
   await page.click('text=Browse');
