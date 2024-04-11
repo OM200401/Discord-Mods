@@ -23,6 +23,7 @@ test('Students should be able to request to enroll for a course', async ({ page 
   // Wait for successful login and navigation to student home page
   // Add a delay to ensure redirection is completed
   await page.waitForTimeout(10000); // Adjust the delay time as needed
+  
   const url = page.url();
   expect(url).toBe('http://localhost:3000/stuHome');
 

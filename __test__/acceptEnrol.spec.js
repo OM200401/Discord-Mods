@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('Admin can create courses', async ({ page }) => {
+test('Admin can accept requests from students to enrol', async ({ page }) => {
   test.setTimeout(150000);
 
   // Navigate to the index page
