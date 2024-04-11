@@ -1,69 +1,53 @@
 'use client'
+'use client'
 import Sidebar from '../../../../../app/components/Sidebar';
 import CourseNavBar from '../../../../../app/components/StuCourseNavBar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { useParams } from 'next/navigation';
+import { useParams } from 'next/router'; // Changed import
 import { auth } from '../../../../../app/lib/firebase';
-import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
-import { arrayUnion } from 'firebase/firestore';
+import { getDoc, getDocs, query, collection, where } from 'firebase/firestore';
 import db from '../../../../lib/firebase';
-import {storage} from '../../../../lib/firebase';
-import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
 
-export default function Assignments() {
-    let {name,courseCode} = useParams();
+export default function Assignments({ courseCode, name }) { // Added props
 
-    name = decodeURIComponent(name);
-    courseCode = decodeURIComponent(courseCode)
-    console.log(name);
-    console.log(courseCode);
-
-    const [assignmentData, setAssignmentData] = useState([]);
-    const [user,setUser] = useState(null);
-    const [userType,setUserType] = useState('user');
-    const [userName,setUserName] = useState('non');
-    const [assignmentType,setAssignmentType] = useState(null);
-
+    const [assignmentData, setAssignmentData] = useState(null);
+    const [userName, setUserName] = useState('');
+    const [userType, setUserType] = useState('user');
+    const [assignmentType, setAssignmentType] = useState(null);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
-                setUser(auth.currentUser);
-
-                console.log(user);
-                const userInfoRef = collection(db,'students');
-                const q = query(userInfoRef, where('uid','==',user.uid));
-                try{
+                const userInfoRef = collection(db, 'students');
+                const q = query(userInfoRef, where('uid', '==', auth.currentUser.uid));
+                try {
                     const querySnapshot = await getDocs(q);
                     querySnapshot.forEach((doc) => {
                         setUserName(doc.data().firstName);
                         setUserType(doc.data().userType);
-                    })
-                }catch(error){
+                    });
+                } catch (error) {
                     console.log(error.message);
-                }  
-              
-            const quizRef = doc(db, 'quizzes', name);
+                }
 
-            const quizSnapshot = await getDoc(quizRef);
+                const quizRef = doc(db, 'quizzes', name);
+                const quizSnapshot = await getDoc(quizRef);
 
-            if (quizSnapshot.data()) {
-                setAssignmentData({ name, ...quizSnapshot.data() });
-                setAssignmentType('quiz');
-            } else {
-                console.error('Quiz not found');
-            } 
+                if (quizSnapshot.exists()) { // Changed to exists() instead of data()
+                    setAssignmentData({ name, ...quizSnapshot.data() });
+                    setAssignmentType('quiz');
+                } else {
+                    console.error('Quiz not found');
+                }
             }
         });
 
         return () => unsubscribe();
-    }, []); // Remove assignmentType from dependencies
-
+    }, [name]); // Added name to dependencies
 
     return (
         <>
-        {assignmentType != null && assignmentType === 'quiz' && (
             <div className="flex flex-col md:flex-row bg-blue-100">
                 <Sidebar userName={userName} userType={userType} />
                 <div className="relative md:ml-64">
@@ -75,7 +59,6 @@ export default function Assignments() {
                     {/* Additional quiz content rendering here */}
                 </div>
             </div>
-        )}
         </>
     );
 }
