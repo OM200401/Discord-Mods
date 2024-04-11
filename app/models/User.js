@@ -40,6 +40,18 @@ export async function getTeacherDoc(uid){
     return teacherSnapshot;
 }
 
+export async function getNumStudents(){
+    const studentCollection = collection(db, 'students');
+    const studentDocs = await getDocs(studentCollection);
+    return studentDocs.size;
+}
+
+export async function getNumTeachers(){
+    const teacherCollection = collection(db, 'teachers');
+    const teacherDocs = await getDocs(teacherCollection);
+    return teacherDocs.size;
+}
+
 export async function updateStudentSubmittedAssignments(courseDocRef,updatedSubmittedAssignments){
     await updateDoc(courseDocRef, { submittedAssignments: updatedSubmittedAssignments });
 
