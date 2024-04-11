@@ -8,6 +8,9 @@ import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { getAllCourses } from "../models/Course";
+import { createUser } from "../models/User";    
+import HomePageView from "../views/HomePageView";
 // import { fetchAllCourses } from "../components/FetchAllCourses";
 
 let Sidebar;
@@ -21,8 +24,7 @@ if (process.env.NODE_ENV === 'test') {
 // Home Page that will be seen by the student user on logging in
 
 export default function Admin(){
-    const [userName, setUserName] = useState('non');
-    const [user,setUser] = useState();
+    const [user,setUser] = useState(null);
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -42,46 +44,30 @@ export default function Admin(){
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
-              setUser(auth.currentUser);
-                console.log(user);
-                const userInfoRef = collection(db,'admins');
-                const q = query(userInfoRef, where('uid','==',user.uid));
-                console.log(q);
-                try{
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                    })
-                }catch(error){
-                    console.log(error.message);
-                }
+                const user = await createUser(auth.currentUser.uid, "admin");
+                setUser(user);
+                const allCourses = await getAllCourses();
+                setCourses(allCourses);
 
-              }  else {
+                setTimeout(() => {
+                    setLoading(false);
+                }, 500);
+
+            } else {
                 // User is signed out
                 console.log('No user');
             }
-
             // console.log(userName);
         }); 
 
         // Cleanup subscription on unmount
         return () => unsubscribe();
-    }, [userName]);
+    }, [user]);
 
     return (
         <div className="flex flex-col md:flex-row ml-80">
-            <AdminSidebar data-testid="sidebar-component" userName={ userName } />
-            {/* <div className="mt-4 md:mt-0 md:ml-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
-                {loading ? (
-                    <p>Loading...</p>
-                ) : (
-                    courses.map(course => (
-                        <Link key={course.id} href={`/[courseCode]?courseCode=${course.courseCode}`}>
-                        <CourseCard data-testid="course-card" courseCode={course.courseCode} courseName={course.courseName} imageUrl={course.imageUrl}/>
-                        </Link>
-                    ))
-                )}
-            </div> */}
+            <AdminSidebar data-testid="sidebar-component" userName={ user?.firstName } />
+            {/* <HomePageView courses={courses} loading={loading} userType={"admin"} /> */}
         </div>
     );
 }

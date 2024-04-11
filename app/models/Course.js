@@ -1,5 +1,5 @@
 import db from '../lib/firebase';
-import { doc, getDoc,setDoc,collection,updateDoc } from 'firebase/firestore';
+import { doc, getDoc, getDocs, setDoc, collection, updateDoc } from 'firebase/firestore';
 
 export class Course {
     constructor(courseCode, courseName, teacher) {
@@ -8,6 +8,17 @@ export class Course {
         this.teacher = teacher;
         // Add more fields here as needed
     }
+}
+
+export async function getAllCourses() {
+    const courses = [];
+    const coursesCollection = collection(db, 'courses');
+    const snapshot = await getDocs(coursesCollection);
+    snapshot.forEach(async (doc) => {
+        if (doc.id !== "DefaultCourse") {
+            courses.push( {id: doc.id, ...doc.data()} );   
+        }                      
+    });
 }
 
 export async function getCourseDoc(courseCode) {

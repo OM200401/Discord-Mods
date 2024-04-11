@@ -48,7 +48,7 @@ function AdminSidebar({ userName }) {
             <div className="px-6 py-4">
                 <h2 className="text-4xl font-bold text-gray-800">
                     <Link href="/">
-                        {isMinimized ? <FaChalkboard/> : 'E-Learning Platform'} 
+                        {isMinimized ? <FaChalkboard/> : 'Discourse'} 
                     </Link>
                 </h2>
                 <p className="mt-2 font-extrabold text-gray-600">Hello {userName}</p>

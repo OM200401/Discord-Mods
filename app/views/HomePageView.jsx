@@ -10,7 +10,7 @@ export default function HomePageView({ courses, loading, userType }) {
                 <Loader/>
             ) : (
                 courses.map(course => (
-                    <Link key={course.id} href={ userType === 'Student' ? `../stu/${course.id}` : `${course.id}` }>
+                    <Link key={course.id} href={ userType === 'Student' ? `../stu/${course.id}` : userType === "Teacher" ? `${course.id}` : "" }>
                         <CourseCard data-testid="course-card" courseCode={course.id} courseName={course.courseName} imageUrl={course.imageUrl}/>
                     </Link>
                 ))
