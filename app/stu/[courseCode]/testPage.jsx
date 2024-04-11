@@ -8,61 +8,18 @@ import Sidebar from '../../components/Sidebar';
 import CourseNavBar from '../../components/StuCourseNavBar';
 import db, { auth } from '../../lib/firebase';
 
-export default function CoursePage({params}) {
-    const [userName, setUserName] = useState('non');
-    const [pdfUrl, setPdfUrl] = useState('');
-    const [loading, setLoading] = useState(true);
+export default function CoursePage() {
 
-    const courseCode = params.courseCode;
-    
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                try {
-                    const userInfoRef = collection(db, 'students');
-                    const q = query(userInfoRef, where('uid', '==', user.uid));
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                    });
-                } catch (error) {
-                    console.log(error.message);
-                }
-            } else {
-                console.log('No user');
-            }
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000);
-        });
-        return unsubscribe;
-    }, []);
+    const [userName, setUserName] = useState('test');
 
-    useEffect(() => {
-        const storage = getStorage();
-        const pdfRef = ref(storage, 'COSC 320-Assignment 4- 2023-2024-T2.pdf');
-        getDownloadURL(pdfRef)
-            .then((url) => {
-                setPdfUrl(url);
-                setTimeout(() => {
-                    setLoading(false);
-                }, 1000);
-            })
-            .catch((error) => {
-                console.log('Error getting PDF URL:', error);
-            });
-    }, []);
-
-    if(loading){
-        return <Loader/>;
-    }
+    const courseCode = 'BIOL696';
 
     return (
         <div className='bg-blue-100'>
             <div className="flex flex-col md:flex-row">
                 <Sidebar userName={userName} userType={"Student"} />
                 <div className="relative md:ml-64">
-                    <CourseNavBar courseCode={courseCode} />
+                    <CourseNavBar  courseCode={courseCode} />
                 </div>
                 <div className="p-6 w-screen bg-blue-100 text-center">
                     <h1 className="text-3xl text-black font-semibold mb-8" data-testid="course-heading">Course Name</h1>
@@ -72,15 +29,6 @@ export default function CoursePage({params}) {
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
                         </p>
                     </div>
-                    {/* <div className="mt-8">
-                        <h2 className="text-2xl font-semibold text-black mb-4">Resources</h2>
-                        <ul className="list-disc ml-4 text-left">
-                            <li>
-                                <a href="#resource1" className="text-blue-500 hover:underline">Resource 1</a>
-                                { {pdfUrl && <iframe src={pdfUrl} className="mt-2 w-full h-screen" />} }
-                            </li>
-                        </ul>
-                    </div> */}
                 </div>
             </div>
         </div>

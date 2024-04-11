@@ -4,11 +4,11 @@ import StudentAssignmentCard from '../../app/components/StudentAssignmentCard';
 
 
 const assignment = {
-    name: 'Assignment 1',
-    weightage: 10,
-    dueDate: '2024-04-10', 
+    name: 'chicago',
+    weightage: 25,
+    dueDate: '2024-04-12', 
   };
-  const courseCode = 'COSC320';
+  const courseCode = 'COSC304';
 
 
 
@@ -19,7 +19,7 @@ test('studentAssignmentCard are present on the assignment page', async () => {
 });
 
 test('studentAssignmentCard weightage is presented', async () => {
-    const weightage = screen.getByText(/Weightage:\s*10/i); // Match the weightage text within the specific paragraph
+    const weightage = screen.getByText(/Weightage:\s*25/i); // Match the weightage text within the specific paragraph
     expect(weightage).toBeDefined(); 
 });
 
