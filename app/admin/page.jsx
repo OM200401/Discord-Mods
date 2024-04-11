@@ -10,7 +10,7 @@ import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { getAllCourses } from "../models/Course";
 import { createUser } from "../models/User";    
-import HomePageView from "../views/HomePageView";
+import AdminHomeView from "../views/AdminHomeView";
 // import { fetchAllCourses } from "../components/FetchAllCourses";
 
 let Sidebar;
@@ -67,7 +67,8 @@ export default function Admin(){
     return (
         <div className="flex flex-col md:flex-row ml-80">
             <AdminSidebar data-testid="sidebar-component" userName={ user?.firstName } />
-            {/* <HomePageView courses={courses} loading={loading} userType={"admin"} /> */}
+            <AdminHomeView courses={courses} loading={loading} userType={"admin"} />
+
         </div>
     );
 }

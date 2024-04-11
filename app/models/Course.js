@@ -19,6 +19,7 @@ export async function getAllCourses() {
             courses.push( {id: doc.id, ...doc.data()} );   
         }                      
     });
+    return courses;
 }
 
 export async function getCourseDoc(courseCode) {
