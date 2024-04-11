@@ -37,7 +37,7 @@ test('Admin can create courses', async ({ page }) => {
   // Wait for navigation to complete and route to the add course page
   await page.waitForNavigation();
   await expect(page).toHaveURL('http://localhost:3000/addCourse');
-  //Add course details
 
+  //We can add course details and specifications here
   
 });

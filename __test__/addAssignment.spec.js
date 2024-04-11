@@ -43,6 +43,13 @@ test('Teachers should be able to add assignments', async ({ page }) => {
 
   // Click on the "Add" button to add assignment
   await page.click('text=Add');      
+
+  // Wait for navigation to complete
+  await page.waitForNavigation();
+  // The new URL should include the add assignment page
+  await expect(page).toHaveURL('http://localhost:3000/COSC304/addAssignments');
+
+  // From here we can add either a quiz or an essay
                                                
 
 });
