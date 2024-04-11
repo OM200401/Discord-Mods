@@ -5,16 +5,15 @@ import { updateDoc, getDocs, query, where, collection } from 'firebase/firestore
 import { updatePassword } from 'firebase/auth';
 import { onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import Sidebar from '../components/Sidebar';
-import AdminSidebar from '../components/AdminSidebar';
 import db from '../lib/firebase';
 
 export default function Profile() {
     const [userInput, setUserInput] = useState({
-        email: '',
-        firstName: '',
-        lastName: '',
-        uid: "",
-        userType:""
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        uid: "123456",
+        userType: "user"
     });
     const [user,setUser] = useState();
     const [userType,setUserType] = useState('user');
@@ -22,11 +21,11 @@ export default function Profile() {
     const [newPassword, setNewPassword] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
     const [editedUserInput, setEditedUserInput] = useState({
-        email: '',
-        firstName: '',
-        lastName: '',
-        uid: "",
-        userType:""
+        email: 'input@example.com',
+        firstName: 'input',
+        lastName: 'Does',
+        uid: "456789",
+        userType: "user"
     });
 
     useEffect(() => {
@@ -166,88 +165,92 @@ export default function Profile() {
 
 
     return (
-            <div className="bg-blue-100 min-h-screen">
-                <div className="flex">  
-                    {userInput.userType === 'admin' ? 
-                        <AdminSidebar userName={userInput.firstName} userType={userInput.userType}/> :
-                        <Sidebar userName={userInput.firstName} userType={userInput.userType}/>
-                    }
-                    <div className="relative md:ml-64 w-full">
-                        <div className="p-6 text-center">
-                            <h1 className="text-3xl text-black font-semibold mb-4" data-testid="profile-heading">Profile</h1>
-                            <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
-                                <div className="px-4 py-5 sm:px-6">
-                                    <div className="mb-6 flex justify-center items-center">
-                                        {/* If you have a profile picture, uncomment this block */}
-                                        {/* <img
-                                            src={userInput.profilePicture}
-                                            alt="Profile Picture"
-                                            className="w-32 h-32 rounded-full mr-4"
-                                        /> */}
-                                    </div>
-                                    <h3 className="text-lg font-semibold leading-6 text-gray-900">User Information</h3>
-                                    <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+        <div className="bg-blue-100 min-h-screen">
+            <div className="flex">
+                <Sidebar userName={userInput.firstName} userType={userInput.userType}/>
+                <div className="relative md:ml-64 w-full">
+                    <div className="p-6 text-center">
+                        <h1 className="text-3xl text-black font-semibold mb-4" data-testid="profile-heading">Profile</h1>
+                        <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg">
+                            <div className="px-4 py-5 sm:px-6">
+                                <div className="mb-6 flex justify-center items-center">
+                                    {/* <img
+                                        src={userInput.profilePicture}
+                                        alt="Profile Picture"
+                                        className="w-32 h-32 rounded-full mr-4"
+                                    /> */}
+                                    {/* <input type="text" name="profilePicture" value={userInput.profilePicture} onChange={handleInputChange} className="border-b border-gray-400 focus:outline-none text-black" placeholder="Enter Profile Picture URL" />
+                                    <button className="text-blue-500 hover:text-blue-700 focus:outline-none" onClick={handleSaveButtonClick}>Edit</button> */}
                                 </div>
-                                <div className="border-t border-gray-200 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    {/* Uncomment this block if you want to display the UserID */}
-                                    {/* <div className="sm:col-span-3 flex justify-between">
+                                <h3 className="text-lg font-semibold leading-6 text-gray-900">User Information</h3>
+                                <p className="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+                            </div>
+                            <div className="border-t border-gray-200">
+                                <dl>
+                                    {/* <div className="bg-white-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                         <dt className="text-sm font-medium text-gray-500">UserID</dt>
-                                        <dd className="mt-1 text-sm text-gray-900">{userInput.UserId}</dd>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2">{userInput.UserId}</dd>
                                     </div> */}
-                                    <div className="sm:col-span-3 flex justify-between">
+                                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                         <dt className="text-sm font-medium text-gray-500">First Name</dt>
-                                        <dd className="mt-1 text-sm text-gray-900">
+                                        <dd className="flex justify-between items-center mt-1 sm:col-span-2">
                                             {isEditing ? 
-                                                <input type="text" name="firstName"  data-testid="firstNameField" value={editedUserInput.firstName} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
+                                                <input type="text" name="firstName"  data-testid="firstNameFieldInput" value={editedUserInput.firstName} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
                                                 <span className='text-black' data-testid="firstNameField" >{userInput.firstName}</span>
                                             }
                                         </dd>
                                     </div>
-                                    <div className="sm:col-span-3 flex justify-between">
+                                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                         <dt className="text-sm font-medium text-gray-500">Last Name</dt>
-                                        <dd className="mt-1 text-sm text-gray-900">
+                                        <dd className="flex justify-between items-center mt-1 sm:col-span-2">
                                             {isEditing ? 
-                                                <input type="text" name="lastName" value={editedUserInput.lastName} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
-                                                <span className='text-black'>{userInput.lastName}</span>
+                                                    <input type="text" name="lastName" value={editedUserInput.lastName} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
+                                                    <span className='text-black' data-testid="lastNameField">{userInput.lastName}</span>
+                                            }                                       
+                                        </dd>
+                                    </div>
+                                    <div className="bg-white-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                        <dt className="text-sm font-medium text-gray-500">Email</dt>
+                                        <dd className="flex justify-between items-center mt-1 sm:col-span-2">
+                                            {isEditing ? 
+                                                <input type="email" name="email" value={editedUserInput.email} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
+                                                <span className='text-black' data-testid="EmailField">{userInput.email}</span>
                                             }
                                         </dd>
                                     </div>
-                                    <div className="sm:col-span-3 flex justify-between">
-                                        <dt className="text-sm font-medium text-gray-500">Email</dt>
-                                        <dd className="mt-1 text-sm text-gray-900">{userInput.email}</dd>
-                                    </div>
-                                    {isEditing ? (
-                                        <>
-                                            <div className="sm:col-span-3 flex justify-between">
+                                    {isEditing ?
+                                        <div>
+                                            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-500">Current Password</dt>
-                                                <dd className="mt-1 text-sm text-gray-900">
-                                                    <input type="password" name="currentPassword" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} className="border-b border-gray-400 focus:outline-none text-black" />
+                                                <dd className="flex justify-between items-center mt-1 sm:col-span-2">
+                                                    <input type="password" name="currentPassword" data-testid="passwordInput" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} className="border-b border-gray-400 focus:outline-none text-black" />
                                                 </dd>
                                             </div>
-                                            <div className="sm:col-span-3 flex justify-between">
+                                            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                                 <dt className="text-sm font-medium text-gray-500">New Password</dt>
-                                                <dd className="mt-1 text-sm text-gray-900">
+                                                <dd className="flex justify-between items-center mt-1 sm:col-span-2">
                                                     <input type="password" name="newPassword" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="border-b border-gray-400 focus:outline-none text-black" />
                                                 </dd>
                                             </div>
-                                            <div className="sm:col-span-3 flex justify-end">
-                                                <button onClick={() => handlePasswordReset(userInput.email, currentPassword, newPassword)} className='bg-red-500 pt-2 pb-2 pl-7 pr-7 mb-5 rounded-full hover:bg-red-700'>Reset Password</button>
-                                            </div>
-                                        </>
-                                    ) : null}
-                                    <div className="sm:col-span-3 flex justify-end">
-                                        {isEditing ? (
-                                            <button onClick={handleSave} className='bg-green-400 pt-2 pb-2 pl-7 pr-7 mb-5 rounded-full hover:bg-green-600'>Save</button>
-                                        ) : (
-                                            <button onClick={handleEdit} className='bg-yellow-400 pt-2 pb-2 pl-7 pr-7 mb-5 rounded-full hover:bg-yellow-600'>Edit</button>
-                                        )}
-                                    </div>
-                                </div>
+                                            <button onClick={() => handlePasswordReset(userInput.email, currentPassword, newPassword)} className='bg-red-500 pt-2 pb-2 pl-7 pr-7 mb-5 rounded-full hover:bg-red-700'>Reset Password</button>
+                                        </div>
+                                        
+                                        :
+                                        <span></span>
+                                
+                                    }
+
+                                    {isEditing ?
+                                        <button onClick={handleSave} className='bg-green-400 pt-2 pb-2 pl-7 pr-7 mb-5 rounded-full hover:bg-green-600'>Save</button>
+                                        :
+                                        <button onClick={handleEdit} className='bg-yellow-400 pt-2 pb-2 pl-7 pr-7 mb-5 rounded-full hover:bg-yellow-600'>Edit</button>
+                                    }                                    
+                                </dl>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        );
-    }
-
+        </div>
+    );
+}
