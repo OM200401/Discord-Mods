@@ -10,6 +10,9 @@ import Loader from '../../components/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinusCircle, faPlusCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
+import { getEssayRef,getQuizRef,addQuiz, addEssay } from '../../models/Assignment';
+import { getTeacherDoc } from '../../models/User';
+import { getCourseDoc, getCourseRef,addAssignmentToCourse} from '../../models/Course';
 
 export default function Assignments({ params }) {
     const [userName,setUserName] = useState('non');
@@ -33,22 +36,25 @@ export default function Assignments({ params }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
-                setUser(auth.currentUser);
-                  console.log(user);
-                  const userInfoRef = collection(db,'teachers');
-                  const q = query(userInfoRef, where('uid','==',user.uid));
+                //   const userInfoRef = collection(db,'teachers');
+                //   const q = query(userInfoRef, where('uid','==',user.uid));
                 //   console.log(q);
-                  try{
-                      const querySnapshot = await getDocs(q);
-                      querySnapshot.forEach((doc) => {
-                          setUserName(doc.data().firstName);
-                          setUserType(doc.data().userType);
-                        //   console.log(doc.data().firstName);
-                      })
-                  }catch(error){
-                      console.log(error.message);
-                  }  
+                //   try{
+                //       const querySnapshot = await getDocs(q);
+                //       querySnapshot.forEach((doc) => {
+                //           setUserName(doc.data().firstName);
+                //           setUserType(doc.data().userType);
+                //         //   console.log(doc.data().firstName);
+                //       })
+                //   }catch(error){
+                //       console.log(error.message);
+                //   }  
 
+                setUser(auth.currentUser);
+                const teacherRef = await getTeacherDoc(user.uid);
+                
+                setUserName(teacherRef.data().firstName);
+                setUserType(teacherRef.data().userType);
 
             }
         })
@@ -105,29 +111,39 @@ export default function Assignments({ params }) {
         setErrorMessage('');
 
         try {
-            const quizCollectionRef = doc(db, 'quizzes', quizTitle);
-            const courseCollectionRef = doc(db, 'courses', courseCode);
-            const courseSnapshot = await getDoc(courseCollectionRef);
+            const quizCollectionRef = await getQuizRef(quizTitle);
 
-            if((courseSnapshot.data().currentWeight + parseInt(weightage)) <= 100){
-                await setDoc(quizCollectionRef, { questions,weightage,dueDate:dueDate});
+            const courseCollectionRef = await getCourseRef(courseCode);
 
-            const courseData = courseSnapshot.data();
-            const currentAssignments = courseData.currentAssignments || [];
+            const courseSnapshot = await getCourseDoc(courseCode);
 
-            currentAssignments.push(quizCollectionRef.id);
-            await setDoc(courseCollectionRef,{...courseData,currentWeight:courseSnapshot.data().currentWeight+parseInt(weightage)});
+            // if((courseSnapshot.data().currentWeight + parseInt(weightage)) <= 100){
+            //     await setDoc(quizCollectionRef, { questions,weightage,dueDate:dueDate});
+            const addCourseAssignment = await addQuiz(courseSnapshot,weightage,questions,dueDate,quizCollectionRef);
+           
+            // const courseData = courseSnapshot.data();
+            // const currentAssignments = courseData.currentAssignments || [];
+
+            // currentAssignments.push(quizCollectionRef.id);
+            // await setDoc(courseCollectionRef,{...courseData,currentWeight:courseSnapshot.data().currentWeight+parseInt(weightage)});
+            if(addCourseAssignment != false) {
+                await addAssignmentToCourse(courseCollectionRef,courseSnapshot,quizCollectionRef, weightage);
+
+            }
+           
+           
             console.log('it worked');
             // Optionally, you can reset the form after submission
             setQuizTitle('');
             setQuestions([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
             setShowForm(false);
-            }else{
-                alert('The weightage of all your assignments is greater than 100!');
-            }
+            // }else{
+            //     alert('The weightage of all your assignments is greater than 100!');
+            // }
         } catch (error) {
             console.error('Error adding quiz:', error);
         }
+    
     };
 
 
@@ -148,30 +164,26 @@ export default function Assignments({ params }) {
         
 
         try {
-            const essayCollectionRef = doc(db, 'essays', essayTitle);
-            const courseCollectionRef = doc(db, 'courses', courseCode);
+            const essayCollectionRef = await getEssayRef(essayTitle);
+            const courseCollectionRef = await getCourseRef(courseCode);
 
-            const courseSnapshot = await getDoc(courseCollectionRef);
+            const courseSnapshot = await getCourseDoc(courseCode);
 
-            if((courseSnapshot.data().currentWeight + parseInt(weightage)) <= 100){
+            const addCourseAssignment = await addEssay(courseSnapshot,questionPrompt,weightage,dueDate,essayCollectionRef);
 
-            await setDoc(essayCollectionRef, { questionPrompt,weightage,dueDate:dueDate});
+            if(addCourseAssignment != false){
+               await addAssignmentToCourse(courseCollectionRef,courseSnapshot,essayCollectionRef, weightage);
 
+            }
 
-            const courseSnapshot = await getDoc(courseCollectionRef);
-            const courseData = courseSnapshot.data();
-            const currentAssignments = courseData.currentAssignments || [];
-
-            currentAssignments.push(essayCollectionRef.id);
-            await setDoc(courseCollectionRef,{...courseData,currentAssignments,currentWeight:courseSnapshot.data().currentWeight+parseInt(weightage)});
             console.log('it worked');
             // Optionally, you can reset the form after submission
             setEssayTitle('');
             setQuestionPrompt('');
             setShowForm(false);
-            }else{
-                alert('The weightage of all your assignments is greater than 100!');
-            }
+            // }else{
+            //     alert('The weightage of all your assignments is greater than 100!');
+            // }
         } catch (error) {
             console.error('Error adding quiz:', error);
         }

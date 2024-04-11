@@ -10,7 +10,11 @@ import StudentAssignmentCard from '../../components/StudentAssignmentCard';
 import TeacherAssignmentCard from '../../components/TeacherAssignmentCard';
 import Loader from '../../components/Loader';
 
+import { createUser, getTeacherDoc } from '../../models/User';
+import { getCourseDoc } from '../../models/Course';
+import { getEssayDoc, getQuizDoc} from '../../models/Assignment';
 
+import { getRegisteredCourses } from "../../utilities/RegisteredCourses";
 export default function Assignments({ params }) {
     const courseCode = params.courseCode;
     // console.log(params);
@@ -30,20 +34,12 @@ export default function Assignments({ params }) {
             if (auth.currentUser) {
                 setUser(auth.currentUser);
     
-                const userInfoRef = collection(db, 'teachers');
-                const q = query(userInfoRef, where('uid', '==', user.uid));
-                try {
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                        setUserType(doc.data().userType);
-                    })
-                } catch (error) {
-                    console.log(error.message);
-                }
-    
-                const coursesRef = doc(db, 'courses', courseCode);
-                const courseSnapshot = await getDoc(coursesRef);
+                const teacherRef = await getTeacherDoc(user.uid);
+                
+                setUserName(teacherRef.data().firstName);
+                setUserType(teacherRef.data().userType);
+
+                const courseSnapshot = await getCourseDoc(courseCode);
     
                 if (courseSnapshot.exists()) {
                     const assignmentNames = courseSnapshot.data().currentAssignments || [];
@@ -51,12 +47,12 @@ export default function Assignments({ params }) {
                     // Initialize an array to store all promises for fetching assignment data
                     const assignmentPromises = assignmentNames.map(async (name) => {
                         let assignmentData = null;
-                        const quizRef = doc(db, 'quizzes', name);
-                        const essayRef = doc(db, 'essays', name);
+                        // const quizRef = doc(db, 'quizzes', name);
+                        // const essayRef = doc(db, 'essays', name);
     
                         const [quizSnapshot, essaySnapshot] = await Promise.all([
-                            getDoc(quizRef),
-                            getDoc(essayRef)
+                            getQuizDoc(name),
+                            getEssayDoc(name)
                         ]);
     
                         if (quizSnapshot.exists()) {

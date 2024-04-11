@@ -6,6 +6,7 @@ import Loader from '../../components/Loader';
 import { FaChevronDown } from 'react-icons/fa';
 import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
 import db from '../../lib/firebase'
+import { getCourseDoc,getGradesForCourse} from '../../models/Course';
 
 export default function Assignments({ params }) {
 
@@ -34,19 +35,8 @@ export default function Assignments({ params }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const coursesDoc = doc(db, 'courses', courseCode);
-                const coursesDocSnapshot = await getDoc(coursesDoc);
-    
-                let studentGrades = [];
-    
-                if (!coursesDocSnapshot.empty) {
-                    let gradedAssignments = coursesDocSnapshot.data().gradedAssignments;
-                    gradedAssignments.forEach((assignment) => {
-                        studentGrades.push({ ...assignment })
-                    });
-                }
-    
-                setStudentAssignments(studentGrades);
+               const studentGrades = await getGradesForCourse(courseCode);
+               setStudentAssignments(studentGrades);
             } catch (error) {
                 console.error('Error fetching course data:', error);
             } finally {

@@ -10,6 +10,11 @@ import { getDoc, getDocs, doc, where, query, documentId, collection, updateDoc, 
 import { useParams } from 'next/navigation';
 
 
+import { getStudentDocs, updateStudentSubmittedAssignments } from '../../../../models/User';
+import { getRegisteredCoursesDoc,getCourseDoc, getCourseRef, setGradedAssignments,updateGradedAssignments, getRegisteredCoursesRef } from '../../../../models/Course';
+import { getQuizDoc } from '../../../../models/Assignment';
+
+
 export default function AssignGrade() {
     const [loading, setLoading] = useState(false);
     const [studentInfo, setStudentInfo] = useState([]);
@@ -47,33 +52,28 @@ export default function AssignGrade() {
 
     const handleGradeSubmit = async (grade) => {
         try {
-            const studentRef = collection(db, 'students');
-            const querySnapshot = await getDocs(studentRef);
+            const querySnapshot = await getStudentDocs();
 
             querySnapshot.forEach(async (studentDoc) => {
                 if (studentDoc.data().uid === studentUid) {
-                    const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
-                    const courseDocRef = doc(registeredCoursesRef, courseCode);
-                    const courseDocSnapshot = await getDoc(courseDocRef);
-
+                    const courseDocSnapshot = await getRegisteredCoursesDoc(studentDoc,courseCode);
+                    const courseDocRef = await getRegisteredCoursesRef(studentDoc,courseCode);
                     if (courseDocSnapshot.exists()) {
                         const submittedAssignments = courseDocSnapshot.data().submittedAssignments || [];
                         let updatedSubmittedAssignments = submittedAssignments.map(async (assignment) => {
 
                             if (assignment.name === name) {
                                 if (assignment.grade == null) {
-                                    const course = doc(db, 'courses', courseCode);
-                                    const courseDoc = await getDoc(course);
+                                    const course = await getCourseRef(courseCode);
+                                    const courseDoc = await getCourseDoc(courseCode);
 
                                     if (courseDoc.exists()) {
-                                        const gradedAssignments = courseDoc.data().gradedAssignments ? courseDoc.data().gradedAssignments : [];
-                                        let updatedGradedAssignments = [...gradedAssignments, { email: studentDoc.data().email, assignmentName: name, grade: grade }]
-                                        await updateDoc(course, { gradedAssignments: updatedGradedAssignments });
-                                        console.log('Updated gradedAssignments in the courses document');
+                                       await updateGradedAssignments(course,courseDoc,studentDoc.data().email,name, grade);
+
                                     } else {
                                         // Create the courses document if it doesn't exist
-                                        await setDoc(course, { gradedAssignments: [{ email: studentDoc.data().email, assignmentName: name, grade: grade }] });
-                                        console.log('Created courses document and added gradedAssignments');
+                                        await setGradedAssignments(course,studentDoc.data().email,name,grade);
+                                       console.log('Created courses document and added gradedAssignments');
                                     }
 
                                     return { ...assignment, grade: grade };
@@ -85,7 +85,7 @@ export default function AssignGrade() {
                         });
                         updatedSubmittedAssignments = await Promise.all(updatedSubmittedAssignments);
                         // Update the submittedAssignments array in the document
-                        await updateDoc(courseDocRef, { submittedAssignments: updatedSubmittedAssignments });
+                        await updateStudentSubmittedAssignments(courseDocRef,updatedSubmittedAssignments);
                         console.log('added to database');
 
                         window.location.href = `/${courseCode}/assignments`;
@@ -106,20 +106,21 @@ export default function AssignGrade() {
     useEffect(() => {
         const fetchStudentInfo = async () => {
             try {
-                const studentRef = collection(db, 'students');
 
-                const querySnapshot = await getDocs(studentRef);
+                const querySnapshot = await getStudentDocs();
 
                 const studentsData = [];
 
                 querySnapshot.forEach(async (studentDoc) => {
                     if (studentDoc.data().uid === studentUid) {
 
-                        const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
-                        const coursesQuerySnapshot = await getDocs(query(registeredCoursesRef, where(documentId(), '==', courseCode)));
+                        // const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
+                        // const coursesQuerySnapshot = await getDocs(query(registeredCoursesRef, where(documentId(), '==', courseCode)));
+                        
+                        const coursesRegisteredDoc = await getRegisteredCoursesDoc(studentDoc,courseCode);
 
-                        coursesQuerySnapshot.forEach((courseDoc) => {
-                            const submittedAssignments = courseDoc.data().submittedAssignments || [];
+                       
+                            const submittedAssignments = coursesRegisteredDoc.data().submittedAssignments || [];
                             submittedAssignments.forEach(async (assignment) => {
                                 if (assignment.name === name) {
                                     studentsData.push({
@@ -127,8 +128,7 @@ export default function AssignGrade() {
                                         assignmentSubmission: assignment.submission, assignmentFileSubmission: assignment.fileSubmission
                                     });
 
-                                    const quizRef = doc(db, 'quizzes', name);
-                                    const quizSnapshot = await getDoc(quizRef);
+                                    const quizSnapshot = await getQuizDoc(name);
 
                                     if (!quizSnapshot.empty) {
                                         setAssignmentType('quiz');
@@ -139,7 +139,7 @@ export default function AssignGrade() {
                                     console.log(studentsData);
 
                                 }
-                            });
+                         
                         });
                         setStudentInfo(studentsData);
                         console.log(studentInfo);

@@ -1,5 +1,5 @@
 import db from '../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc,collection,getDocs,updateDoc} from 'firebase/firestore';
 
 export class User {
     constructor(uid, userType, firstName, lastName, email) {
@@ -26,11 +26,23 @@ export async function getStudentDoc(uid){
     return studentSnapshot;
 }
 
+export async function getStudentDocs(){
+    const studentCollection = collection(db, 'students');
+    const studentDocs = await getDocs(studentCollection);
+    return studentDocs;
+}
+
+
 // Function that returns a studentDoc snapshot from the database
 export async function getTeacherDoc(uid){
     const teacherDoc = doc(db, 'teachers', uid);
     const teacherSnapshot = await getDoc(teacherDoc);
     return teacherSnapshot;
+}
+
+export async function updateStudentSubmittedAssignments(courseDocRef,updatedSubmittedAssignments){
+    await updateDoc(courseDocRef, { submittedAssignments: updatedSubmittedAssignments });
+
 }
 
 // Function that connects to the database and fetches the user data
