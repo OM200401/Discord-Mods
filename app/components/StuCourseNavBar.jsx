@@ -8,7 +8,7 @@ export default function CourseNavBar({courseCode}) {
     const [isOpen, setIsOpen] = useState(true);
 
     return (
-        <div className="relative bg-blue-100">
+        <div  data-testid="stuCourseNavBar" className="relative bg-blue-100">
             <button onClick={() => setIsOpen(!isOpen)} className="relative top-0 left-0 m-6 z-10 bg-black">
                 <FiMenu />
             </button>

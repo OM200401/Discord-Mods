@@ -1,11 +1,10 @@
 'use client'
-
-import Sidebar from '@/app/components/Sidebar';
-import CourseNavBar from '@/app/components/StuCourseNavBar';
+import Sidebar from '../../../../../app/components/Sidebar';
+import CourseNavBar from '../../../../../app/components/StuCourseNavBar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
-import { auth } from '@/app/lib/firebase';
+import { auth } from '../../../../../app/lib/firebase';
 import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
 import { arrayUnion } from 'firebase/firestore';
 import db from '../../../../lib/firebase';
@@ -174,7 +173,7 @@ export default function Assignments() {
                             <h2 className="text-xl font-semibold mb-4">Write Submission</h2>
                             <form onSubmit={handleSubmitEssay}>
                                 <div className="mb-4">
-                                    <label htmlFor="essay" className="block text-gray-700">Write your essay:</label>
+                                <label htmlFor="essay" className="block text-gray-700" data-testid="writeEssay">Write your essay:</label>
                                     <textarea
                                         id="essay"
                                         name="essay"
