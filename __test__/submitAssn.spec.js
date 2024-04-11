@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('Teachers should be able to add assignments', async ({ page }) => {
+test('Students should be able to submit an assignment', async ({ page }) => {
   test.setTimeout(120000);
 
   // Navigate to the index page
@@ -15,7 +15,7 @@ test('Teachers should be able to add assignments', async ({ page }) => {
   await expect(page).toHaveURL('http://localhost:3000/login');
 
   // Fill in email and password 
-  await page.fill('input[type="email"]', 'xyz@gmail.com');
+  await page.fill('input[type="email"]', 'abcde@gmail.com');
   await page.fill('input[type="password"]', '123456');
   // Click on the login button
   await page.click('button:has-text("Login")');
@@ -23,14 +23,15 @@ test('Teachers should be able to add assignments', async ({ page }) => {
   // Wait for successful login and navigation to student home page
   // Add a delay to ensure redirection is completed
   await page.waitForTimeout(10000); // Adjust the delay time as needed
+  
   const url = page.url();
-  expect(url).toBe('http://localhost:3000/home');
+  expect(url).toBe('http://localhost:3000/stuHome');
 
-  // Click on the COSC304 course to navigate to the course details page
+  // Click on "COSC304" to navigate to the course page
   await page.click('text=COSC304');
   
   // Verify navigation to the course page
-  await expect(page).toHaveURL('http://localhost:3000/COSC304');
+  await expect(page).toHaveURL('http://localhost:3000/stu/COSC304');
 
   // Click on "assignments" to view assignments
   await page.click('text=Assignments');
@@ -38,11 +39,13 @@ test('Teachers should be able to add assignments', async ({ page }) => {
   // Wait for navigation to complete
   await page.waitForNavigation();
   
-  // The new URL should include the assignments page
-  await expect(page).toHaveURL('http://localhost:3000/COSC304/assignments'); 
+  // The new URL should include the list of assignmnents
+  await expect(page).toHaveURL('http://localhost:3000/stu/COSC304/assignments'); 
 
-  // Click on the "Add" button to add assignment
-  await page.click('text=Add');      
-                                               
+  // Click on the "start" button to start the assignment
+  await page.click('text=Start');      
+  
+  //This will navigate you to the specific assignment where you can submit
+  page.getByText('Sumbit Quiz');
 
 });

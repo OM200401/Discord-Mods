@@ -27,7 +27,7 @@ test('Student login working as intended', async ({ page }) => {
   // Add a delay to ensure redirection is completed
   await page.waitForTimeout(10000); // Adjust the delay time as needed
 
-  // Check if the current URL is the admin page
+  // Check if the current URL is the student home page
   const url = page.url();
   expect(url).toBe('http://localhost:3000/stuHome');
 

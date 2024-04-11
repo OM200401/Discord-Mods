@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('Teachers should be able to add assignments', async ({ page }) => {
+test('Teachers should be able to grade assignments', async ({ page }) => {
   test.setTimeout(120000);
 
   // Navigate to the index page
@@ -32,7 +32,7 @@ test('Teachers should be able to add assignments', async ({ page }) => {
   // Verify navigation to the course page
   await expect(page).toHaveURL('http://localhost:3000/COSC304');
 
-  // Click on "assignments" to view assignments
+  // Click on "Assignments" to view assignments list
   await page.click('text=Assignments');
   
   // Wait for navigation to complete
@@ -41,8 +41,9 @@ test('Teachers should be able to add assignments', async ({ page }) => {
   // The new URL should include the assignments page
   await expect(page).toHaveURL('http://localhost:3000/COSC304/assignments'); 
 
-  // Click on the "Add" button to add assignment
-  await page.click('text=Add');      
-                                               
+  // Click on the "Grade" button to grade assignment
+  await page.click('text=Grade');      
+
+  //This will navigate you to the specific assignment where you can grade                                              
 
 });

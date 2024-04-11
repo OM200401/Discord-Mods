@@ -31,10 +31,10 @@ test('Admin can accept requests from students to enrol', async ({ page }) => {
   const url = page.url();
   expect(url).toBe('http://localhost:3000/admin');
 
-  // Click on the "Browse" link to navigate to the course browsing page
+  // Click on the "Enrolments" link to navigate to the page with enrolment requests
   await page.click('text=Enrolments');
   
-  // Wait for navigation to complete and route to the add course page
+  // Wait for navigation to complete and route to the enrolments page
   await page.waitForNavigation();
   await expect(page).toHaveURL('http://localhost:3000/enrolments');
   

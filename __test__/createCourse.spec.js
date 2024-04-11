@@ -31,7 +31,7 @@ test('Admin can create courses', async ({ page }) => {
   const url = page.url();
   expect(url).toBe('http://localhost:3000/admin');
 
-  // Click on the "Browse" link to navigate to the course browsing page
+  // Click on the "Add course" link to navigate to the page which allows admin to add a course
   await page.click('text=Add Course');
   
   // Wait for navigation to complete and route to the add course page
