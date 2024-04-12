@@ -84,7 +84,8 @@ export default function SignUpPage() {
                     createStudent(firstName,lastName,email,userType,cred.user.uid);
                     setDefaultStudentCourse(cred.user.uid);
 
-                }else {                    
+                }else {    
+                    setUser(cred.user);                
                     createTeacher(firstName,lastName,email,userType,cred.user.uid);
                     setDefaultTeacherCourse(cred.user.uid);
 
