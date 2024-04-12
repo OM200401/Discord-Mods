@@ -15,6 +15,7 @@ const AddCoursePage = () => {
     const [teachers, setTeachers] = useState(['Fetching all teachers...']);
     const [selectedTeacher, setSelectedTeacher] = useState('');
     const [loading, setLoading] = useState(true);       // TODO: use loading state to show a spinner while fetching data?
+    const [feedback, setFeedback] = useState('');
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -63,13 +64,13 @@ const AddCoursePage = () => {
     
         try{
             await addCourse(courseCode, newCourseData);
-            console.log("Course added to courses collection");
+            setFeedback("Course added to courses collection");
             
             const teacherDoc = await getTeacherDoc(selectedTeacher);
-            console.log("Got teacher snapshot");
+            setFeedback("Got teacher snapshot");
 
             await addTeacherRegisteredCourse(teacherDoc.ref, courseCode, newCourseData);
-            console.log("Course added to teacher's registered courses");
+            setFeedback("Course added to teacher's registered courses");
 
             setCourseCode('');
             setCourseName('');
@@ -77,7 +78,7 @@ const AddCoursePage = () => {
             setSelectedTeacher('');
 
         } catch(error){
-            console.log("Error adding course:", error);
+            setFeedback("Error adding course:", error);
         }
     };
 
@@ -118,6 +119,7 @@ const AddCoursePage = () => {
                 description={description} 
                 selectedTeacher={selectedTeacher} 
                 teachers={teachers} 
+                feedback={feedback}
             />
         </div>
     );
