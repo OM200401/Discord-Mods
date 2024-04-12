@@ -7,35 +7,37 @@ import { auth } from '../lib/firebase';
 import { query, where } from "firebase/firestore";
 import { set } from 'firebase/database';
 import AdminSidebar from '../components/AdminSidebar';
-import Sidebar from '../components/Sidebar';
+import { createUser } from '../models/User';
 
 const AddCoursePage = () => {
-    const [userName, setUserName] = useState('non');
-    const [user,setUser] = useState();
+    const [user,setUser] = useState(null);
     const [courseCode, setCourseCode] = useState('');
     const [courseName, setCourseName] = useState('');
     const [description, setDescription] = useState('');
     const [teachers, setTeachers] = useState(['Fetching all teachers...']);
     const [selectedTeacher, setSelectedTeacher] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchTeachers = async () => {
-            try {
-                const teachersRef = collection(db, 'teachers');
-                const snapshot = await getDocs(teachersRef);
-                const teachersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setTeachers(teachersData);
-            } catch (error) {
-                console.error('Error fetching teachers:', error);
-            }
-        };
-
-        fetchTeachers();
-    }, []);
+    const fetchTeachers = async () => {
+        try {
+            const teachersRef = collection(db, 'teachers');
+            const snapshot = await getDocs(teachersRef);
+            const teachersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setTeachers(teachersData);
+        } catch (error) {
+            console.error('Error fetching teachers:', error);
+        }
+    };
 
     const isCourseCodeValid = (courseCode) => {
         const regex = /^[A-Z]{4}\d{3}$/;
         return regex.test(courseCode);
+    }
+
+    const courseAlreadyExists = async (courseCode) => {
+        const courseRef = doc(db, 'courses', courseCode);
+        const courseSnapshot = await getDoc(courseRef);
+        return courseSnapshot.exists();
     }
 
     const handleInputChange = (e) => {
@@ -54,13 +56,33 @@ const AddCoursePage = () => {
     const handleSubmit = async (e) => { 
         
         e.preventDefault();
-        if(!isCourseCodeValid(courseCode))
+        if(!isCourseCodeValid(courseCode)){
             alert('Invalid Course Code. Must be 4 uppercase letters followed by 3 digits.');
+            return;
+        }
+
+        if(courseName === ''){
+            alert('Course name cannot be empty.');
+            return;
+        }
+
+        if(selectedTeacher === ''){
+            alert('Please select a teacher.');
+            return;
+        }
+
+        if(await courseAlreadyExists(courseCode)){
+            if(!window.confirm("Course with this course code already exists. Do you want to overwrite the existing course? You will lose all the old teacher and assignment data.")) {
+                return;
+            }
+        }
 
         const newCourseData = {
             courseName: courseName,
             description: description,
-            teacher: selectedTeacher
+            teacher: selectedTeacher,
+            currentAssignments: [],
+            gradedAssignments: []
         };
     
         try{
@@ -93,35 +115,27 @@ const AddCoursePage = () => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
-              setUser(auth.currentUser);
-                console.log(user);
-                const userInfoRef = collection(db,'admins');
-                const q = query(userInfoRef, where('uid','==',user.uid));
-                console.log(q);
-                try{
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                    })
-                }catch(error){
-                    console.log(error.message);
+                if(auth.currentUser){
+                    const user = await createUser(auth.currentUser.uid, "admin");
+                    setUser(user);
+                    fetchTeachers();
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 200);
+                } else {
+                    // User is signed out
+                    console.log('No user');
                 }
-
-              }  else {
-                // User is signed out
-                console.log('No user');
             }
-
-            console.log(userName);
         }); 
 
         // Cleanup subscription on unmount
         return () => unsubscribe();
-    }, [userName]);
+    }, [user]);
 
     return (
         <div className="flex flex-col justify-center items-center h-screen bg-gray-200">
-            <AdminSidebar data-testid="adminSidebar-component" userName={ userName } />
+            <AdminSidebar data-testid="adminSidebar-component" userName={ user?.firstName } />
             <h1 className='text-black mb-32 font-bold text-3xl'>Add Course</h1>
             <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
                 <div className="mb-4">
