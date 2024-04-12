@@ -12,17 +12,16 @@ import { getStudentDocs } from '../../../models/User';
 import { getRegisteredCoursesDoc } from '../../../models/Course';
 
 export default function Assignments() {
+    // State variables
+    const [loading, setLoading] = useState(false); // State for storing loading status
+    const [studentInfo,setStudentInfo] =useState([]); // State for storing student information
+    const [userName,setUserName] = useState('non'); // State for storing user name
+    const [userType, setUserType] = useState(''); // State for storing user type
 
-    const [loading, setLoading] = useState(false);
-    const [studentInfo,setStudentInfo] =useState([]);
-    const [userName,setUserName] = useState('non');
-    const [userType, setUserType] = useState('');
-
+    // Extracting parameters from URL
     let { name,courseCode } = useParams();
     name = name ? decodeURI(name) : '';
     courseCode = courseCode ? decodeURI(courseCode) : '';
-    console.log(courseCode);
-    console.log(name);
     
     // Demo students array to display some students but will later have data 
     // displayed from the database
@@ -38,12 +37,14 @@ export default function Assignments() {
        
     };
 
+    // Function for updating the grade
     const updateGrade = (studentIndex, assignmentIndex, newGrade) => {
         const newStudents = [...students];
         newStudents[studentIndex].assignments[assignmentIndex].grade = newGrade;
         setStudents(newStudents);
     };
 
+    // Effect hook for fetching Student information
     useEffect(() => {
         
         const fetchStudentInfo = async () => {

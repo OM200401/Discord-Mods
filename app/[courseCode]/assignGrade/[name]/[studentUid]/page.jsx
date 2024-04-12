@@ -16,18 +16,17 @@ import { getQuizDoc } from '../../../../models/Assignment';
 
 
 export default function AssignGrade() {
-    const [loading, setLoading] = useState(false);
-    const [studentInfo, setStudentInfo] = useState([]);
-    const [grade, setGrade] = useState('');
-    let [assignmentType, setAssignmentType] = useState('');
+    // State variables
+    const [loading, setLoading] = useState(false); // State for storing loading status
+    const [studentInfo, setStudentInfo] = useState([]); // State for storing student information
+    const [grade, setGrade] = useState(''); // State for storing grade
+    let [assignmentType, setAssignmentType] = useState(''); // State for storing assignment type
 
+    // Extracting parameters from URL
     let { name, courseCode, studentUid } = useParams();
     name = name ? decodeURI(name) : '';
     courseCode = courseCode ? decodeURI(courseCode) : '';
     studentUid = studentUid ? decodeURI(studentUid) : '';
-    console.log(courseCode);
-    console.log(name);
-    console.log(studentUid);
 
 
     // Demo students array to display some students but will later have data 
@@ -43,13 +42,15 @@ export default function AssignGrade() {
     const toggleAssignments = index => {
 
     };
-
+    
+    // Function for updating grade
     const updateGrade = (studentIndex, assignmentIndex, newGrade) => {
         const newStudents = [...students];
         newStudents[studentIndex].assignments[assignmentIndex].grade = newGrade;
         setStudents(newStudents);
     };
 
+    // Function for handling grade submission
     const handleGradeSubmit = async (grade) => {
         try {
             const querySnapshot = await getStudentDocs();
@@ -102,7 +103,7 @@ export default function AssignGrade() {
     };
 
 
-
+    // Effect hook for fetching student info
     useEffect(() => {
         const fetchStudentInfo = async () => {
             try {
