@@ -13,15 +13,17 @@ import { setDefaultTeacherCourse,createTeacher } from '../utilities/TeacherUtili
 // Added html validation for input of email and password
 
 export default function SignUpPage() {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [userType, setUserType] = useState('Student');
-    const [errorMsg, setErrorMsg] = useState('');
-    const [user,setUser] = useState(null);
+    // State variables
+    const [firstName, setFirstName] = useState(''); // State for storing first name
+    const [lastName, setLastName] = useState(''); // State for storing last name
+    const [email, setEmail] = useState(''); // State for storing email
+    const [password, setPassword] = useState(''); // State for storing password
+    const [confirmPassword, setConfirmPassword] = useState(''); // State for storing confirmed password
+    const [userType, setUserType] = useState('Student'); // State for storing user type
+    const [errorMsg, setErrorMsg] = useState(''); // State for storing error message
+    const [user,setUser] = useState(null); // State for storing user
 
+    // Effect hook for redirection based on the type of the user
     useEffect(() => {
         if (user) {
             if(userType === 'Teacher'){
@@ -33,6 +35,7 @@ export default function SignUpPage() {
         }
     }, [user]);
 
+    // Function to display friendly error message based on firebase error code
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
         switch (firebaseErrorCode) {
             case 'auth/invalid-email':
@@ -54,6 +57,7 @@ export default function SignUpPage() {
         }
     };
 
+    // Function to handle signup form submission
     const handleSubmit = async(e) => {
         e.preventDefault();
 

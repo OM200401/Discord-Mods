@@ -10,17 +10,18 @@ import db from '../../../../lib/firebase';
 import QuizQuestionCard from '../../../../views/QuizQuestionCard.jsx';
 
 export default function Assignments() {
-    let {name,courseCode} = useParams();
+    let {name,courseCode} = useParams(); // Get name and courseCode from params
     name = decodeURIComponent(name);
     courseCode = decodeURIComponent(courseCode);
 
-    // Create component to render each array
-    const [user,setUser] = useState(null);
-    const [userName,setUserName] = useState('non');
-    const [questions, setQuestions] = useState([]);
-    const [answers, setAnswers] = useState([]);
-    const [score, setScore] = useState(null);
+    // State variables
+    const [user,setUser] = useState(null); // State for storing user
+    const [userName,setUserName] = useState('non'); // State for storing user name
+    const [questions, setQuestions] = useState([]); // State for storing questions
+    const [answers, setAnswers] = useState([]); // State for storing answers
+    const [score, setScore] = useState(null); // State for storing score
 
+    // Effect hook for handling authentication state change
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
         if (auth.currentUser) {
@@ -49,12 +50,14 @@ export default function Assignments() {
       return () => unsubscribe();
     }, []); 
 
+    // Function for handling the option selection to get the students answers
     const handleOptionSelect = (questionIndex, optionIndex) => {
       const updatedAnswers = [...answers];
       updatedAnswers[questionIndex] = optionIndex;
       setAnswers(updatedAnswers);
     };
 
+    // Function for handling submit
     const handleSubmit = async () => {
       let blankAns = false;
       console.log("Submission: " + answers);

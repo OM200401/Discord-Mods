@@ -10,16 +10,16 @@ import db from '../../../lib/firebase';
 import StudentAssignmentCard from '../../../views/StudentAssignmentCard.jsx';
 
 export default function Assignments({params}) {
+    // State variables
+    const [loading, setLoading] = useState(false); // State for storing loading status
+    const courseCode = params.courseCode; // Course code from params
+    const [currentAssignments, setCurrentAssignments] = useState([]); // State for storing current assignments
+    const [user,setUser] = useState(null); // State for storing user
+    const [userType,setUserType] = useState('user'); // State for storing user type
+    const [userName,setUserName] = useState('non'); // State for storing user name
+    const [submittedAssignments, setSubmittedAssignments] = useState([]); // State for storing submitted assignments
 
-    const [loading, setLoading] = useState(false);
-    const courseCode = params.courseCode;
-
-    const [currentAssignments, setCurrentAssignments] = useState([]);
-    const [user,setUser] = useState(null);
-    const [userType,setUserType] = useState('user');
-    const [userName,setUserName] = useState('non');
-    const [submittedAssignments, setSubmittedAssignments] = useState([]);
-
+    // Effect hookk for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
@@ -96,16 +96,6 @@ export default function Assignments({params}) {
 
         return () => unsubscribe();
     }, []); // Add courseCode as a dependency
-
-    // Demo assignments array to display some assignments but will later have data 
-    // displayed from the database
-    // const assignments = [
-    //     { title: 'Assignment 1', dueDate: '2022-01-01', points: 100 },
-    //     { title: 'Assignment 2', dueDate: '2022-01-15', points: 150 },
-    //     { title: 'Assignment 3', dueDate: '2022-01-15', points: 150 },
-    //     { title: 'Assignment 4', dueDate: '2022-01-15', points: 150 },
-    //     { title: 'Assignment 5', dueDate: '2022-01-15', points: 150 },
-    // ];
 
     useEffect(() => {
         // Simulate a network request

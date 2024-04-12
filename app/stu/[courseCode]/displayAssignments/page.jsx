@@ -6,8 +6,7 @@ import Loader from '../../../views/Loader';
 import {useState, useEffect} from 'react';
 
 export default function EssayDisplay() {
-
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); // State for storing loading status
 
     // Dummy essay data
     const essay = {
