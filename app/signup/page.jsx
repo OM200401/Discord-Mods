@@ -47,7 +47,8 @@ export default function SignUpPage() {
                 return 'The credentials are invalid.';
             case 'auth/weak-password':
                 return 'Password should be at least 6 characters long.';
-            // Add more cases as needed
+            case 'auth/email-already-in-use':
+                return 'The email address already exists';
             default:
                 return 'An unknown error occurred.';
         }
