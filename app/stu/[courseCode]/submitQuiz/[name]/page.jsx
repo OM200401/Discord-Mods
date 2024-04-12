@@ -109,22 +109,25 @@ export default function Assignments() {
             <div className="relative md:ml-64">
                 <CourseNavBar courseCode={courseCode} />
             </div>
-            <div className="text-xl font-bold mb-4 bg-blue-100 px-4 py-2 rounded-lg">
-                {name}
-            </div>
             <div className="p-6 text-center w-full">
-                {questions.map((question, index) => (
-                    <QuizQuestionCard 
-                        key={index} 
-                        questionData={question} 
-                        onOptionSelect={(optionIndex) => handleOptionSelect(index, optionIndex)}
-                    />
-                ))}
-                <button onClick={handleSubmit} className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-200">
-                    Submit Quiz
-                </button>
+                <div className="text-3xl font-bold text-black mb-4 bg-blue-100 px-4 py-2 rounded-lg text-center">
+                    {name}
+                </div>
+                <div className="mt-4">
+                    {questions.map((question, index) => (
+                        <QuizQuestionCard 
+                            key={index} 
+                            questionData={question} 
+                            onOptionSelect={(optionIndex) => handleOptionSelect(index, optionIndex)}
+                            questionNumber={index + 1} // Pass question number to QuizQuestionCard
+                        />
+                    ))}
+                    <button onClick={handleSubmit} className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-200">
+                        Submit Quiz
+                    </button>
+                </div>
                 {score !== null && (
-                    <div className="mt-4 text-xl font-bold">
+                    <div className="mt-4 text-2xl font-bold text-black">
                         Score: {score} / {questions.length}
                     </div>
                 )}

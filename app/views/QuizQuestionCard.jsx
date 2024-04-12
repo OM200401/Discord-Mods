@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function QuizQuestionCard({ questionData, onOptionSelect }) {
+export default function QuizQuestionCard({ questionData, onOptionSelect, questionNumber }) {
     const [selectedOption, setSelectedOption] = useState(null);
 
     const options = questionData.options;
@@ -18,9 +18,9 @@ export default function QuizQuestionCard({ questionData, onOptionSelect }) {
     };
 
     return (
-        <div className="bg-blue-300 p-4 border rounded-lg shadow-md">
+        <div className="bg-blue-300 p-4 border rounded-lg shadow-md mb-4">
             <h2 className="text-xl font-bold mb-4 bg-blue-400 px-4 py-2 rounded-lg">
-                {question}
+                Question {questionNumber}: {question}
             </h2>
             <div className="space-y-2">
                 {options.map((option, index) => (
