@@ -58,7 +58,8 @@ const AddCoursePage = () => {
             description: description,
             teacher: selectedTeacher,
             currentAssignments: [],
-            gradedAssignments: []
+            gradedAssignments: [],
+            currentWeight: 0
         };
     
         try{
