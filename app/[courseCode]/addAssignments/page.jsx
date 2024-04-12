@@ -4,14 +4,12 @@ import Sidebar from '../../views/Sidebar';
 import CourseNavBar from '../../views/CourseNavBar';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
-import { setDoc, getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
-import db from '../../lib/firebase'
 import Loader from '../../views/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinusCircle, faPlusCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { getEssayRef,getQuizRef,addQuiz, addEssay } from '../../models/Assignment';
-import { getTeacherDoc } from '../../models/User';
+import { getTeacherDoc } from '../../utilities/TeacherUtilities';
 import { getCourseDoc, getCourseRef,addAssignmentToCourse} from '../../models/Course';
 
 export default function Assignments({ params }) {

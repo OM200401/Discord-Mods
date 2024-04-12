@@ -4,13 +4,11 @@ import CourseNavBar from '../../../views/CourseNavBar';
 import Sidebar from '../../../views/Sidebar';
 import Loader from '../../../views/Loader';
 import { FaChevronDown } from 'react-icons/fa';
-import db from '../../../lib/firebase';
-import { Auth } from 'firebase/auth';
-import {getDoc,getDocs,doc,where,query, documentId,collection} from 'firebase/firestore';
-import { useParams } from 'next/navigation';
-import { getStudentDocs } from '../../../models/User';
-import { getRegisteredCoursesDoc } from '../../../models/Course';
 
+import { useParams } from 'next/navigation';
+import { getStudentDocs } from '../../../utilities/StudentUtilities';
+import { getRegisteredCoursesDoc } from '../../../models/Course';
+import { fetchAssignments } from '../../../utilities/AssignGradeUtilities';
 export default function Assignments() {
     // State variables
     const [loading, setLoading] = useState(false); // State for storing loading status
@@ -33,56 +31,13 @@ export default function Assignments() {
         { firstName: 'Jack', lastName: 'Brown', grade: 'B', assignments: [{ name: 'Assignment 1', grade: 85 }, { name: 'Assignment 2', grade: 80 }] },
     ]);
 
-    const toggleAssignments = index => {
-       
-    };
-
-    // Function for updating the grade
-    const updateGrade = (studentIndex, assignmentIndex, newGrade) => {
-        const newStudents = [...students];
-        newStudents[studentIndex].assignments[assignmentIndex].grade = newGrade;
-        setStudents(newStudents);
-    };
+ 
 
     // Effect hook for fetching Student information
     useEffect(() => {
         
-        const fetchStudentInfo = async () => {
-            try {
-                setUserType('Teacher');
-                
-                const querySnapshot = await getStudentDocs();
-
-                const studentsData = [];
-                await Promise.all(querySnapshot.docs.map(async (studentDoc) => {
-                    const courseDoc = await getRegisteredCoursesDoc(studentDoc,courseCode);
-                 
-                    if(courseDoc.exists())   {     
-                        const submittedAssignments = courseDoc.data().submittedAssignments || [];
-                 
-                        submittedAssignments.forEach((assignment) => {
-                            if (assignment.name === name) {
-                                if(assignment.grade == null) {
-                                    studentsData.push({
-                                        studentName: `${studentDoc.data().firstName} ${studentDoc.data().lastName}`,
-                                        assignmentName: assignment.name,
-                                        studentUid: studentDoc.data().uid
-                                    });
-                                }
-                            }
-                        });
-                    }
-                }));
-                setStudentInfo(studentsData);
-
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching student info:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchStudentInfo();
+        setLoading(true);
+        fetchAssignments(courseCode, name, setStudentInfo, setLoading);
 
       
     }, []);

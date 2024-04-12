@@ -32,3 +32,26 @@ export async function getTeacherDoc(uid){
     const teacherSnapshot = await getDoc(teacherDoc);
     return teacherSnapshot;
 }
+
+
+export async function getNumTeachers(){
+    const teacherCollection = collection(db, 'teachers');
+    const teacherDocs = await getDocs(teacherCollection);
+    return teacherDocs.size;
+}
+
+export async function fetchAllTeachers() {
+    try {
+        const teachersRef = collection(db, 'teachers');
+        const snapshot = await getDocs(teachersRef);
+        const teachersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return teachersData;
+    } catch (error) {
+        console.error('Error fetching teachers:', error);
+    }
+}
+
+export async function addTeacherRegisteredCourse(teacherDocRef, courseCode, courseData=''){
+    const registeredCoursesCollection = collection(teacherDocRef, 'registeredCourses');
+    await setDoc(doc(registeredCoursesCollection, courseCode), courseData);
+}

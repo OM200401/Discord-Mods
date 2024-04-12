@@ -3,10 +3,8 @@ import { useState, useEffect } from 'react';
 import CourseNavBar from '../../views/CourseNavBar';
 import Sidebar from '../../views/Sidebar';
 import Loader from '../../views/Loader';
-import { FaChevronDown } from 'react-icons/fa';
-import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
-import db from '../../lib/firebase'
-import { getCourseDoc,getGradesForCourse} from '../../models/Course';
+
+import { getGradesForCourse} from '../../models/Course';
 
 export default function Assignments({ params }) {
 
@@ -19,18 +17,7 @@ export default function Assignments({ params }) {
    const courseCode = params.courseCode;
  
     // Function for toggling  assignments
-    const toggleAssignments = index => {
-        const newStudents = [...students];
-        newStudents[index].showAssignments = !newStudents[index].showAssignments;
-        setStudents(newStudents);
-    };
-
-    // Function for updating grade
-    const updateGrade = (studentIndex, assignmentIndex, newGrade) => {
-        const newStudents = [...students];
-        newStudents[studentIndex].assignments[assignmentIndex].grade = newGrade;
-        setStudents(newStudents);
-    };
+ 
 
     // Effect Hook for fetching Grades and other data 
     useEffect(() => {
