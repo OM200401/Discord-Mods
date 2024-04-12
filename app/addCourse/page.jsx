@@ -73,7 +73,7 @@ const AddCoursePage = () => {
             const teacherDoc = await getTeacherDoc(selectedTeacher);
             setFeedback("Got teacher snapshot");
 
-            await addTeacherRegisteredCourse(teacherDoc.ref, courseCode, newCourseData);
+            await addTeacherRegisteredCourse(teacherDoc.ref, courseCode);
             setFeedback("Course added to teacher's registered courses");
 
             setCourseCode('');

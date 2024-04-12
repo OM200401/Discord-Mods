@@ -25,6 +25,10 @@ export async function setDefaultTeacherCourse(uid) {
     
     const registeredCoursesCollectionRef = collection(db, 'teachers', uid, 'registeredCourses');
     await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
-      
+}
 
+export async function getTeacherDoc(uid){
+    const teacherDoc = doc(db, 'teachers', uid);
+    const teacherSnapshot = await getDoc(teacherDoc);
+    return teacherSnapshot;
 }

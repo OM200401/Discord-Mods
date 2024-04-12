@@ -74,7 +74,7 @@ export async function fetchAllStudents() {
 } //remove
 
 // TODO: check if we actually need new courseData. If not, remove it from the function signature.
-export async function addTeacherRegisteredCourse(teacherDocRef, courseCode, courseData){
+export async function addTeacherRegisteredCourse(teacherDocRef, courseCode, courseData=''){
     const registeredCoursesCollection = collection(teacherDocRef, 'registeredCourses');
     await setDoc(doc(registeredCoursesCollection, courseCode), courseData);
 }

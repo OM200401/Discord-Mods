@@ -1,12 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react';
 import Navbar from '../views/Navbar';
-import { collection } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import db from '../lib/firebase';
 import {auth} from '../lib/firebase';
 import { redirect } from 'next/navigation';
-import { addDoc,doc,getDoc,setDoc } from 'firebase/firestore';
 import {Input} from '@nextui-org/react';
 import { setDefaultStudentCourse,createStudent } from '../utilities/StudentUtilities';
 import { setDefaultTeacherCourse,createTeacher } from '../utilities/TeacherUtilities';
@@ -70,25 +67,12 @@ export default function SignUpPage() {
             await createUserWithEmailAndPassword(auth, email, password).then(async cred=> {
                 setUser(cred.user);
                 if(userType === 'Student'){
-
-                    // const studentCollection = collection(db,'students');
-                    
-                    // await setDoc(doc(studentCollection, cred.user.uid), {
-                    //     firstName: firstName,
-                    //     lastName: lastName,
-                    //     email: email,
-                    //     userType: userType,
-                    //     uid: cred.user.uid
-                    // })
-
                     createStudent(firstName,lastName,email,userType,cred.user.uid);
                     setDefaultStudentCourse(cred.user.uid);
-
                 }else {    
                     setUser(cred.user);                
                     createTeacher(firstName,lastName,email,userType,cred.user.uid);
                     setDefaultTeacherCourse(cred.user.uid);
-
             }
         })
     }
