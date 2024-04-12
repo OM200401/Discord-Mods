@@ -16,19 +16,19 @@ import { getEssayDoc, getQuizDoc} from '../../models/Assignment';
 
 import { getRegisteredCourses } from "../../utilities/RegisteredCourses";
 export default function Assignments({ params }) {
+    // Extracting courseCode from params
     const courseCode = params.courseCode;
-    // console.log(params);
-    // console.log("Assignments page course code is " + courseCode);
+
+    // State variables
+    const [currentAssignments, setCurrentAssignments] = useState([]); // State for storing current assignments
+    const [user,setUser] = useState(null); // State for storing user
+    const [userType,setUserType] = useState('user'); // State for storing user type
+    const [userName,setUserName] = useState('non'); // State for storing user name
+    const [submittedAssignments, setSubmittedAssignments] = useState([]); // State for storing submitted assignments
+    const [loading, setLoading] = useState(true); // State for storing loading status
 
 
-    const [currentAssignments, setCurrentAssignments] = useState([]);
-    const [user,setUser] = useState(null);
-    const [userType,setUserType] = useState('user');
-    const [userName,setUserName] = useState('non');
-    const [submittedAssignments, setSubmittedAssignments] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-
+    // Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
@@ -75,9 +75,7 @@ export default function Assignments({ params }) {
     }, [courseCode,currentAssignments]);
      // Add courseCode as a dependency
 
-
-
-
+    
     useEffect(() => {
         // Simulate a network request
         setTimeout(() => {
@@ -85,8 +83,6 @@ export default function Assignments({ params }) {
         }, 1000);
     }, []);
 
-
-   
     if (loading) {
         return <Loader />; // Return the Loading component if loading is true
     }

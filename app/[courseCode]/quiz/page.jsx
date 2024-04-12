@@ -8,17 +8,18 @@ import db from '../../lib/firebase';
 import {doc,setDoc} from 'firebase/firestore';
 
 export default function Assignments({ params }) {
-    const [showForm, setShowForm] = useState(false);
-    const [quizTitle, setQuizTitle] = useState('');
-    const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null}]);
-    const [weightage, setWeightage] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [userName,setUserName] = useState('non');
+    // State variables
+    const [showForm, setShowForm] = useState(false); // State for storing form visibility status
+    const [quizTitle, setQuizTitle] = useState(''); // State for storing quiz title
+    const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null}]); // State for storing questions
+    const [weightage, setWeightage] = useState(0); // State for storing weightage
+    const [loading, setLoading] = useState(true); // State for storing loading status
+    const [userName,setUserName] = useState('non'); // State for storing user name
 
+    // Extracting courseCode from params
     const courseCode = params.courseCode;
-    console.log("Quiz page course code is: " + courseCode);
-    console.log(params)
 
+    // Function for adding option
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
             if (index === questionIndex) {
@@ -28,14 +29,17 @@ export default function Assignments({ params }) {
         }));
     };
 
+    // Function for deleting option
     const handleDeleteQuestion = (questionIndex) => {
         setQuestions(questions.filter((_, index) => index !== questionIndex));
     };
 
+    // Function for adding question
     const handleAddQuestion = () => {
         setQuestions([...questions, { text: '', options: ['Option #1', 'Option #2'], correctAnswer: null}]);
     };
 
+    // Function for changing correct option
     const handleCorrectOptionChange = (questionIndex, optionIndex) => {
         setQuestions(questions.map((question, index) => {
             if (index === questionIndex) {
@@ -45,6 +49,7 @@ export default function Assignments({ params }) {
         }));
     };
 
+    // Function for changing the weightage field
     const handleWeightageChange = (e) => {
         const value = e.target.value;
         if (value >= 0 && value <= 100) {
@@ -54,6 +59,7 @@ export default function Assignments({ params }) {
         }
     };
 
+    // Function for handling form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {

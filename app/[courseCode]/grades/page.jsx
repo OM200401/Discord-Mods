@@ -10,28 +10,29 @@ import { getCourseDoc,getGradesForCourse} from '../../models/Course';
 
 export default function Assignments({ params }) {
 
-    const [loading, setLoading] = useState(true);
-    const [userName,setUserName] = useState('non');
-    const [studentAssignments, setStudentAssignments] = useState(null);
-    const courseCode = params.courseCode;
-    console.log(params);
+   // State variables
+   const [loading, setLoading] = useState(true); // State for storing loading status
+   const [userName,setUserName] = useState('non'); // State for storing user name
+   const [studentAssignments, setStudentAssignments] = useState(null); // State for storing student assignments
 
-    // Demo students array to display some students but will later have data 
-    // displayed from the database
+   // Extracting courseCode from params
+   const courseCode = params.courseCode;
  
-
+    // Function for toggling  assignments
     const toggleAssignments = index => {
         const newStudents = [...students];
         newStudents[index].showAssignments = !newStudents[index].showAssignments;
         setStudents(newStudents);
     };
 
+    // Function for updating grade
     const updateGrade = (studentIndex, assignmentIndex, newGrade) => {
         const newStudents = [...students];
         newStudents[studentIndex].assignments[assignmentIndex].grade = newGrade;
         setStudents(newStudents);
     };
 
+    // Effect Hook for fetching Grades and other data 
     useEffect(() => {
         const fetchData = async () => {
             try {

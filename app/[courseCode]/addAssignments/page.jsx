@@ -15,24 +15,25 @@ import { getTeacherDoc } from '../../models/User';
 import { getCourseDoc, getCourseRef,addAssignmentToCourse} from '../../models/Course';
 
 export default function Assignments({ params }) {
-    const [userName,setUserName] = useState('non');
-    const [showForm, setShowForm] = useState(false);
-    const [quizTitle, setQuizTitle] = useState(''); // New state for quiz title
-    const [essayTitle, setEssayTitle] = useState(''); // New state for essay title
-    const [errorMessage, setErrorMessage] = useState('');
-    const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
-    const [weightage, setWeightage] = useState(0);
-    const [formType, setFormType] = useState("");
-    const [questionPrompt, setQuestionPrompt] = useState('');
-    const [dueDate, setDueDate] = useState('');
-    const [loading, setLoading] = useState(true);
+    //State variables
+    const [userName,setUserName] = useState('non'); // State for storing user name
+    const [showForm, setShowForm] = useState(false); // State for controlling visibility of form
+    const [quizTitle, setQuizTitle] = useState(''); // State for storing quiz title
+    const [essayTitle, setEssayTitle] = useState(''); // State for storing essay title
+    const [errorMessage, setErrorMessage] = useState(''); // State for storing error message
+    const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]); // State for storing questions
+    const [weightage, setWeightage] = useState(0); // State for storing weightage of quiz/essay
+    const [formType, setFormType] = useState(""); // State for storing type of form (quiz or essay)
+    const [questionPrompt, setQuestionPrompt] = useState(''); // State for storing question prompt for essay
+    const [dueDate, setDueDate] = useState(''); // State for storing due date of quiz/essay
+    const [loading, setLoading] = useState(true); // State for storing loading status
 
-    const [user,setUser] = useState(null);
-    const [userType,setUserType] = useState('user');
+    const [user,setUser] = useState(null); // State for storing user data
+    const [userType,setUserType] = useState('user'); // State for storing user type
 
-    const courseCode = params.courseCode;
-    // console.log("my course code is " + courseCode);
+    const courseCode = params.courseCode; // Extracting course code from params
 
+    //Effect hook for handling authentication
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
@@ -60,6 +61,7 @@ export default function Assignments({ params }) {
         })
     });
 
+    //Function for handling addition of option in a question
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
             if (index === questionIndex) {
@@ -69,14 +71,17 @@ export default function Assignments({ params }) {
         }));
     };
 
+    // Function for handling deletion of a question
     const handleDeleteQuestion = (questionIndex) => {
         setQuestions(questions.filter((_, index) => index !== questionIndex));
     };
 
+    // Function for handling addition of a question
     const handleAddQuestion = () => {
         setQuestions([...questions, { text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
     };
 
+    // Function for handling change of correct option in a question
     const handleCorrectOptionChange = (questionIndex, optionIndex) => {
         setQuestions(questions.map((question, index) => {
             if (index === questionIndex) {
@@ -86,6 +91,7 @@ export default function Assignments({ params }) {
         }));
     };
 
+    // Function for handling change of weightage of a quiz/essay
     const handleWeightageChange = (e) => {
         const value = e.target.value;
         if (value >= 0 && value <= 100) {
@@ -95,6 +101,7 @@ export default function Assignments({ params }) {
         }
     };
 
+    // Function for handling submission of quiz
     const handleSubmitQuiz = async (e) => {
         e.preventDefault();
 
@@ -146,7 +153,7 @@ export default function Assignments({ params }) {
     
     };
 
-
+    // Function for handling submission of essay
     const handleSubmitEssay = async (e) => {
         e.preventDefault();
 
@@ -189,20 +196,24 @@ export default function Assignments({ params }) {
         }
     };
 
+    // Function for handling click on "Add Quiz" button
     const handleAddQuizClick = () => {
         setFormType('quiz');
         setShowForm(true);
     };
 
+    // Function for handling click on "Add Essay" button
     const handleAddEssayClick = () => {
         setFormType('essay');
         setShowForm(true);
     };
 
+    // Function for handling change of question prompt for essay
     const handleQuestionPromptChange = (e) => {
         setQuestionPrompt(e.target.value);
     };
 
+    // Function for handling change of due date of quiz/essay
     const handleDueDateChange = (e) => {
         setDueDate(e.target.value);
     };
@@ -220,6 +231,7 @@ export default function Assignments({ params }) {
         return <Loader data-testid="loader" />; // Return the Loading component if loading is true
     }
 
+    // JSX for rendering the component
     return (
         <div className="flex flex-col md:flex-row">
             <Sidebar userName={userName} userType={"Teacher"}/>
