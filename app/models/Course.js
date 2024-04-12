@@ -28,10 +28,24 @@ export async function getCourseDoc(courseCode) {
     return courseSnapshot;
 }
 
+export function isCourseCodeValid(courseCode){
+    const regex = /^[A-Z]{4}\d{3}$/;
+    return regex.test(courseCode);
+}
+
+export async function courseAlreadyExists(courseCode){
+    const courseRef = doc(db, 'courses', courseCode);
+    const courseSnapshot = await getDoc(courseRef);
+    return courseSnapshot.exists();
+}
 
 export async function getCourseRef(courseCode) {
     const courseRef = doc(db, 'courses', courseCode);
     return courseRef;
+}
+
+export async function addCourse(courseCode, newCourseData){
+    await setDoc(doc(db, "courses", courseCode), newCourseData);
 }
 
 export async function addAssignmentToCourse(courseCollectionRef,courseSnapshot,collectionRef,weightage) {
@@ -42,14 +56,12 @@ export async function addAssignmentToCourse(courseCollectionRef,courseSnapshot,c
     await setDoc(courseCollectionRef,{...courseData,currentWeight:courseSnapshot.data().currentWeight+parseInt(weightage)});
 }
 
-
 export async function getRegisteredCoursesDoc(studentDoc,courseCode) {
    const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
    let registeredCoursesSnapshot = doc(registeredCoursesRef, courseCode);
    let registeredCourses = await getDoc(registeredCoursesSnapshot);
    return registeredCourses;
 }
-
 
 export async function getRegisteredCoursesRef(studentDoc,courseCode) {
     const registeredCoursesCollection = collection(studentDoc.ref, 'registeredCourses');
@@ -72,7 +84,7 @@ export async function getGradesForCourse(courseCode){
     return studentGrades;
 }
 
-export async function updateGradedAssignments(course,courseDoc,email,assignmentName, grade)
+export async function updateGradedAssignments(course,courseDoc,email,assignmentName,grade)
 {
     const gradedAssignments = courseDoc.data().gradedAssignments ? courseDoc.data().gradedAssignments : [];
     let updatedGradedAssignments = [...gradedAssignments, { email:email, assignmentName: assignmentName, grade: grade }]

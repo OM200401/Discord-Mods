@@ -1,5 +1,5 @@
 import db from '../lib/firebase';
-import { doc, getDoc,collection,getDocs,updateDoc} from 'firebase/firestore';
+import { doc, collection, getDoc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
 
 export class User {
     constructor(uid, userType, firstName, lastName, email) {
@@ -32,7 +32,6 @@ export async function getStudentDocs(){
     return studentDocs;
 }
 
-
 // Function that returns a studentDoc snapshot from the database
 export async function getTeacherDoc(uid){
     const teacherDoc = doc(db, 'teachers', uid);
@@ -52,9 +51,36 @@ export async function getNumTeachers(){
     return teacherDocs.size;
 }
 
+export async function fetchAllTeachers() {
+    try {
+        const teachersRef = collection(db, 'teachers');
+        const snapshot = await getDocs(teachersRef);
+        const teachersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return teachersData;
+    } catch (error) {
+        console.error('Error fetching teachers:', error);
+    }
+}
+
+export async function fetchAllStudents() {
+    try {
+        const studentsRef = collection(db, 'students');
+        const snapshot = await getDocs(studentsRef);
+        const studentsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return studentsData;
+    } catch (error) {
+        console.error('Error fetching teachers:', error);
+    }
+}
+
+// TODO: check if we actually need new courseData. If not, remove it from the function signature.
+export async function addTeacherRegisteredCourse(teacherDocRef, courseCode, courseData){
+    const registeredCoursesCollection = collection(teacherDocRef, 'registeredCourses');
+    await setDoc(doc(registeredCoursesCollection, courseCode), courseData);
+}
+
 export async function updateStudentSubmittedAssignments(courseDocRef,updatedSubmittedAssignments){
     await updateDoc(courseDocRef, { submittedAssignments: updatedSubmittedAssignments });
-
 }
 
 // Function that connects to the database and fetches the user data
