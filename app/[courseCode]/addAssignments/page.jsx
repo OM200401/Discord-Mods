@@ -1,12 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react';
-import Sidebar from '../../components/Sidebar';
-import CourseNavBar from '../../components/CourseNavBar';
+import Sidebar from '../../views/Sidebar';
+import CourseNavBar from '../../views/CourseNavBar';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 import { setDoc, getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
 import db from '../../lib/firebase'
-import Loader from '../../components/Loader';
+import Loader from '../../views/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinusCircle, faPlusCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 

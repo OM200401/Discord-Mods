@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
-import Sidebar from '../../../components/Sidebar';
-import CourseNavBar from '../../../components/StuCourseNavBar';
-import Loader from '../../../components/Loader';
+import Sidebar from '../../../views/Sidebar';
+import CourseNavBar from '../../../views/StuCourseNavBar';
+import Loader from '../../../views/Loader';
 import {useState, useEffect} from 'react';
 
 export default function EssayDisplay() {

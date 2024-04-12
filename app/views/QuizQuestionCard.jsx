@@ -1,4 +1,3 @@
-import { set } from 'firebase/database';
 import { useState } from 'react';
 
 export default function QuizQuestionCard({ questionData, onOptionSelect }) {

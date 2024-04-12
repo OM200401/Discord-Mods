@@ -1,5 +1,5 @@
 'use client';
-import Navbar from "../components/Navbar";
+import Navbar from "../views/Navbar";
 import { useState } from 'react';
 import {Button} from "@nextui-org/react";
 import Link from "next/link";

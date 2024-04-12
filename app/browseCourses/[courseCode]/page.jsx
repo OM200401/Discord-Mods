@@ -1,12 +1,12 @@
 "use client";
 import { useParams } from 'next/navigation';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '../../views/Sidebar';
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../../lib/firebase';
 import { auth } from '../../lib/firebase';
 import { useState, useEffect } from 'react';
-import Loader from '../../components/Loader';
+import Loader from '../../views/Loader';
 
 export default function CourseInfo() {
     const {courseCode} = useParams();

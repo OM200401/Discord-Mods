@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'test') {
     MockSidebar.displayName = 'Sidebar';
     Sidebar = MockSidebar;
 } else {
-    Sidebar = dynamic(() => import('../components/Sidebar'), {ssr: false});
+    Sidebar = dynamic(() => import('../views/Sidebar'), {ssr: false});
 }
 
 // Home Page that will be seen by the student user on logging in

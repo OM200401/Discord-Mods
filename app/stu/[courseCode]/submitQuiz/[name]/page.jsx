@@ -1,13 +1,13 @@
 'use client'
-import Sidebar from '@/app/components/Sidebar';
-import CourseNavBar from '@/app/components/StuCourseNavBar';
+import Sidebar from '@/app/views/Sidebar';
+import CourseNavBar from '@/app/views/StuCourseNavBar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { auth } from '@/app/lib/firebase';
 import { getDoc,doc,getDocs,query,collection,where,arrayUnion,updateDoc } from 'firebase/firestore';
 import db from '../../../../lib/firebase';
-import QuizQuestionCard from '../../../../components/QuizQuestionCard.jsx';
+import QuizQuestionCard from '../../../../views/QuizQuestionCard.jsx';
 
 export default function Assignments() {
     let {name,courseCode} = useParams();

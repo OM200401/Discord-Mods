@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import Card from '../components/Card';
-import Loader from '../components/Loader';
+import Sidebar from '../views/Sidebar';
+import Card from '../views/BrowseCourseCard';
+import Loader from '../views/Loader';
 
 export default function Courses() {
     const [loading, setLoading] = useState(true);

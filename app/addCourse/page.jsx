@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../lib/firebase';
-import AdminSidebar from '../components/AdminSidebar';
+import AdminSidebar from '../views/AdminSidebar';
 import { isCourseCodeValid, courseAlreadyExists, addCourse } from '../models/Course';
 import { createUser, fetchAllTeachers, getTeacherDoc, addTeacherRegisteredCourse } from '../models/User';
 import AdminAddCourseView from '../views/AdminAddCourseView';

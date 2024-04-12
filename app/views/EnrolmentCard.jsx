@@ -5,6 +5,7 @@ import { collection, getDocs, deleteDoc, setDoc, getDoc, query, where, doc } fro
 
 export default function EnrolmentCard({ userEmail, courseCode, onFeedback }) {
 
+    //Refactor so none of the below backend code is necessary
 
     const deleteEnrolment = async () => {
         const enrolmentRef = collection(db, 'enrolments');

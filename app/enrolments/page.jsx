@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import EnrolmentCard from '../components/EnrolmentCard';
-import AdminSidebar from '../components/AdminSidebar';
+import EnrolmentCard from '../views/EnrolmentCard';
+import AdminSidebar from '../views/AdminSidebar';
 import db from '../lib/firebase'; 
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../lib/firebase';

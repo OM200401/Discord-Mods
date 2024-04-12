@@ -1,11 +1,11 @@
 'use client';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../views/Sidebar';
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import {auth} from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import CourseNavBar from '../components/CourseNavBar';import { createUser } from '../models/User';
+import CourseNavBar from '../views/CourseNavBar';import { createUser } from '../models/User';
 import { getStorage, ref, getDownloadURL} from "firebase/storage";
 import CourseHomeView from '../views/CourseHomeView';
 import { getPdfUrl } from '../utilities/UploadedFiles';

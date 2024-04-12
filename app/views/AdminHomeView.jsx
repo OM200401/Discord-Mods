@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from "next/link";
-import Loader from '../components/Loader';
-import CourseCard from "../components/CourseCard";
+import Loader from './Loader';
+import CourseCard from "./CourseCard";
 import { getNumStudents, getNumTeachers } from '../models/User';
 import { FaUserGraduate, FaChalkboardTeacher } from 'react-icons/fa';
 

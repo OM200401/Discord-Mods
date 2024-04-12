@@ -1,7 +1,7 @@
 'use client'
 
-import Sidebar from '@/app/components/Sidebar';
-import CourseNavBar from '@/app/components/StuCourseNavBar';
+import Sidebar from '@/app/views/Sidebar';
+import CourseNavBar from '@/app/views/StuCourseNavBar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';

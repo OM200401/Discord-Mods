@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
+import Navbar from '../views/Navbar';
 import { collection } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import db from '../lib/firebase';

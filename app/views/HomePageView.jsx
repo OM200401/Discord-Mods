@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Loader from '../components/Loader';
-import CourseCard from "../components/CourseCard";
+import Loader from './Loader';
+import CourseCard from "./CourseCard";
 
 export default function HomePageView({ courses, loading, userType }) {
 

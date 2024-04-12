@@ -1,8 +1,8 @@
 'use client';
 import Link from "next/link";
-import AdminSidebar from "../components/AdminSidebar"; 
+import AdminSidebar from "../views/AdminSidebar"; 
 import dynamic from "next/dynamic";
-import CourseCard from "../components/CourseCard";
+import CourseCard from "../views/CourseCard";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'test') {
     MockSidebar.displayName = 'Sidebar';
     Sidebar = MockSidebar;
 } else {
-    Sidebar = dynamic(() => import('../components/Sidebar'), {ssr: false});
+    Sidebar = dynamic(() => import('../views/Sidebar'), {ssr: false});
 }
 // Home Page that will be seen by the student user on logging in
 

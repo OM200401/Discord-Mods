@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import {cleanup, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import Home from '../../app/home/page';
-import CourseCard from '../../app/components/CourseCard';
+import CourseCard from '../../app/views/CourseCard';
 
 // Mock data
 const mockCourseData = [

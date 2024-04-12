@@ -4,8 +4,8 @@ import { auth } from '../lib/firebase';
 import { updateDoc, getDocs, query, where, collection } from 'firebase/firestore';
 import { updatePassword } from 'firebase/auth';
 import { onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
-import Sidebar from '../components/Sidebar';
-import AdminSidebar from '../components/AdminSidebar';
+import Sidebar from '../views/Sidebar';
+import AdminSidebar from '../views/AdminSidebar';
 import db from '../lib/firebase';
 
 export default function Profile() {

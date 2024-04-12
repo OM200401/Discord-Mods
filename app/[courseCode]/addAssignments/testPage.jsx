@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
-import Sidebar from '../../components/Sidebar';
-import Loader from '../../components/Loader';
+import Sidebar from '../../views/Sidebar';
+import Loader from '../../views/Loader';
 
 
 export default function Assignments() {

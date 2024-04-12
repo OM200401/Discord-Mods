@@ -1,8 +1,8 @@
 'use client';
-import CourseNavBar from '../../../components/StuCourseNavBar.jsx';
-import Sidebar from '../../../components/Sidebar';
+import CourseNavBar from '../../../views/StuCourseNavBar.jsx';
+import Sidebar from '../../../views/Sidebar.jsx';
 import { useState, useEffect } from 'react';
-import Loader from '../../../components/Loader.jsx';
+import Loader from '../../../views/Loader.jsx';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../../lib/firebase';
 import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';

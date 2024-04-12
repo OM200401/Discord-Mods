@@ -7,31 +7,6 @@ import { FaHome, FaBook, FaPencilAlt, FaFileAlt, FaUser, FaChalkboard, FaSignOut
 //Creating a sidebar component to be able to use on all the pages for the app
 
 function Sidebar({ userName , userType }) {
-    // const router = useRouter();
-    // const [isClient, setIsClient] = useState(false);
-
-    // useEffect(() => {
-    //     setIsClient(true);
-    // }, []);
-    // added isMinimized state that monitors the state of the sidebar and used below to determine 
-    // whether the sidebar is minimized or not 
-
-    // When Minimized thw width is changed and the text is replaced with icons 
-    const [isMinimized, setIsMinimized] = useState(false);
-    
-    //Functions for handling sign out in the backend
-    // const handleSignOut = async () => {
-    //     if (!router.isReady) {
-    //         return;
-    //     }
-
-    //     try {
-    //         await signOut(auth);
-    //         router.push('/login');
-    //     } catch (error) {
-    //         console.error('Error signing out', error);
-    //     }
-    // };
     const handleSignOut = async () => {
         try {
             await signOut(auth); 

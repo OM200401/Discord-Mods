@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import Card from '../components/Card';
+import Sidebar from '../views/Sidebar';
+import Card from '../views/BrowseCourseCard';
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import Loader from '../components/Loader';
+import Loader from '../views/Loader';
 import { motion } from 'framer-motion';
 
 export default function Courses() {
