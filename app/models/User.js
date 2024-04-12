@@ -24,13 +24,13 @@ export async function getStudentDoc(uid){
     const studentDoc = doc(db, 'students', uid);
     const studentSnapshot = await getDoc(studentDoc);
     return studentSnapshot;
-}
+} //remove
 
 export async function getStudentDocs(){
     const studentCollection = collection(db, 'students');
     const studentDocs = await getDocs(studentCollection);
     return studentDocs;
-}
+} //remove
 
 // Function that returns a studentDoc snapshot from the database
 export async function getTeacherDoc(uid){
@@ -43,7 +43,7 @@ export async function getNumStudents(){
     const studentCollection = collection(db, 'students');
     const studentDocs = await getDocs(studentCollection);
     return studentDocs.size;
-}
+}//remove
 
 export async function getNumTeachers(){
     const teacherCollection = collection(db, 'teachers');
@@ -71,7 +71,7 @@ export async function fetchAllStudents() {
     } catch (error) {
         console.error('Error fetching teachers:', error);
     }
-}
+} //remove
 
 // TODO: check if we actually need new courseData. If not, remove it from the function signature.
 export async function addTeacherRegisteredCourse(teacherDocRef, courseCode, courseData){
@@ -81,7 +81,7 @@ export async function addTeacherRegisteredCourse(teacherDocRef, courseCode, cour
 
 export async function updateStudentSubmittedAssignments(courseDocRef,updatedSubmittedAssignments){
     await updateDoc(courseDocRef, { submittedAssignments: updatedSubmittedAssignments });
-}
+} //remove
 
 // Function that connects to the database and fetches the user data
 async function getUserData(uid, userType) {
@@ -109,3 +109,32 @@ async function getUserData(uid, userType) {
         throw error;
     }
 }
+
+export async function createStudent(firstName,lastName,email,userType,uid){
+    const studentCollection = collection(db,'students');
+
+       
+    await setDoc(doc(studentCollection, uid), {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        userType: userType,
+        uid: uid
+    }); //remove
+
+
+}
+
+export async function setDefaultStudentCourse(uid) {
+
+    const defaultCourse = doc(db, 'courses', 'DefaultCourse');
+    const defaultCourseDoc = await getDoc(defaultCourse);
+
+    let defaultCourseData = defaultCourseDoc.data();
+
+    
+    const registeredCoursesCollectionRef = collection(db, 'students', uid, 'registeredCourses');
+    await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
+      
+
+} //remove

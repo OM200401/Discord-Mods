@@ -8,6 +8,9 @@ import {auth} from '../lib/firebase';
 import { redirect } from 'next/navigation';
 import { addDoc,doc,getDoc,setDoc } from 'firebase/firestore';
 import {Input} from '@nextui-org/react';
+import { setDefaultStudentCourse,createStudent } from '../utilities/StudentUtilities';
+import { setDefaultTeacherCourse,createTeacher } from '../utilities/TeacherUtilities';
+
 
 //Created signup page for users that do not have an account on the platform
 // Added html validation for input of email and password
@@ -67,53 +70,28 @@ export default function SignUpPage() {
             await createUserWithEmailAndPassword(auth, email, password).then(async cred=> {
                 setUser(cred.user);
                 if(userType === 'Student'){
-                    const studentCollection = collection(db,'students');
-                    
-                    await setDoc(doc(studentCollection, cred.user.uid), {
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        userType: userType,
-                        uid: cred.user.uid
-                    })
-                    const defaultCourse = doc(db, 'courses', 'DefaultCourse');
-                    const defaultCourseDoc = await getDoc(defaultCourse);
-        
-                    let defaultCourseData = '';
-        
-                    if(defaultCourseDoc.exists()) {
-                        defaultCourseData = defaultCourseDoc.data();
-                    }
-                    const registeredCoursesCollectionRef = collection(db, 'students', cred.user.uid, 'registeredCourses');
-                    await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
-                      
-                }else {                    
-                    const teacherCollection = collection(db,'teachers');
-                    
-                    await setDoc(doc(teacherCollection, cred.user.uid), {
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        userType: userType,
-                        uid: cred.user.uid
-                    })
-                    const defaultCourse = doc(db, 'courses', 'DefaultCourse');
-                    const defaultCourseDoc = await getDoc(defaultCourse);
-        
-                    let defaultCourseData = '';
-        
-                    if(defaultCourseDoc.exists()) {
-                        defaultCourseData = defaultCourseDoc.data();
-                    }
-        
-                    const registeredCoursesCollectionRef = collection(db, 'teachers', cred.user.uid, 'registeredCourses');
-                    await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
-                      
-                } 
 
-            })
-        }
-        
+                    // const studentCollection = collection(db,'students');
+                    
+                    // await setDoc(doc(studentCollection, cred.user.uid), {
+                    //     firstName: firstName,
+                    //     lastName: lastName,
+                    //     email: email,
+                    //     userType: userType,
+                    //     uid: cred.user.uid
+                    // })
+
+                    createStudent(firstName,lastName,email,userType,cred.user.uid);
+                    setDefaultStudentCourse(cred.user.uid);
+
+                }else {                    
+                    createTeacher(firstName,lastName,email,userType,cred.user.uid);
+                    setDefaultTeacherCourse(cred.user.uid);
+
+            }
+        })
+    }
+    
        
         catch (error) {
             // Handle any errors from login fields here
