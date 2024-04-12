@@ -11,6 +11,9 @@ import {Input} from "@nextui-org/react";
 import {MailIcon} from '../Icons/MailIcon';
 import { EyeFilledIcon } from "../Icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "../Icons/EyeSlashedFilledIcon";
+import { getTeacherDoc } from "../utilities/TeacherUtilities";
+import { getStudentDoc } from "../utilities/StudentUtilities";
+import { getAdminDoc } from "../utilities/AdminUtilities";
 
 // Created front end for the login page with Email and Password
 // Validation in html also added to check the type of email input and password
@@ -72,27 +75,29 @@ export default function LoginPage() {
             setUser(user);
 
             //check if user is in the teachers collection
-            const tq = query(collection(db, "teachers"), where("email","==", email));
-            const querySnapshotStu = await getDocs(tq);
-            if(!querySnapshotStu.empty){
+            // const tq = query(collection(db, "teachers"), where("email","==", email));
+
+
+            const querySnapshotTeacher= await getTeacherDoc(user.uid);
+            if(querySnapshotTeacher.data()){
                 // User is a teacher
                 window.location.href = ('/home');
                 return;
             }
 
             //check if user is in the students collection
-            const sq = query(collection(db, "students"), where("email","==", email));
-            const querySnapshotTeach = await getDocs(sq);
-            if(!querySnapshotTeach.empty){
+            // const sq = query(collection(db, "students"), where("email","==", email));
+
+            const querySnapshotStudent = await getStudentDoc(user.uid);
+            if(querySnapshotStudent.data()){
                 //User is a teacher
                 window.location.href = ('/stuHome');
                 return;
             }
 
             //check if user is in the admins collection
-            const aq = query(collection(db, "admins"), where("email","==", email));
-            const querySnapshotAdmin = await getDocs(aq);
-            if(!querySnapshotAdmin.empty){
+            const querySnapshotAdmin = await getAdminDoc(user.uid);
+            if(querySnapshotAdmin.data()){
                 //User is an admin
                 window.location.href = ('/admin');
                 return;
