@@ -9,14 +9,16 @@ import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/
 import db from '../../../lib/firebase.js'
 
 export default function Grades({params}) {
-    const courseCode = params.courseCode;
+    const courseCode = params.courseCode; // Course code from the params
 
-    const [loading, setLoading] = useState(true);
-    const [currentAssignments, setCurrentAssignments] = useState([]);
-    const [user,setUser] = useState(null);
-    const [userType,setUserType] = useState('user');
-    const [userName,setUserName] = useState('non');
-    const [grade, setGrade] = useState('');    
+    const [loading, setLoading] = useState(true); // State for storing loading status
+    const [currentAssignments, setCurrentAssignments] = useState([]); // State for storing current assignments
+    const [user,setUser] = useState(null); // State for storing user
+    const [userType,setUserType] = useState('user'); // State for storing user type
+    const [userName,setUserName] = useState('non'); // State for storing user name
+    const [grade, setGrade] = useState(''); // State for storing grade   
+
+    // Function for calculating cumulative grade
     function calculateCumulativeGrade(gradeWeightList) {
         let totalGrade = 0;
         let totalWeight = 0;
@@ -55,7 +57,7 @@ export default function Grades({params}) {
         }
     }
     
-
+    //Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
@@ -131,16 +133,6 @@ export default function Grades({params}) {
 
         return () => unsubscribe();
     }, [grade]); // Add courseCode as a dependency
-
-    // Demo assignments array to display some assignments but will later have data 
-    // displayed from the database
-    // const assignments = [
-    //     { title: 'Assignment 1', dueDate: '2022-01-01', points: 100 },
-    //     { title: 'Assignment 2', dueDate: '2022-01-15', points: 150 },
-    //     { title: 'Assignment 3', dueDate: '2022-01-15', points: 150 },
-    //     { title: 'Assignment 4', dueDate: '2022-01-15', points: 150 },
-    //     { title: 'Assignment 5', dueDate: '2022-01-15', points: 150 },
-    // ];
 
 
     if (loading) {

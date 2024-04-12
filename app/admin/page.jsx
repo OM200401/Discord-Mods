@@ -11,8 +11,8 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { getAllCourses } from "../models/Course";
 import { createUser } from "../models/User";    
 import AdminHomeView from "../views/AdminHomeView";
-// import { fetchAllCourses } from "../components/FetchAllCourses";
 
+// Conditionally importing Sidebar based on the environment
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
     const MockSidebar = () => <div data-testid="sidebar-component"></div>;
@@ -24,23 +24,12 @@ if (process.env.NODE_ENV === 'test') {
 // Home Page that will be seen by the student user on logging in
 
 export default function Admin(){
-    const [user,setUser] = useState(null);
-    const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // State variables
+    const [user,setUser] = useState(null); // State for storing user
+    const [courses, setCourses] = useState([]); // State for storing courses
+    const [loading, setLoading] = useState(true); // State for storing loading status
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const courseData = await fetchAllCourses();
-    //         setCourses(courseData);
-    //         setLoading(false);
-    //     };
-
-    //     fetchData();
-    // }, []);
-
-    // create a new function that will get the CourseCard info on clicking it and then go to the
-    // backend and get info about that course to redirect to the particular Course page 
-
+    // Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
