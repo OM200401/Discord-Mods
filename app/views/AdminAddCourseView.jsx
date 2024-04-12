@@ -1,5 +1,5 @@
 // TODO: use loading? seems to work without it 
-export default function AdminAddCourseView({ handleInputChange, handleSubmit, courseCode, courseName, description, selectedTeacher, teachers, loading }) {
+export default function AdminAddCourseView({ handleInputChange, handleSubmit, courseCode, courseName, description, selectedTeacher, teachers, loading, feedback }) {
     return (
         <div>
             <h1 className='text-black mb-32 font-bold text-3xl'>Add Course</h1>
@@ -66,6 +66,7 @@ export default function AdminAddCourseView({ handleInputChange, handleSubmit, co
                     </button>
                 </div>
             </form>
+            <p className={`mt-4 text-center text-sm ${feedback.startsWith('Error') ? 'text-red-500' : 'text-gray-500'}`}>{feedback}</p>
         </div>
     );
 }
