@@ -7,6 +7,7 @@ import { createUser, getTeacherDoc } from '../models/User';
 import { getRegisteredCourses } from "../utilities/RegisteredCourses";
 import HomePageView from "../views/HomePageView";
 
+// Conditionally rendering Sidebar based on the environment
 let Sidebar;
 if (process.env.NODE_ENV === 'test') {
     const MockSidebar = () => <div data-testid="sidebar-component"></div>;
@@ -19,10 +20,11 @@ if (process.env.NODE_ENV === 'test') {
 // Home Page that will be seen by the teacher user on logging in
 export default function Home(){
 
-    const [user,setUser] = useState();
-    const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [user,setUser] = useState(); // State for storing the user details
+    const [courses, setCourses] = useState([]); // State for storing courses
+    const [loading, setLoading] = useState(true); // State for storing the condition for loading
 
+    // Effect hook for authentication state change
     useEffect(() => {
         // When Auth state changes, create a new User object, use their uid to get the teacher document, use the document reference to get their registered courses (courses they are teaching)
         

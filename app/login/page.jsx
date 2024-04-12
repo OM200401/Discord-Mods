@@ -16,21 +16,23 @@ import { EyeSlashFilledIcon } from "../Icons/EyeSlashedFilledIcon";
 // Validation in html also added to check the type of email input and password
 
 export default function LoginPage() {
-    // const router = useRouter();
-    const[email, setEmail] = useState('');
-    const[password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [user,setUser] = useState(null);
+    // State variables
+    const[email, setEmail] = useState(''); // State for storing email
+    const[password, setPassword] = useState(''); // State for storing password
+    const [error, setError] = useState(''); // State for storing error
+    const [user,setUser] = useState(null); // State for storing user
 
-    const [uid,setUid] = useState(null);
-    const [isAdmin, setIsAdmin] = useState(false);
+    const [uid,setUid] = useState(null); // State for storing uid
+    const [isAdmin, setIsAdmin] = useState(false); // State for storing admin status
 
-    const [errorMsg, setErrorMsg] = useState('');
+    const [errorMsg, setErrorMsg] = useState(''); // State for storing error message
 
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(false); // State for storing visibility status
 
+    // Function for toggling visibility
     const toggleVisibility = () => setIsVisible(!isVisible);
 
+    // Function for getting friendly error message
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
         switch (firebaseErrorCode) {
             case 'auth/invalid-email':
@@ -51,7 +53,7 @@ export default function LoginPage() {
         }
     };
 
-
+    // Function for handling form submission
     const handleSubmit = async(e) => {
         setError("");
         e.preventDefault();
@@ -107,8 +109,6 @@ export default function LoginPage() {
             console.error("Error signing in with email and password", error);
         } 
     };
-
-
 
     return (
         <div className="min-h-screen flex flex-col justify-start">

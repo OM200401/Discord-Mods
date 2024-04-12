@@ -8,15 +8,17 @@ import { createUser, fetchAllTeachers, getTeacherDoc, addTeacherRegisteredCourse
 import AdminAddCourseView from '../views/AdminAddCourseView';
 
 const AddCoursePage = () => {
-    const [user,setUser] = useState(null);
-    const [courseCode, setCourseCode] = useState('');
-    const [courseName, setCourseName] = useState('');
-    const [description, setDescription] = useState('');
-    const [teachers, setTeachers] = useState(['Fetching all teachers...']);
-    const [selectedTeacher, setSelectedTeacher] = useState('');
-    const [loading, setLoading] = useState(true);       // TODO: use loading state to show a spinner while fetching data?
-    const [feedback, setFeedback] = useState('');
+    // State variables
+    const [user,setUser] = useState(null); // State for storing user
+    const [courseCode, setCourseCode] = useState(''); // State for storing course code
+    const [courseName, setCourseName] = useState(''); // State for storing course name
+    const [description, setDescription] = useState(''); // State for storing description
+    const [teachers, setTeachers] = useState(['Fetching all teachers...']); // State for storing teachers
+    const [selectedTeacher, setSelectedTeacher] = useState(''); // State for storing selected teacher
+    const [loading, setLoading] = useState(true); // State for storing loading status
+    const [feedback, setFeedback] = useState(''); // State for storing feedback
 
+    //Function for handling input change
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         if (name === 'courseCode') {
@@ -30,6 +32,7 @@ const AddCoursePage = () => {
         }
     };
 
+    // Function or handling form submission
     const handleSubmit = async (e) => { 
         
         e.preventDefault();
@@ -83,6 +86,7 @@ const AddCoursePage = () => {
         }
     };
 
+    // Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){

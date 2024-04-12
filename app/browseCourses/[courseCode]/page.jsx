@@ -9,15 +9,18 @@ import { useState, useEffect } from 'react';
 import Loader from '../../views/Loader';
 
 export default function CourseInfo() {
+    // Extracting courseCode from params
     const {courseCode} = useParams();
 
-    const [loading, setLoading] = useState(true);
-    const [message, setMessage] = useState('');
-    const [user, setUser] = useState();
-    const [userName, setUserName] = useState('non');
-    const [userType, setUserType] = useState('non');
-    const [courses, setCourses] = useState([]);
+    // State variables
+    const [loading, setLoading] = useState(true); // State for storing loading status
+    const [message, setMessage] = useState(''); // State for storing message
+    const [user, setUser] = useState(); // State for storing user
+    const [userName, setUserName] = useState('non'); // State for storing user name
+    const [userType, setUserType] = useState('non'); // State for storing user type
+    const [courses, setCourses] = useState([]); // State for storing courses
 
+    //Effect hook for handling authentication state change and fetching courses
     useEffect(() => {
         
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -63,6 +66,7 @@ export default function CourseInfo() {
 
     const course = courses.find(c => c.id === courseCode);
 
+    // Function for handling Enrollment
     const handleEnroll = async () => {
 
         if(!user){

@@ -15,17 +15,19 @@ import { auth } from '../lib/firebase';
 */
 
 export default function Enrolments() {
-    const [enrolments, setEnrolments] = useState([]);
-    const [userName, setUserName] = useState('non');
-    const [user,setUser] = useState();
-    const [feedback, setFeedback] = useState('');
-    const [isAccepted, setIsAccepted] = useState(null);
+    // State variables
+    const [enrolments, setEnrolments] = useState([]); // State for storing enrolments
+    const [userName, setUserName] = useState('non'); // State for storing user name
+    const [user,setUser] = useState(); // State for storing user
+    const [feedback, setFeedback] = useState(''); // State for storing feedback
+    const [isAccepted, setIsAccepted] = useState(null); // State for storing acceptance status
 
     const handleFeedback = (message, accepted) => {
         setFeedback(message);
         setIsAccepted(accepted);
     }
 
+    //Effect hook for fetching enrollments
     useEffect(() => {
         const fetchEnrolments = async () => {
             try {
@@ -45,6 +47,7 @@ export default function Enrolments() {
         fetchEnrolments();
     }, [enrolments]);
 
+    //Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){

@@ -9,26 +9,28 @@ import AdminSidebar from '../views/AdminSidebar';
 import db from '../lib/firebase';
 
 export default function Profile() {
+    // State variables
     const [userInput, setUserInput] = useState({
         email: '',
         firstName: '',
         lastName: '',
         uid: "",
         userType:""
-    });
-    const [user,setUser] = useState();
-    const [userType,setUserType] = useState('user');
-    const [isEditing, setIsEditing] = useState(false);
-    const [newPassword, setNewPassword] = useState('');
-    const [currentPassword, setCurrentPassword] = useState('');
+    }); // State for storing user input
+    const [user,setUser] = useState(); // State for storing user
+    const [userType,setUserType] = useState('user'); // State for storing user type
+    const [isEditing, setIsEditing] = useState(false); // State for storing editing status
+    const [newPassword, setNewPassword] = useState(''); // State for storing new password
+    const [currentPassword, setCurrentPassword] = useState(''); // State for storing current password
     const [editedUserInput, setEditedUserInput] = useState({
         email: '',
         firstName: '',
         lastName: '',
         uid: "",
         userType:""
-    });
+    }); // State for storing edited user input
 
+    // Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
@@ -72,11 +74,13 @@ export default function Profile() {
         return () => unsubscribe();
     }, []);
 
+    // Function for handling profile edit
     const handleEdit = () =>{
         setEditedUserInput({...userInput});
         toggleEditing();
     }
 
+    // Function for handling input change
     const handleInputChange = (event) =>{
         setEditedUserInput({...editedUserInput,
             [event.target.name]: event.target.value
@@ -87,6 +91,7 @@ export default function Profile() {
         setIsEditing(!isEditing);
     };
 
+    // Function to save the changes to the database
     const handleSave = async () => {
         // console.log("clicked");
         if(userInput.userType === "Student"){
@@ -143,6 +148,7 @@ export default function Profile() {
         toggleEditing();
     };
 
+    // Function to reset password in the firebase authentication system
     const handlePasswordReset = async (email, currentPassword, newPassword) => {
         try {
             if (auth.currentUser) {
