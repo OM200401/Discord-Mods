@@ -19,7 +19,7 @@ const AssignmentsList = ({ currentAssignments, courseCode, submittedAssignments 
                     {submittedAssignments.map((assignment, index) => (
                         <div key={index} className="bg-white rounded-lg shadow-md p-4 border flex flex-col items-center border-gray-200 hover:shadow-2xl hover:border-gray-600 transition-all duration-200">
                             <p className="font-semibold text-lg">{assignment.name}</p>
-                            <p className="text-gray-500 mb-4">Grade: {assignment.grade ? assignment.grade : "Not graded yet"}</p>
+                            <p className="text-gray-500 mb-4">Grade: {assignment.grade !== null ? assignment.grade : "Not graded yet"}</p>
                         </div>
                     ))}
                 </div>

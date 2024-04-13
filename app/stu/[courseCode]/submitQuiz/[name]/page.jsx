@@ -8,6 +8,8 @@ import { auth } from '@/app/lib/firebase';
 import { getDoc,doc,getDocs,query,collection,where,arrayUnion,updateDoc } from 'firebase/firestore';
 import db from '../../../../lib/firebase';
 import QuizQuestionCard from '../../../../views/QuizQuestionCard.jsx';
+import { updateGradedAssignments,getCourseRef,getCourseDoc } from '../../../../models/Course';
+
 
 export default function Assignments() {
     let {name,courseCode} = useParams(); // Get name and courseCode from params
@@ -91,6 +93,8 @@ export default function Assignments() {
       const registeredCourseSnapshot = await getDoc(registeredCourseDoc);
 
       if (registeredCourseSnapshot.exists()) {
+        const course = await getCourseRef(courseCode);
+        const courseDoc = await getCourseDoc(courseCode);
 
         const updatedCourseData = {
             submittedAssignments: arrayUnion({
@@ -102,6 +106,7 @@ export default function Assignments() {
         };
 
         await updateDoc(registeredCourseDoc, updatedCourseData);
+        await updateGradedAssignments(course,courseDoc,studentSnapshot.docs[0].data().email, name, Math.round(percentage));
         window.location.href = `/stu/${courseCode}/assignments`;
       }
     }
