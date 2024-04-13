@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import db from '../lib/firebase';
+import 'firebase/firestore';
 
-export default function DiscussionBoardView() {
+import { getCourseDoc, getCourseRef } from '../models/Course';
+import { updateDoc, } from 'firebase/firestore';
+
+export default function DiscussionBoardView({params,courseCode,}) {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
@@ -8,12 +13,47 @@ export default function DiscussionBoardView() {
     setNewMessage(event.target.value);
   };
 
-  const handleNewMessageSubmit = (event) => {
-    event.preventDefault();
-    if (!newMessage.trim()) return;
-    setMessages([...messages, newMessage]);
-    setNewMessage('');
-  };
+
+
+  const fetchMessages = async () => {
+    try{
+      const courseDoc = await getCourseDoc(courseCode);
+      if(!courseDoc.empty){
+        const discussionBoard = courseData.data().discussionBoard || [];
+        setMessages(discussionBoard);
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  }
+
+
+  useEffect(() => {
+    fetchMessages();
+  },[courseId]);
+
+
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    try{
+      const courseRef = await getCourseRef(courseCode);
+      const courseData = await getCourseDoc(courseCode);
+      if(!courseData.empty){
+        const discussionBoard = courseData.data().discussionBoard || [];
+        const updatedBoard = [...discussionBoard, newMessage];
+        await updateDoc(courseRef, { discussionBoard: updatedBoard })
+        setMessages(updatedBoard);
+        setNewMessage('');
+      }
+
+    }catch (error){ 
+      console.error('Error submitting message:', error);
+    }
+
+
+
+  }
 
   return (
     <div className="min-h-screen bg-white text-black flex flex-col justify-end">
@@ -27,7 +67,7 @@ export default function DiscussionBoardView() {
           ))}
         </ul>
       </div>
-      <form onSubmit={handleNewMessageSubmit} className="mb-5">
+      <form onSubmit={handleSubmit} className="mb-5">
         <textarea
           value={newMessage}
           onChange={handleNewMessageChange}
