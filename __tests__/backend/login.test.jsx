@@ -17,7 +17,7 @@ describe('Firebase Database Tests', () => {
     });
 
     test('Test correct login', async () => {        
-        const email = 'testuid1@gmail.com';
+        const email = 'abcde@gmail.com';
         const password = '123456';
 
         try {
