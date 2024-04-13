@@ -15,7 +15,7 @@ test('Teachers should be able to grade assignments', async ({ page }) => {
   await expect(page).toHaveURL('http://localhost:3000/login');
 
   // Fill in email and password 
-  await page.fill('input[type="email"]', 'nike@gmail.com');
+  await page.fill('input[type="email"]', 'xyz@gmail.com');
   await page.fill('input[type="password"]', '123456');
   // Click on the login button
   await page.click('button:has-text("Login")');
