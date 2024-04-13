@@ -61,3 +61,7 @@ export async function getStudentDocs(){
     const studentDocs = await getDocs(studentCollection);
     return studentDocs;
 } //remove
+
+export async function updateStudentGrade(courseDocRef,grade){
+    updateDoc(courseDocRef,{grade:grade.toString()})
+}

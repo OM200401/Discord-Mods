@@ -4,9 +4,14 @@ import Sidebar from '../../../views/Sidebar.jsx';
 import { useState, useEffect } from 'react';
 import Loader from '../../../views/Loader.jsx';
 import { onAuthStateChanged } from 'firebase/auth';
+
 import { auth } from '../../../lib/firebase';
-import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
-import db from '../../../lib/firebase.js'
+
+import { getStudentDoc,updateStudentGrade } from '../../../utilities/StudentUtilities.js';
+import { getRegisteredCoursesDoc, getRegisteredCoursesRef } from '../../../models/Course.js';
+import { getEssayDoc,getQuizDoc} from '../../../models/Assignment.js';
+import { calculateCumulativeGrade } from '../../../utilities/CalculateGradeUtilities.js';
+import { GradeView } from '../../../views/StudentGradeView.jsx';
 
 export default function Grades({params}) {
     const courseCode = params.courseCode; // Course code from the params
@@ -19,44 +24,7 @@ export default function Grades({params}) {
     const [grade, setGrade] = useState(''); // State for storing grade   
 
     // Function for calculating cumulative grade
-    function calculateCumulativeGrade(gradeWeightList) {
-        let totalGrade = 0;
-        let totalWeight = 0;
-        console.log('hello 1');
-    
-        // Iterate through each grade-weight object in the list
-        gradeWeightList.forEach((item) => {
-            const { grade, weight } = item;
-    
-            // Add the weighted grade to the total
-            totalGrade += (grade * weight);
-    
-            // Add the weight to the total weight
-            totalWeight += weight;
-        });
-    
-        console.log('hello 2');
-    
-        // Check if totalWeight is not zero to avoid division by zero
-        if (totalWeight !== 0) {
-            // If the total weight is not 100, adjust the grade
   
-                // Calculate the scaling factor to adjust the grade to 100%
-                const scaleFactor = 100 / totalWeight;
-                
-                // Scale the total grade
-                totalGrade = (totalGrade/100) * scaleFactor;
-        
-    
-            // Return the cumulative grade
-            console.log('your grade is ' + totalGrade);
-            return totalGrade;
-        } else {
-            console.error('Total weight is zero.');
-            return null; // Return null if totalWeight is zero
-        }
-    }
-    
     //Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -65,22 +33,14 @@ export default function Grades({params}) {
                 try {
                     if (user) {
                         // Query for the student document
-                        const studentQuerySnapshot = await getDocs(collection(db, 'students'));
-                        let studentDoc;
+                        let studentDoc = await getStudentDoc(user.uid);
                         let gradeWeightArray = [];
 
-                        studentQuerySnapshot.forEach(doc => {
-                            if (doc.data().uid === user.uid) {
-                                studentDoc = doc;
-                            }
-                        });
-        
+                   
                         if (studentDoc) {
                             // Query for the registeredCourses subcollection document
-                            const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
-                            const courseDocRef = doc(registeredCoursesRef, courseCode);
-                            const courseDocSnapshot = await getDoc(courseDocRef);
-        
+                            const courseDocSnapshot = await getRegisteredCoursesDoc(studentDoc,courseCode);
+                            const courseRef = await getRegisteredCoursesRef(studentDoc,courseCode);
                             if (courseDocSnapshot.exists()) {
                                 // Get the submittedAssignments array
                                 const submittedAssignments = courseDocSnapshot.data().submittedAssignments || [];
@@ -89,12 +49,10 @@ export default function Grades({params}) {
                                 const filteredAssignments = submittedAssignments.filter(assignment => assignment.grade !== null);
 
                                 Promise.all(filteredAssignments.map(async (assignment) => {
-                                    const quizRef = doc(db, 'quizzes', assignment.name);
-                                    const essayRef = doc(db, 'essays', assignment.name);
-                                
+                                   
                                     const [quizSnapshot, essaySnapshot] = await Promise.all([
-                                        getDoc(quizRef),
-                                        getDoc(essayRef)
+                                        getQuizDoc(assignment.name),
+                                        getEssayDoc(assignment.name)
                                     ]);
                                 
                                     if (quizSnapshot.exists()) {
@@ -109,9 +67,10 @@ export default function Grades({params}) {
                                 }).catch(error => {
                                     console.error('Error fetching documents:', error);
                                 });
-                                
-                                updateDoc(courseDocRef,{grade:grade.toString()})
+
+                                await updateStudentGrade(courseRef,grade);
                                 setCurrentAssignments(filteredAssignments);
+
                             } else {
                                 console.log('Course document not found.');
                             }
@@ -135,9 +94,9 @@ export default function Grades({params}) {
     }, [grade]); // Add courseCode as a dependency
 
 
-    if (loading) {
-        return <Loader data-testid="loader" />; // Return the Loading component if loading is true
-    }
+    // if (loading) {
+    //     return <Loader data-testid="loader" />; // Return the Loading component if loading is true
+    // }
 
     return (
 
@@ -147,26 +106,7 @@ export default function Grades({params}) {
                     <CourseNavBar courseCode={courseCode} data-testid="course-navbar"/>
                    
                 </div>
-                <div className="p-6 text-center w-full">
-                <h1 className="text-3xl text-black font-semibold mb-4" data-testid="course-heading">{courseCode}</h1>
-                <h2 className="text-3xl text-black font mt-4 mb-6" data-testid="assignments-heading">Assignments</h2>
-                <h3 className="text-3xl text-black font mt-4 mb-6" data-testid="assignments-heading">Grade: {grade && <>{grade}%</>}</h3>
-                <div className="flex justify-end"></div>
-                <div className="overflow-x-auto">
-                    {currentAssignments.map((assignment, index) => (
-                        <div key={index} className="bg-white mb-4 p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all duration-200">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h3 className="text-lg font-semibold text-blue-400 hover:text-blue-500 cursor-pointer">{assignment.name}</h3>
-                                </div>
-                                <div>
-                                    <p className="text-s text-gray-600">Grade: {assignment.grade}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                </div>
+                <GradeView currentAssignments={currentAssignments}  grade={grade} courseCode={courseCode}/>
             </div>
         );
            
