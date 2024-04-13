@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('Students should be able to request to enroll for a course', async ({ page }) => {
+test('Students should be able to submit an assignment', async ({ page }) => {
   test.setTimeout(120000);
 
   // Navigate to the index page
@@ -27,23 +27,25 @@ test('Students should be able to request to enroll for a course', async ({ page 
   const url = page.url();
   expect(url).toBe('http://localhost:3000/stuHome');
 
-  // Click on the "Browse" link to navigate to the course browsing page
-  await page.click('text=Browse');
+  // Click on "COSC304" to navigate to the course page
+  await page.click('text=COSC304');
   
-  // Verify navigation to the course browsing page
-  await expect(page).toHaveURL('http://localhost:3000/browseCourses');
+  // Verify navigation to the course page
+  await expect(page).toHaveURL('http://localhost:3000/stu/COSC304');
 
-  // Click on "See more" to view course details
-  // Find the course with the title 'BIOL696' and click on the 'See more' button within it
-  await page.click('text=See more');
+  // Click on "assignments" to view assignments
+  await page.click('text=Assignments');
   
   // Wait for navigation to complete
   await page.waitForNavigation();
   
-  // The new URL should include the course code in the course details page
-  await expect(page.url()).toContain('/browseCourses/BIOL696'); 
+  // The new URL should include the list of assignmnents
+  await expect(page).toHaveURL('http://localhost:3000/stu/COSC304/assignments'); 
 
-  // Click on the "Request to Enroll" button to enroll in the course
-  await page.click('text=Request to Enroll');                                                   
+  // Click on the "start" button to start the assignment
+  await page.click('text=Start');      
+  
+  //This will navigate you to the specific assignment where you can submit
+  page.getByText('Sumbit Quiz');
 
 });

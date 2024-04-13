@@ -19,7 +19,7 @@ describe('Firebase Database Tests', () => {
         }
     });
     test('Test student signUp operation', async () => {
-        const email = 'signupxy@example.com';// Need to change for each test
+        const email = 'stusignupfore2e@example.com';
         const password = '123456';
         const firstName = 'John';
         const lastName = 'Doe';
@@ -52,7 +52,7 @@ describe('Firebase Database Tests', () => {
     
     });
     test('Test teacher signUp operation', async () => {
-        const email = 'signupab@example.com';// Need to change for each test
+        const email = 'teachsignupfore2e@example.com';
         const password = '123456';
         const firstName = 'John';
         const lastName = 'Doe';

@@ -191,8 +191,8 @@ export default function Profile() {
                                         <dt className="text-sm font-medium text-gray-500">First Name</dt>
                                         <dd className="mt-1 text-sm text-gray-900">
                                             {isEditing ? 
-                                                <input type="text" name="firstName" value={editedUserInput.firstName} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
-                                                <span className='text-black'>{userInput.firstName}</span>
+                                                <input type="text" name="firstName"  data-testid="firstNameField" value={editedUserInput.firstName} onChange={handleInputChange}  className="border-b border-gray-400 focus:outline-none text-black" /> :
+                                                <span className='text-black' data-testid="firstNameField" >{userInput.firstName}</span>
                                             }
                                         </dd>
                                     </div>

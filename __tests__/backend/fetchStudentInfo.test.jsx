@@ -78,9 +78,7 @@ describe('Firebase Database Tests', () => {
       }  
         expect(student).toHaveProperty('email');
         expect(student).toHaveProperty('firstName');
-        expect(student).toHaveProperty('lastName');
-        // expect(student).toHaveProperty('uid'); // Implement when database is updated
-        // expect(student).toHaveProperty('userType'); // Implement when database is updated
+        expect(student).toHaveProperty('lastName');        
       });
     });
 
