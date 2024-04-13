@@ -2,10 +2,10 @@
 import CourseNavBar from '../../../views/StuCourseNavBar.jsx';
 import Sidebar from '../../../views/Sidebar.jsx';
 import Loader from '../../../views/Loader.jsx';
+import StudentAssignmentCard from '../../../views/StudentAssignmentCard.jsx';
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../../lib/firebase.js';
-
 import { getStudentDoc } from '../../../utilities/StudentUtilities.js';
 import { getCourseDoc, getRegisteredCoursesDoc } from '../../../models/Course.js';
 import { getQuizDoc,getEssayDoc } from '../../../models/Assignment';
@@ -20,7 +20,6 @@ export default function Assignments({params}) {
     const [currentAssignments, setCurrentAssignments] = useState([]); // State for storing current assignments
     const [user,setUser] = useState(null); // State for storing user
     const [userType,setUserType] = useState('user'); // State for storing user type
-    const [userName,setUserName] = useState('non'); // State for storing user name
     const [submittedAssignments, setSubmittedAssignments] = useState([]); // State for storing submitted assignments
     // Effect hookk for handling authentication state change
     useEffect(() => {
@@ -29,10 +28,8 @@ export default function Assignments({params}) {
                 setUser(auth.currentUser);
                 const studentQuerySnapshot = await getStudentDoc(user.uid);
 
-                setUserName(studentQuerySnapshot.data().firstName);
                 setUserType(studentQuerySnapshot.data().userType);
               
-
                 const courseSnapshot = await getCourseDoc(courseCode);
 
                 const submittedAssignmentsNames = [];
@@ -97,12 +94,21 @@ export default function Assignments({params}) {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100 min-h-screen">
-            <Sidebar userName={userName} userType={"Student"} />
+            <Sidebar userName={ user?.firstName } userType={"Student"} />
             <div className="md:ml-64 fixed">
                 <CourseNavBar courseCode={courseCode} />
             </div>
-            <AssignmentsList currentAssignments={currentAssignments} courseCode={courseCode} submittedAssignments={submittedAssignments} />
-
+            <div className="p-6 text-center w-full md:pl-64 md:ml-72">
+                <h1 className="text-3xl text-black font-bold mb-4" data-testid="course-heading">Course Name</h1>
+                <h2 className="text-3xl text-black font-semibold mt-4 mb-4" data-testid="assignments-heading">Assignments</h2>
+                <div className="flex justify-end">
+                </div>
+                <div className="overflow-x-auto">
+                    {currentAssignments.map((assignment, index) => (
+                      <StudentAssignmentCard key={index} assignment={assignment} courseCode={courseCode} assignmentType={assignment.assignmentType}/>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

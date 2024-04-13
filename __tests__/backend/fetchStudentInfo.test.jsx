@@ -7,7 +7,7 @@ describe('Firebase Database Tests', () => {
         const studentCollection = collection(db, 'students');
 
         // Query for all user documents
-        const q = query(studentCollection, where('email', '==', 'uid52@gmail.com'));
+        const q = query(studentCollection, where('email', '==', 'tester@gmail.com'));
       
         // Get the documents that match the query
         const querySnapshot = await getDocs(q);
@@ -43,10 +43,10 @@ describe('Firebase Database Tests', () => {
         //   description: "This course is added as the first course in the subcollection (since a collection requires at least one document) and should not be counted.",
         //   imageUrl: ""   
         // });    
-        expect(studentData[0].email).toEqual('uid52@gmail.com');
-        expect(studentData[0].firstName).toEqual('uid');
-        expect(studentData[0].lastName).toEqual('test');
-        expect(studentData[0].uid).toEqual('k1lrM1csitPxFtBf73HuuqiNjPo2');
+        expect(studentData[0].email).toEqual('tester@gmail.com');
+        expect(studentData[0].firstName).toEqual('tester');
+        expect(studentData[0].lastName).toEqual('tester');
+        expect(studentData[0].uid).toEqual('ePlGQCgKQFaqCkaQwF9Ty0oYCMD2');
         expect(studentData[0].userType).toEqual('Student');
 
     });

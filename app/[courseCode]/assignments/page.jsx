@@ -99,7 +99,7 @@ export default function Assignments({ params }) {
                 </div>
                 <div className="overflow-x-auto">
                     {currentAssignments.map((assignment, index) => (
-                      (userType == 'Teacher' && <TeacherAssignmentCard assignment={assignment} courseCode = {courseCode} />)
+                      (userType == 'Teacher' && <TeacherAssignmentCard key={index} assignment={assignment} courseCode = {courseCode} />)
                     ))}
                 </div>
             </div>
