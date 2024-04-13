@@ -1,16 +1,16 @@
 import { test, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import StudentAssignmentCard from '../../app/components/StudentAssignmentCard';
+import StudentAssignmentCard from '../../app/views/StudentAssignmentCard';
 
 
 const assignment = {
     name: 'chicago',
     weightage: 25,
-    dueDate: '2024-04-12', 
+    dueDate: '2024-04-14', 
   };
   const courseCode = 'COSC304';
 
-
+ 
 
 test('studentAssignmentCard are present on the assignment page', async () => {
     render(<StudentAssignmentCard assignment={assignment} courseCode={courseCode}/>);

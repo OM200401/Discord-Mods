@@ -2,7 +2,7 @@ import { test, expect } from 'vitest';
 import * as nextRouter from 'next/router';
 import Home from '../../app/stuHome/testPage';
 import {cleanup, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
-import CourseCard from '../../app/components/CourseCard';
+import CourseCard from '../../app/views/CourseCard';
 
 
 const mockCourseData = [
@@ -10,7 +10,7 @@ const mockCourseData = [
     { id: '2', courseCode: 'course2', courseName: 'Course 2', imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_gaZXWjn_qJVUXTVnHnGIPRka3psRSJgShg&usqp=CAU' },
     // Add more dummy courses if needed
 ]
-
+  
 
 test('Sidebar is present on the home page', async () => {
     render(<Home />);
