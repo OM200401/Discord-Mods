@@ -4,17 +4,15 @@ import Sidebar from '../../views/Sidebar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
-import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
-import db from '../../lib/firebase'
-import StudentAssignmentCard from '../../views/StudentAssignmentCard';
 import TeacherAssignmentCard from '../../views/TeacherAssignmentCard';
 import Loader from '../../views/Loader';
 
-import { createUser, getTeacherDoc } from '../../models/User';
+
+
+import { getTeacherDoc } from '../../utilities/TeacherUtilities';
 import { getCourseDoc } from '../../models/Course';
 import { getEssayDoc, getQuizDoc} from '../../models/Assignment';
 
-import { getRegisteredCourses } from "../../utilities/RegisteredCourses";
 export default function Assignments({ params }) {
     // Extracting courseCode from params
     const courseCode = params.courseCode;

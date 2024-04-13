@@ -10,9 +10,9 @@ import { getDoc, getDocs, doc, where, query, documentId, collection, updateDoc, 
 import { useParams } from 'next/navigation';
 
 
-import { getStudentDocs, updateStudentSubmittedAssignments } from '../../../../models/User';
+import { getStudentDocs, updateStudentSubmittedAssignments} from '../../../../utilities/StudentUtilities';
 import { getRegisteredCoursesDoc,getCourseDoc, getCourseRef, setGradedAssignments,updateGradedAssignments, getRegisteredCoursesRef } from '../../../../models/Course';
-import { getQuizDoc } from '../../../../models/Assignment';
+
 import { fetchStudentInfo } from '../../../../utilities/AssignGradeUtilities';
 import AssignGradeView from '../../../../views/AssignGradeView';
 
