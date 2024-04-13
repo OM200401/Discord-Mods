@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import db from '../../lib/firebase';
+import db from '../../../lib/firebase';
 import { getDoc, updateDoc, getDocs, setDocs, doc } from 'firebase/firestore';
-import { getCourseRef, getCourseDoc } from '../../models/Course';
+import { getCourseRef, getCourseDoc } from '../../../models/Course';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../../lib/firebase';
+import { auth } from '../../../lib/firebase';
 import { arrayUnion } from 'firebase/firestore';
 import { useParams } from 'next/navigation';
 import Sidebar from '@/app/views/Sidebar';
@@ -74,7 +74,7 @@ export default function DiscussionBoard({ params }) {
   return (
     <div className="min-h-screen bg-white text-black flex">
       <div className="w-1/4 bg-white text-white">
-        <Sidebar userName={user?.firstName} userType={"Teacher"}/> 
+        <Sidebar userName={user?.firstName} userType={"Student"}/>
       </div>
       <div className="w-3/4 flex flex-col justify-end m-3">
         <div className="container mx-auto py-10 px-5 flex-1 overflow-auto">
