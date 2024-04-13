@@ -98,17 +98,7 @@ export default function Assignments({params}) {
             <div className="md:ml-64 fixed">
                 <CourseNavBar courseCode={courseCode} />
             </div>
-            <div className="p-6 text-center w-full md:pl-64 md:ml-72">
-                <h1 className="text-3xl text-black font-bold mb-4" data-testid="course-heading">Course Name</h1>
-                <h2 className="text-3xl text-black font-semibold mt-4 mb-4" data-testid="assignments-heading">Assignments</h2>
-                <div className="flex justify-end">
-                </div>
-                <div className="overflow-x-auto">
-                    {currentAssignments.map((assignment, index) => (
-                      <StudentAssignmentCard key={index} assignment={assignment} courseCode={courseCode} assignmentType={assignment.assignmentType}/>
-                    ))}
-                </div>
-            </div>
+            <AssignmentsList currentAssignments={currentAssignments} courseCode = {courseCode} submittedAssignments={submittedAssignments}/>
         </div>
     );
 }
