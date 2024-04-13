@@ -14,7 +14,7 @@ import { getStudentDocs, updateStudentSubmittedAssignments} from '../../../../ut
 import { getRegisteredCoursesDoc,getCourseDoc, getCourseRef, setGradedAssignments,updateGradedAssignments, getRegisteredCoursesRef } from '../../../../models/Course';
 
 import { fetchStudentInfo } from '../../../../utilities/AssignGradeUtilities';
-import AssignGradeView from '../../../../views/AssignGradeView';
+import {AssignGradeView} from '../../../../views/AssignGradeView';
 
 
 export default function AssignGrade() {
