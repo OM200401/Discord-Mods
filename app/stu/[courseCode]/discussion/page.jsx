@@ -10,6 +10,7 @@ import { auth } from '../../../lib/firebase';
 import { arrayUnion } from 'firebase/firestore';
 import { useParams } from 'next/navigation';
 import Sidebar from '@/app/views/Sidebar';
+import { createUser } from '@/app/models/User';
 
 export default function DiscussionBoard({ params }) {
   const [messages, setMessages] = useState([]);
@@ -25,6 +26,7 @@ export default function DiscussionBoard({ params }) {
   useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (user) => {
     if (auth.currentUser) {
+      const user = await createUser(auth.currentUser.uid, "Student");
       setUser(user);
       try {
         const courseData = await getCourseDoc(courseCode);
@@ -50,7 +52,7 @@ export default function DiscussionBoard({ params }) {
       const courseRef = doc(db, 'courses', courseCode);
 
       const newMessageData = {
-        email: user.email,
+        firstName: user?.firstName,
         newMessage: newMessage
       };
 
@@ -82,7 +84,7 @@ export default function DiscussionBoard({ params }) {
           <ul>
             {messages.map((message, index) => (
               <li key={index} className="border-b border-blue-500 mb-2 p-2 rounded shadow">
-                <p><strong>{message.email}</strong>: {message.newMessage}</p>
+                <p><strong>{message.firstName}</strong>: {message.newMessage}</p>
               </li>
             ))}
           </ul>

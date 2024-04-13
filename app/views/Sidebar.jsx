@@ -2,11 +2,19 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'firebase/auth';
+import { useParams } from 'next/navigation';
 import { FaHome, FaBook, FaPencilAlt, FaFileAlt, FaUser, FaChalkboard, FaSignOutAlt } from 'react-icons/fa';
 
 //Creating a sidebar component to be able to use on all the pages for the app
 
 function Sidebar({ userName , userType }) {
+    let courseCode;
+    if (process.env.NODE_ENV === 'test') {
+        courseCode = 'COSC304';
+    } else {
+        let {courseCode: routeCourseCode} = useParams();
+        courseCode = routeCourseCode ? decodeURI(routeCourseCode) : '';
+    }
 
     // When Minimized, the width is changed and the text is replaced with icons 
     const [isMinimized, setIsMinimized] = useState(false);
@@ -40,6 +48,11 @@ function Sidebar({ userName , userType }) {
                 <Link href="/browseCourses">
                     <div className="block px-6 py-2 font-medium text-gray-800 hover:bg-gray-200 rounded-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-pointer">
                         {isMinimized ? <FaBook/> : 'Browse'}
+                    </div>
+                </Link>
+                <Link href={userType === "Teacher" ? `/${courseCode}/discussion` : `/stu/${courseCode}/discussion`}>
+                    <div className="block px-6 py-2 font-medium text-gray-800 hover:bg-gray-200 rounded-lg transform hover:scale-105 transition duration-300 ease-in-out cursor-pointer">
+                        {isMinimized ? <FaBook/> : 'Discussions'}
                     </div>
                 </Link>
                
