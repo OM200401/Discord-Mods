@@ -44,6 +44,13 @@ test('Students should be able to request to enroll for a course', async ({ page 
   await expect(page.url()).toContain('/browseCourses/BIOL696'); 
 
   // Click on the "Request to Enroll" button to enroll in the course
-  await page.click('text=Request to Enroll');                                                   
+  await page.click('text=Request to Enroll');       
+  
+  // Wait for the alert to appear
+  await page.waitForTimeout(5000);
+  // Check if the alert message of user already being enrolled is displayed
+  expect(await page.isVisible('text=User already enrolled in course')).toBeTruthy();
+  //This message won't appear if the user is not already enrolled in the course
+  
 
 });
