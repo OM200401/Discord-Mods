@@ -10,6 +10,7 @@ export default function DiscussionBoardView() {
 
   const handleNewMessageSubmit = (event) => {
     event.preventDefault();
+    if (!newMessage.trim()) return;
     setMessages([...messages, newMessage]);
     setNewMessage('');
   };
