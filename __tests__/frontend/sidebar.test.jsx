@@ -4,12 +4,12 @@ import Sidebar from '../../app/views/Sidebar'
 
 test('Sidebar is present', () => {
     render(<Sidebar userType={"Teacher"}/>)
-    const sidebar = screen.getByRole('navigation')
+    const sidebar = screen.getByRole('navigation') 
     expect(sidebar).toBeDefined()
 })
 
-test('E-Learning Platform link is present', () => {
-    const platformLink = screen.getByText(/E-Learning Platform/i)
+test('E-Learning Platform link is present', () => { 
+    const platformLink = screen.getByText(/Discourse/i)
     expect(platformLink).toBeDefined()
     expect(platformLink.closest('a').getAttribute('href')).toBe('/')
 })
