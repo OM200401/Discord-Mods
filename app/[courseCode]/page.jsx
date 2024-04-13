@@ -49,9 +49,9 @@ export default function CoursePage({ params }) {
         <div className="flex flex-col md:flex-row">
           <Sidebar data-testid = "sidebar-component" userName={ user?.firstName } userType={"Teacher"} />
           <div className="relative md:ml-64 ">
-            <CourseNavBar courseCode={ courseCode }/>
+            <CourseNavBar courseCode={ courseCode } data-testid = "course-navbar"/>
           </div>
-          <CourseHomeView courseCode={ courseCode } loading={ loading } pdfUrl={ pdfUrl }/>
+          <CourseHomeView courseCode={ courseCode } loading={ loading } pdfUrl={ pdfUrl } data-testid = "course-homeview"/>
         </div>
     );
 }
