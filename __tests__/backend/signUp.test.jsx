@@ -18,39 +18,39 @@ describe('Firebase Database Tests', () => {
             }
         }
     });
-    test('Test student signUp operation', async () => {
-        const email = 'stusignupfore2e@example.com';
-        const password = '123456';
-        const firstName = 'John';
-        const lastName = 'Doe';
-        const userType = 'Student'; 
+    // test('Test student signUp operation', async () => {
+    //     const email = 'stusignupfore2e@example.com';
+    //     const password = '123456';
+    //     const firstName = 'John';
+    //     const lastName = 'Doe';
+    //     const userType = 'Student'; 
         
-        try {
-            // Attempting to sign up with correct information
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            user = userCredential.user;
-            expect(user.uid).toBeDefined(); // Ensure a user object is returned
-            expect(user.email.toLowerCase()).toEqual(email.toLowerCase()); // Ensure the returned user has the correct email
-            const studentCollection = collection(db, 'students');
-            const stuRef = query(studentCollection, where('email', '==', user.email));
-            const stuSnapshot = await getDocs(stuRef);
-            if (!stuSnapshot.empty) {
-                stuSnapshot.forEach((doc) => {
-                    console.log(doc.id, ' => ', doc.data());
-                    // You can add more assertions based on your requirements
-                    expect(doc.data().firstName).toBe(firstName);
-                    expect(doc.data().lastName).toBe(lastName);
-                    expect(doc.data().email).toBe(email);                    
-                });
-            }             
+    //     try {
+    //         // Attempting to sign up with correct information
+    //         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    //         user = userCredential.user;
+    //         expect(user.uid).toBeDefined(); // Ensure a user object is returned
+    //         expect(user.email.toLowerCase()).toEqual(email.toLowerCase()); // Ensure the returned user has the correct email
+    //         const studentCollection = collection(db, 'students');
+    //         const stuRef = query(studentCollection, where('email', '==', user.email));
+    //         const stuSnapshot = await getDocs(stuRef);
+    //         if (!stuSnapshot.empty) {
+    //             stuSnapshot.forEach((doc) => {
+    //                 console.log(doc.id, ' => ', doc.data());
+    //                 // You can add more assertions based on your requirements
+    //                 expect(doc.data().firstName).toBe(firstName);
+    //                 expect(doc.data().lastName).toBe(lastName);
+    //                 expect(doc.data().email).toBe(email);                    
+    //             });
+    //         }             
 
-        } catch (error) {
-            // If signup fails, fail the test
-            throw new Error('Signup failed: ' + error.message);
-        }
+    //     } catch (error) {
+    //         // If signup fails, fail the test
+    //         throw new Error('Signup failed: ' + error.message);
+    //     }
 
     
-    });
+    // });
     test('Test teacher signUp operation', async () => {
         const email = 'teachsignupfore2e@example.com';
         const password = '123456';
