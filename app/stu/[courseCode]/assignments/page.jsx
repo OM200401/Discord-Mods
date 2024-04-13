@@ -121,7 +121,7 @@ export default function Assignments({params}) {
                 </div>
                 <div className="overflow-x-auto">
                     {currentAssignments.map((assignment, index) => (
-                      <StudentAssignmentCard assignment={assignment} courseCode={courseCode} assignmentType={assignment.assignmentType}/>
+                      <StudentAssignmentCard key={index} assignment={assignment} courseCode={courseCode} assignmentType={assignment.assignmentType}/>
                     ))}
 
                     <div className="overflow-x-auto">
