@@ -1,10 +1,10 @@
 'use client'
 'use client'
-import Sidebar from '../../../../../app/components/Sidebar';
-import CourseNavBar from '../../../../../app/components/StuCourseNavBar';
+import Sidebar from '../../../../../app/views/Sidebar';
+import CourseNavBar from '../../../../../app/views/StuCourseNavBar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { useParams } from 'next/router'; // Changed import
+import { useParams } from 'next/router'; 
 import { auth } from '../../../../../app/lib/firebase';
 import { getDoc, getDocs, query, collection, where } from 'firebase/firestore';
 import db from '../../../../lib/firebase';

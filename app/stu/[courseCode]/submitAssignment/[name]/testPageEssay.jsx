@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import Sidebar from '../../../../components/Sidebar';
-import CourseNavBar from '../../../../components/StuCourseNavBar';
+import Sidebar from '../../../../views/Sidebar';
+import CourseNavBar from '../../../../views/CourseNavBar';
 import { useParams } from 'next/navigation';
 
 export default function Assignments() {

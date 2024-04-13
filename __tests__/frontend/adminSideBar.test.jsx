@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import AdminSidebar from '../../app/components/AdminSidebar'
+import AdminSidebar from '../../app/views/AdminSidebar'
 
 test('Navigation bar is present', () => {
     render(<AdminSidebar userName="John" />);

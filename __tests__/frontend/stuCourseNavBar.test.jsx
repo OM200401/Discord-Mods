@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import CourseNavBar from '../../app/components/StuCourseNavBar';
+import CourseNavBar from '../../app/views/StuCourseNavBar';
 
 test('Navigation bar is present', () => {
     render(<CourseNavBar />) 

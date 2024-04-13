@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import CourseNavBar from '../../../../components/CourseNavBar';
-import Sidebar from '../../../../components/Sidebar';
-import Loader from '../../../../components/Loader';
+import CourseNavBar from '../../../../views/CourseNavBar';
+import Sidebar from '../../../../views/Sidebar';
+import Loader from '../../../../views/Loader';
 
 // Mock student data
 const mockStudentData = {
