@@ -1,8 +1,8 @@
 import jest from 'jest';
 import * as firestore from 'firebase/firestore'
-import { collection, query, where, getDocs, getDoc, doc} from "firebase/firestore";
+import { collection, query, where, getDocs, getDoc, doc, deleteDoc} from "firebase/firestore";
 import db from '../../app/lib/firebase';
-import { getAllCourses, getCourseDoc, getCourseRef} from '../../app/models/Course';
+import { getAllCourses, getCourseDoc, getCourseRef, addCourse} from '../../app/models/Course';
 
 
 describe('Firebase Database Tests', () => {
@@ -57,5 +57,30 @@ describe('Firebase Database Tests', () => {
         expect(courseRef.id).toBe(courseCode); // Ensure that the course reference has the correct ID
     });
 
-    
+    test('Test addCourse', async () => {
+      // Define the course data for testing
+      const courseCode = 'NEWC123';
+      const newCourseData = {
+          courseCode: courseCode,
+          courseName: 'New Course',
+          teacher: 'New Teacher'
+      };
+
+      // Add the new course
+      await addCourse(courseCode, newCourseData);
+
+      // Retrieve the newly added course document from the database
+      const courseDocFromDB = await getDoc(doc(db, 'courses', courseCode));
+
+      // Ensure that the course document exists
+      expect(courseDocFromDB.exists()).toBe(true);
+
+      // Ensure that the course data matches the added data
+      expect(courseDocFromDB.data().courseCode).toBe(newCourseData.courseCode);
+      expect(courseDocFromDB.data().courseName).toBe(newCourseData.courseName);
+      expect(courseDocFromDB.data().teacher).toBe(newCourseData.teacher);
+
+      // Clean up: Delete the newly added course document
+      await deleteDoc(doc(db, 'courses', courseCode));
+  });
 });
