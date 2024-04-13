@@ -23,6 +23,7 @@ export default function CourseNavBar({courseCode}) {
                     <Link href={`/${courseCode}/assignments`} className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Assignments</Link>
                     <Link href={`/${courseCode}/grades`} className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Grades</Link>                    
                     <Link href={`/${courseCode}/quiz`} className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">Quiz</Link>                   
+                    <Link href={`/${courseCode}/discussion`}>Discussion</Link>
                 </div>
             </nav>
         </div>
