@@ -5,7 +5,6 @@ import Loader from '../../../views/Loader.jsx';
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../../lib/firebase.js';
-
 import { getStudentDoc } from '../../../utilities/StudentUtilities.js';
 import { getCourseDoc, getRegisteredCoursesDoc } from '../../../models/Course.js';
 import { getQuizDoc,getEssayDoc } from '../../../models/Assignment';
@@ -20,7 +19,6 @@ export default function Assignments({params}) {
     const [currentAssignments, setCurrentAssignments] = useState([]); // State for storing current assignments
     const [user,setUser] = useState(null); // State for storing user
     const [userType,setUserType] = useState('user'); // State for storing user type
-    const [userName,setUserName] = useState('non'); // State for storing user name
     const [submittedAssignments, setSubmittedAssignments] = useState([]); // State for storing submitted assignments
     // Effect hookk for handling authentication state change
     useEffect(() => {
@@ -29,10 +27,8 @@ export default function Assignments({params}) {
                 setUser(auth.currentUser);
                 const studentQuerySnapshot = await getStudentDoc(user.uid);
 
-                setUserName(studentQuerySnapshot.data().firstName);
                 setUserType(studentQuerySnapshot.data().userType);
               
-
                 const courseSnapshot = await getCourseDoc(courseCode);
 
                 const submittedAssignmentsNames = [];
@@ -97,7 +93,7 @@ export default function Assignments({params}) {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100 min-h-screen">
-            <Sidebar userName={userName} userType={"Student"} />
+            <Sidebar userName={ user?.firstName } userType={"Student"} />
             <div className="md:ml-64 fixed">
                 <CourseNavBar courseCode={courseCode} />
             </div>
