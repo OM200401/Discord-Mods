@@ -9,6 +9,7 @@ import AdminSidebar from '../views/AdminSidebar';
 import { getStudentDoc } from '../utilities/StudentUtilities';
 import { getTeacherDoc } from '../utilities/TeacherUtilities';
 import { getAdminDoc } from '../utilities/AdminUtilities';
+import Loader from '../views/Loader';
 
 export default function Profile() {
     // State variables
@@ -32,10 +33,13 @@ export default function Profile() {
         uid: "",
         userType:""
     }); // State for storing edited user input
+    const [feedback, setFeedback] = useState(''); // State for storing feedback
+    const [loading, setLoading] = useState(true); // State for loader
 
     // Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            setLoading(true);
             if (auth.currentUser) {
                 setUser(auth.currentUser);
                 console.log(user.uid);
@@ -57,6 +61,7 @@ export default function Profile() {
                 // User is signed out
                 console.log('No user is signed in.');
             }
+            setLoading(false);
         });
         // Cleanup subscription on unmount
         return () => unsubscribe();
@@ -126,6 +131,7 @@ export default function Profile() {
         
         setUserInput(editedUserInput);
         toggleEditing();
+        setFeedback('Information updated successfully')
     };
 
     // Function to reset password in the firebase authentication system
@@ -140,18 +146,21 @@ export default function Profile() {
 
                 // Update the password
                 await updatePassword(auth.currentUser, newPassword);
-                console.log('Password updated successfully');
+                setFeedback('Password updated successfully');
             } else {
-                console.log('No user is signed in.');
+                setFeedback('No user is signed in.');
             }
         } catch (error) {
-            console.error('Error updating password:', error);
+            setFeedback('Error updating password:', error);
         }
     };
 
     return (
             <div className="bg-blue-100 min-h-screen">
-                <div className="flex">  
+                {loading ? (
+                    <Loader />
+                ): (
+                    <div className="flex">  
                     {userInput.userType === 'Teacher' || userInput.userType === 'Student' ? 
                         <Sidebar userName={userInput.firstName} userType={userInput.userType}/> :
                         <AdminSidebar userName={userInput.firstName} userType={userInput.userType}/> 
@@ -229,8 +238,13 @@ export default function Profile() {
                                 </div>
                             </div>
                         </div>
+                        <div className="sm:col-span-3 flex justify-center">
+                            <span className="text-lg font-bold text-blue-900">{feedback}</span>
+                        </div>
                     </div>
                 </div>
+                )}
+                
             </div>
         );
     }
