@@ -15,7 +15,7 @@ test('Admin can create courses', async ({ page }) => {
   await expect(page).toHaveURL('http://localhost:3000/login');
 
   // Fill in email and password 
-  await page.fill('input[type="email"]', 'admintestnew@gmail.com');
+  await page.fill('input[type="email"]', 'admintest@gmail.com');
   await page.fill('input[type="password"]', 'admintest');
   // Click on the login button
   await page.click('button:has-text("Login")');
