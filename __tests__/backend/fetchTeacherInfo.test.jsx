@@ -1,3 +1,4 @@
+import jest from 'jest';
 import db from '../../app/lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
 
@@ -7,7 +8,7 @@ describe('Firebase Database Tests', () => {
         const teachersCollection = collection(db, 'teachers');
 
         // Query for all user documents
-        const q = query(teachersCollection, where('email', '==', 'aaronbanerweee@outlook.com'));
+        const q = query(teachersCollection, where('email', '==', 'teacherRefactored@gmail.com'));
       
         // Get the documents that match the query
         const querySnapshot = await getDocs(q);
@@ -38,12 +39,12 @@ describe('Firebase Database Tests', () => {
         // Ensure that the data matches the expected data
         expect(teacherData.length).toBeGreaterThan(0); // Ensure that there is at least one document      
         // Test student abcd
-        expect(teacherData[0].registeredCourses[1]).toEqual({        
-          courseCode: "COSC341",
-          courseName: "HCL",
-          description: "Figma",
-          teacher: "NdPq1RYG2Ioe1TIDaPKR"
+        expect(teacherData[0].registeredCourses[0]).toEqual({
+          courseName: "Default Course",
+          description: "This course is added as the first course in the subcollection (since a collection requires at least one document) and should not be counted.",
+          imageUrl: ""
         });    
+        expect((teacherData[0]).firstName).toEqual('refactorTeacher');
 
     });
     test('Test database read operation for teachers', async () => {

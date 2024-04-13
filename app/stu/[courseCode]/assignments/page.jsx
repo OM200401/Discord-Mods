@@ -5,9 +5,12 @@ import Loader from '../../../views/Loader.jsx';
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../../lib/firebase.js';
-import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
-import db from '../../../lib/firebase';
-import StudentAssignmentCard from '../../../views/StudentAssignmentCard.jsx';
+import { getStudentDoc } from '../../../utilities/StudentUtilities.js';
+import { getCourseDoc, getRegisteredCoursesDoc } from '../../../models/Course.js';
+import { getQuizDoc,getEssayDoc } from '../../../models/Assignment';
+import { AssignmentsList } from '../../../views/StudentAssignmentView';
+
+
 
 export default function Assignments({params}) {
     // State variables
@@ -16,42 +19,23 @@ export default function Assignments({params}) {
     const [currentAssignments, setCurrentAssignments] = useState([]); // State for storing current assignments
     const [user,setUser] = useState(null); // State for storing user
     const [userType,setUserType] = useState('user'); // State for storing user type
-    const [userName,setUserName] = useState('non'); // State for storing user name
     const [submittedAssignments, setSubmittedAssignments] = useState([]); // State for storing submitted assignments
-
     // Effect hookk for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
                 setUser(auth.currentUser);
-                const userInfoRef = collection(db, 'students');
-                const q = query(userInfoRef, where('uid', '==', user.uid));
-                try {
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                        setUserType(doc.data().userType);
-                    })
-                } catch (error) {
-                    console.log(error.message);
-                }
+                const studentQuerySnapshot = await getStudentDoc(user.uid);
 
-                const coursesRef = doc(db, 'courses', courseCode);
-                const courseSnapshot = await getDoc(coursesRef);
+                setUserType(studentQuerySnapshot.data().userType);
+              
+                const courseSnapshot = await getCourseDoc(courseCode);
 
                 const submittedAssignmentsNames = [];
                 const submittedAssignmentData = [];
 
-                const studentRef = collection(db, 'students');
-                const studentQuery = query(studentRef, where("uid", "==", user.uid));
-                const studentQuerySnapshot = await getDocs(studentQuery);
-
                 if (!studentQuerySnapshot.empty) {
-                    const studentDoc = studentQuerySnapshot.docs[0];
-                    const studentRef = studentDoc.ref;
-                    const registeredCoursesRef = collection(studentRef, 'registeredCourses');
-                    const courseDocRef = doc(registeredCoursesRef, courseCode);
-                    const courseDocSnapshot = await getDoc(courseDocRef);
+                    const courseDocSnapshot = await getRegisteredCoursesDoc(studentQuerySnapshot,courseCode);
 
                     if (courseDocSnapshot.exists()) {
                         const submittedAssignmentsData = courseDocSnapshot.data().submittedAssignments || [];
@@ -59,22 +43,19 @@ export default function Assignments({params}) {
                             submittedAssignmentsNames.push(assignment.name);
                             submittedAssignmentData.push(assignment);
                         })
-                    }
-                }
+                  
                 setSubmittedAssignments(submittedAssignmentData);
 
-                if (courseSnapshot.exists()) {
                     const assignmentNames = courseSnapshot.data().currentAssignments || [];
                     
                     const assignmentPromises = assignmentNames.map(async (name) => {
                         let assignmentData = null;
                         let assignmentType = null;
-                        const quizRef = doc(db, 'quizzes', name);
-                        const essayRef = doc(db, 'essays', name);
+                
 
                         const [quizSnapshot, essaySnapshot] = await Promise.all([
-                            getDoc(quizRef),
-                            getDoc(essayRef)
+                            getQuizDoc(name),
+                            getEssayDoc(name)
                         ]);
 
                         if (quizSnapshot.exists() && !submittedAssignmentsNames.includes(name)) {
@@ -92,7 +73,9 @@ export default function Assignments({params}) {
                     setLoading(false);
                 }
             }
-        });
+        }
+    });
+    
 
         return () => unsubscribe();
     }, []); // Add courseCode as a dependency
@@ -110,7 +93,7 @@ export default function Assignments({params}) {
 
     return (
         <div className="flex flex-col md:flex-row bg-blue-100 min-h-screen">
-            <Sidebar userName={userName} userType={"Student"} />
+            <Sidebar userName={ user?.firstName } userType={"Student"} />
             <div className="md:ml-64 fixed">
                 <CourseNavBar courseCode={courseCode} />
             </div>
@@ -123,19 +106,6 @@ export default function Assignments({params}) {
                     {currentAssignments.map((assignment, index) => (
                       <StudentAssignmentCard key={index} assignment={assignment} courseCode={courseCode} assignmentType={assignment.assignmentType}/>
                     ))}
-
-                    <div className="overflow-x-auto">
-                        <h2 className="text-3xl text-black font-semibold text-center mb-4">Submitted Assignments</h2>
-                        <div className="grid grid-cols-2 text-black md:grid-cols-2 lg:grid-cols-2 gap-4">
-                            {/* Display submitted assignments */}
-                            {submittedAssignments.map((assignment, index) => (
-                                <div key={index} className="bg-white rounded-lg shadow-md p-4 border flex flex-col items-center border-gray-200 hover:shadow-2xl hover:border-gray-600 transition-all duration-200">
-                                    <p className="font-semibold text-lg">{assignment.name}</p>
-                                    <p className="text-gray-500 mb-4">Grade: {assignment.grade ? assignment.grade : "Not graded yet"}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
