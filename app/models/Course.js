@@ -66,7 +66,6 @@ export async function getRegisteredCoursesDoc(studentDoc,courseCode) {
 export async function getRegisteredCoursesRef(studentDoc,courseCode) {
     const registeredCoursesCollection = collection(studentDoc.ref, 'registeredCourses');
     let registeredCoursesRef = doc(registeredCoursesCollection, courseCode);
-
     return registeredCoursesRef;
  }
 export async function getGradesForCourse(courseCode){
