@@ -22,7 +22,6 @@ export async function setDefaultTeacherCourse(uid) {
 
     let defaultCourseData = defaultCourseDoc.data();
 
-    
     const registeredCoursesCollectionRef = collection(db, 'teachers', uid, 'registeredCourses');
     await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
 }

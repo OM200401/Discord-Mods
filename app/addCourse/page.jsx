@@ -4,7 +4,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import AdminSidebar from '../views/AdminSidebar';
 import { isCourseCodeValid, courseAlreadyExists, addCourse } from '../models/Course';
-import { createUser, fetchAllTeachers, getTeacherDoc, addTeacherRegisteredCourse } from '../models/User';
+import { createUser, fetchAllTeachers, getTeacherDoc } from '../models/User';
+import { addTeacherRegisteredCourse } from '../utilities/TeacherUtilities';
 import AdminAddCourseView from '../views/AdminAddCourseView';
 
 const AddCoursePage = () => {
@@ -73,7 +74,7 @@ const AddCoursePage = () => {
             const teacherDoc = await getTeacherDoc(selectedTeacher);
             setFeedback("Got teacher snapshot");
 
-            await addTeacherRegisteredCourse(teacherDoc.ref, courseCode);
+            await addTeacherRegisteredCourse(teacherDoc.ref, courseCode, newCourseData);
             setFeedback("Course added to teacher's registered courses");
 
             setCourseCode('');
@@ -82,7 +83,7 @@ const AddCoursePage = () => {
             setSelectedTeacher('');
 
         } catch(error){
-            setFeedback("Error adding course:", error);
+            console.error("Error adding course:", error);
         }
     };
 
