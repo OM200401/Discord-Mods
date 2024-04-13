@@ -1,10 +1,10 @@
 'use client'
-import CourseNavBar from '../../components/CourseNavBar';
-import Sidebar from '../../components/Sidebar';
+import CourseNavBar from '../../views/CourseNavBar';
+import Sidebar from '../../views/Sidebar';
 import { useEffect, useState } from 'react';
-import StudentAssignmentCard from '../../components/StudentAssignmentCard';
-import TeacherAssignmentCard from '../../components/TeacherAssignmentCard';
-import Loader from '../../components/Loader';
+import StudentAssignmentCard from '../../views/StudentAssignmentCard';
+import TeacherAssignmentCard from '../../views/TeacherAssignmentCard';
+import Loader from '../../views/Loader';
 
 
 export default function Assignments({ params }) {

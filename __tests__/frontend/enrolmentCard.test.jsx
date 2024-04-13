@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import EnrolmentCard from '../../app/components/EnrolmentCard'
+import EnrolmentCard from '../../app/views/EnrolmentCard'
 
 test('EnrolmentCard renders correctly', () => {
     render(<EnrolmentCard userEmail="test@example.com" courseCode="CS101" />)

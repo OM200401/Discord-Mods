@@ -1,22 +1,24 @@
 'use client';
-import Loader from '../../components/Loader';
+import Loader from '../../views/Loader';
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, query, where, getDocs,deleteDoc,doc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import Sidebar from '../../components/Sidebar';
-import CourseNavBar from '../../components/StuCourseNavBar';
+import Sidebar from '../../views/Sidebar';
+import CourseNavBar from '../../views/StuCourseNavBar';
 import db, { auth } from '../../lib/firebase';
 import { redirect } from 'next/navigation';
 
 export default function CoursePage({params}) {
-    const [userName, setUserName] = useState('non');
-    const [pdfUrl, setPdfUrl] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [user,setUser] = useState(null);
+    // State variables
+    const [userName, setUserName] = useState('non'); // State for storing user name
+    const [pdfUrl, setPdfUrl] = useState(''); // State for storing PDF URL
+    const [loading, setLoading] = useState(true); // State for storing loading status
+    const [user,setUser] = useState(null); // State for storing user
 
-    const courseCode = params.courseCode;
+    const courseCode = params.courseCode; // Get courseCode from params
     
+    // Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -41,6 +43,7 @@ export default function CoursePage({params}) {
         return unsubscribe;
     }, []);
 
+    // Effect hook for getting PDF URL
     useEffect(() => {
         const storage = getStorage();
         const pdfRef = ref(storage, 'COSC 320-Assignment 4- 2023-2024-T2.pdf');
@@ -56,7 +59,7 @@ export default function CoursePage({params}) {
             });
     }, []);
 
-
+    // Function for handling drop
     const handleDrop = async (e) => {
         e.preventDefault();
         const confirmation = window.confirm("Are you sure you want to drop this course?");
@@ -95,15 +98,6 @@ export default function CoursePage({params}) {
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,
                         </p>
                     </div>
-                    {/* <div className="mt-8">
-                        <h2 className="text-2xl font-semibold text-black mb-4">Resources</h2>
-                        <ul className="list-disc ml-4 text-left">
-                            <li>
-                                <a href="#resource1" className="text-blue-500 hover:underline">Resource 1</a>
-                                { {pdfUrl && <iframe src={pdfUrl} className="mt-2 w-full h-screen" />} }
-                            </li>
-                        </ul>
-                    </div> */}
 
                 <button onClick={(e) => {handleDrop(e)}} className="w-24 h-24 bg-red-500 hover:bg-red-600 text-white font-bold rounded focus:outline-none focus:shadow-outline">
                 Drop this course

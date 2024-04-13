@@ -1,6 +1,7 @@
 'use client'
-import Sidebar from '../../../../../app/components/Sidebar';
-import CourseNavBar from '../../../../../app/components/StuCourseNavBar';
+
+import Sidebar from '@/app/views/Sidebar';
+import CourseNavBar from '@/app/views/StuCourseNavBar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useParams } from 'next/navigation';
@@ -12,20 +13,20 @@ import {storage} from '../../../../lib/firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
 
 export default function Assignments() {
-    let {name,courseCode} = useParams();
+    let {name,courseCode} = useParams(); //getting name and courseCode from the params
 
     name = decodeURIComponent(name);
     courseCode = decodeURIComponent(courseCode);
 
-    const [assignmentData, setAssignmentData] = useState([]);
-    const [user,setUser] = useState(null);
-    const [essay, setEssay] = useState('');
-    const [userType,setUserType] = useState('user');
-    const [userName,setUserName] = useState('non');
-    const [assignmentType,setAssignmentType] = useState(null);
-    const [file,setFile] = useState(null);
+    const [assignmentData, setAssignmentData] = useState([]); // State for storing assignment data
+    const [user,setUser] = useState(null); // State for storing user
+    const [essay, setEssay] = useState(''); // State for storing essay
+    const [userType,setUserType] = useState('user'); // State for storing user type
+    const [userName,setUserName] = useState('non'); // State for storing user name
+    const [assignmentType,setAssignmentType] = useState(null); // State for storing assignment type
+    const [file,setFile] = useState(null); // State for storing file
 
-
+    // Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
@@ -64,15 +65,17 @@ export default function Assignments() {
         return () => unsubscribe();
     }, [assignmentType]); // Add assignmentType as a dependency
 
-
+    // Function for handling change in essay
     const handleChange = (event) => {
         setEssay(event.target.value);
     };
 
+    // Function for handling change in file 
     const handleChangedFile = (event) => {
       setFile(event.target.files[0])
-  };
+    };
 
+    // Function for uploading the file to the database
     const handleFileChange = async (event) => {
       event.preventDefault();
       if (file) {
@@ -112,14 +115,14 @@ export default function Assignments() {
       }
   };
   
-  // Function to upload the file and get its URL (You need to implement this)
+  // Function to upload the file and get its URL 
   const uploadFileAndGetURL = async (file) => {
       const storageRef = ref(storage, 'assignmentFiles/' + file.name);
       await uploadBytes(storageRef, file);
       return getDownloadURL(storageRef);
   };
   
-
+    // Function for handling essay submission
     const handleSubmitEssay = async (event) => {
         event.preventDefault();
         if(essay.length==0){

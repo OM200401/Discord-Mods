@@ -1,52 +1,30 @@
 'use client';
 import { useState, useEffect } from 'react';
-import CourseNavBar from '../../components/CourseNavBar';
-import Sidebar from '../../components/Sidebar';
-import Loader from '../../components/Loader';
-import { FaChevronDown } from 'react-icons/fa';
-import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
-import db from '../../lib/firebase'
+import CourseNavBar from '../../views/CourseNavBar';
+import Sidebar from '../../views/Sidebar';
+import Loader from '../../views/Loader';
+
+import { getGradesForCourse} from '../../models/Course';
 
 export default function Assignments({ params }) {
 
-    const [loading, setLoading] = useState(true);
-    const [userName,setUserName] = useState('non');
-    const [studentAssignments, setStudentAssignments] = useState(null);
-    const courseCode = params.courseCode;
-    console.log(params);
+   // State variables
+   const [loading, setLoading] = useState(true); // State for storing loading status
+   const [userName,setUserName] = useState('non'); // State for storing user name
+   const [studentAssignments, setStudentAssignments] = useState(null); // State for storing student assignments
 
-    // Demo students array to display some students but will later have data 
-    // displayed from the database
+   // Extracting courseCode from params
+   const courseCode = params.courseCode;
+ 
+    // Function for toggling  assignments
  
 
-    const toggleAssignments = index => {
-        const newStudents = [...students];
-        newStudents[index].showAssignments = !newStudents[index].showAssignments;
-        setStudents(newStudents);
-    };
-
-    const updateGrade = (studentIndex, assignmentIndex, newGrade) => {
-        const newStudents = [...students];
-        newStudents[studentIndex].assignments[assignmentIndex].grade = newGrade;
-        setStudents(newStudents);
-    };
-
+    // Effect Hook for fetching Grades and other data 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const coursesDoc = doc(db, 'courses', courseCode);
-                const coursesDocSnapshot = await getDoc(coursesDoc);
-    
-                let studentGrades = [];
-    
-                if (!coursesDocSnapshot.empty) {
-                    let gradedAssignments = coursesDocSnapshot.data().gradedAssignments;
-                    gradedAssignments.forEach((assignment) => {
-                        studentGrades.push({ ...assignment })
-                    });
-                }
-    
-                setStudentAssignments(studentGrades);
+               const studentGrades = await getGradesForCourse(courseCode);
+               setStudentAssignments(studentGrades);
             } catch (error) {
                 console.error('Error fetching course data:', error);
             } finally {

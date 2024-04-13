@@ -2,10 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 const TeacherAssignmentCard = ({ assignment,courseCode}) => {
 
-
-
-
-
   return (
     <div className="flex items-center justify-between bg-gray-100 mb-4 p-4 rounded-md shadow-md border border-gray-300 hover:shadow-xl hover:border-gray-600">
       <div>

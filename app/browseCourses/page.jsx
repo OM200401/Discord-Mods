@@ -1,32 +1,24 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import Card from '../components/Card';
+import Sidebar from '../views/Sidebar';
+import Card from '../views/BrowseCourseCard';
 import { onAuthStateChanged } from 'firebase/auth';
 import db from '../lib/firebase'; 
 import { auth } from '../lib/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore";
-import Loader from '../components/Loader';
+import Loader from '../views/Loader';
 import { motion } from 'framer-motion';
 
 export default function Courses() {
-    const [loading, setLoading] = useState(true);
-    const [userName, setUserName] = useState('non');
-    const [user,setUser] = useState();
-    const [userType, setUserType] = useState('non');
+    // State variables
+    const [loading, setLoading] = useState(true); // State for storing loading status
+    const [userName, setUserName] = useState('non'); // State for storing user name
+    const [user,setUser] = useState(); // State for storing user
+    const [userType, setUserType] = useState('non'); // State for storing user type
+    const [courses, setCourses] = useState([]); // State for storing courses
 
-    const [courses, setCourses] = useState([
-        // { courseCode: 'COSC304', courseName: 'Introduction to Databases', description: 'This course introduces the concept of databases.' },
-        // { courseCode: 'COSC310', courseName: 'Software Engineering', description: 'This course covers the fundamentals of software engineering.' },
-        // { courseCode: 'COSC222', courseName: 'Data Structures', description: 'This course teaches about various data structures.' },
-        // { courseCode: 'COSC328', courseName: 'Computer Networks', description: 'This course is about computer networking concepts.' },
-        // { courseCode: 'COSC340', courseName: 'Operating Systems', description: 'This course covers the basics of operating systems.' },
-        // { courseCode: 'COSC211', courseName: 'Computer Architecture', description: 'This course is about the architecture of computers.' },
-        // { courseCode: 'COSC360', courseName: 'Web Development', description: 'This course teaches web development techniques.' },
-        // { courseCode: 'COSC322', courseName: 'Artificial Intelligence', description: 'This course introduces the concept of artificial intelligence.' },
-    ]);
-
+    //Effect hook for fetching courses
     useEffect(() => {
 
         const fetchCourses = async () => {
@@ -47,6 +39,7 @@ export default function Courses() {
         fetchCourses();
     }, []);
   
+    // Effect Hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){

@@ -1,27 +1,29 @@
 'use client'
 import { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
-import { collection } from 'firebase/firestore';
+import Navbar from '../views/Navbar';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import db from '../lib/firebase';
 import {auth} from '../lib/firebase';
 import { redirect } from 'next/navigation';
-import { addDoc,doc,getDoc,setDoc } from 'firebase/firestore';
 import {Input} from '@nextui-org/react';
+import { setDefaultStudentCourse,createStudent } from '../utilities/StudentUtilities';
+import { setDefaultTeacherCourse,createTeacher } from '../utilities/TeacherUtilities';
+
 
 //Created signup page for users that do not have an account on the platform
 // Added html validation for input of email and password
 
 export default function SignUpPage() {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [userType, setUserType] = useState('Student');
-    const [errorMsg, setErrorMsg] = useState('');
-    const [user,setUser] = useState(null);
+    // State variables
+    const [firstName, setFirstName] = useState(''); // State for storing first name
+    const [lastName, setLastName] = useState(''); // State for storing last name
+    const [email, setEmail] = useState(''); // State for storing email
+    const [password, setPassword] = useState(''); // State for storing password
+    const [confirmPassword, setConfirmPassword] = useState(''); // State for storing confirmed password
+    const [userType, setUserType] = useState('Student'); // State for storing user type
+    const [errorMsg, setErrorMsg] = useState(''); // State for storing error message
+    const [user,setUser] = useState(null); // State for storing user
 
+    // Effect hook for redirection based on the type of the user
     useEffect(() => {
         if (user) {
             if(userType === 'Teacher'){
@@ -33,6 +35,7 @@ export default function SignUpPage() {
         }
     }, [user]);
 
+    // Function to display friendly error message based on firebase error code
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
         switch (firebaseErrorCode) {
             case 'auth/invalid-email':
@@ -47,12 +50,14 @@ export default function SignUpPage() {
                 return 'The credentials are invalid.';
             case 'auth/weak-password':
                 return 'Password should be at least 6 characters long.';
-            // Add more cases as needed
+            case 'auth/email-already-in-use':
+                return 'The email address already exists';
             default:
                 return 'An unknown error occurred.';
         }
     };
 
+    // Function to handle signup form submission
     const handleSubmit = async(e) => {
         e.preventDefault();
 
@@ -61,60 +66,21 @@ export default function SignUpPage() {
             setErrorMsg('All fields are required');
             return;
         }
-
-    
         
         try {
             await createUserWithEmailAndPassword(auth, email, password).then(async cred=> {
                 setUser(cred.user);
                 if(userType === 'Student'){
-                    const studentCollection = collection(db,'students');
-                    
-                    await setDoc(doc(studentCollection, cred.user.uid), {
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        userType: userType,
-                        uid: cred.user.uid
-                    })
-                    const defaultCourse = doc(db, 'courses', 'DefaultCourse');
-                    const defaultCourseDoc = await getDoc(defaultCourse);
-        
-                    let defaultCourseData = '';
-        
-                    if(defaultCourseDoc.exists()) {
-                        defaultCourseData = defaultCourseDoc.data();
-                    }
-                    const registeredCoursesCollectionRef = collection(db, 'students', cred.user.uid, 'registeredCourses');
-                    await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
-                      
-                }else {                    
-                    const teacherCollection = collection(db,'teachers');
-                    
-                    await setDoc(doc(teacherCollection, cred.user.uid), {
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        userType: userType,
-                        uid: cred.user.uid
-                    })
-                    const defaultCourse = doc(db, 'courses', 'DefaultCourse');
-                    const defaultCourseDoc = await getDoc(defaultCourse);
-        
-                    let defaultCourseData = '';
-        
-                    if(defaultCourseDoc.exists()) {
-                        defaultCourseData = defaultCourseDoc.data();
-                    }
-        
-                    const registeredCoursesCollectionRef = collection(db, 'teachers', cred.user.uid, 'registeredCourses');
-                    await setDoc(doc(registeredCoursesCollectionRef, 'DefaultCourse'), defaultCourseData);
-                      
-                } 
-
-            })
-        }
-        
+                    createStudent(firstName,lastName,email,userType,cred.user.uid);
+                    setDefaultStudentCourse(cred.user.uid);
+                }else {    
+                    setUser(cred.user);                
+                    createTeacher(firstName,lastName,email,userType,cred.user.uid);
+                    setDefaultTeacherCourse(cred.user.uid);
+            }
+        })
+    }
+    
        
         catch (error) {
             // Handle any errors from login fields here

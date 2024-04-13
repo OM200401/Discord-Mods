@@ -1,49 +1,43 @@
 'use client'
-import CourseNavBar from '../../components/CourseNavBar';
-import Sidebar from '../../components/Sidebar';
+import CourseNavBar from '../../views/CourseNavBar';
+import Sidebar from '../../views/Sidebar';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
-import { getDoc, doc,getDocs,query,collection, where,updateDoc } from 'firebase/firestore';
-import db from '../../lib/firebase'
-import StudentAssignmentCard from '../../components/StudentAssignmentCard';
-import TeacherAssignmentCard from '../../components/TeacherAssignmentCard';
-import Loader from '../../components/Loader';
+import TeacherAssignmentCard from '../../views/TeacherAssignmentCard';
+import Loader from '../../views/Loader';
 
+
+
+import { getTeacherDoc } from '../../utilities/TeacherUtilities';
+import { getCourseDoc } from '../../models/Course';
+import { getEssayDoc, getQuizDoc} from '../../models/Assignment';
 
 export default function Assignments({ params }) {
+    // Extracting courseCode from params
     const courseCode = params.courseCode;
-    // console.log(params);
-    // console.log("Assignments page course code is " + courseCode);
+
+    // State variables
+    const [currentAssignments, setCurrentAssignments] = useState([]); // State for storing current assignments
+    const [user,setUser] = useState(null); // State for storing user
+    const [userType,setUserType] = useState('user'); // State for storing user type
+    const [userName,setUserName] = useState('non'); // State for storing user name
+    const [submittedAssignments, setSubmittedAssignments] = useState([]); // State for storing submitted assignments
+    const [loading, setLoading] = useState(true); // State for storing loading status
 
 
-    const [currentAssignments, setCurrentAssignments] = useState([]);
-    const [user,setUser] = useState(null);
-    const [userType,setUserType] = useState('user');
-    const [userName,setUserName] = useState('non');
-    const [submittedAssignments, setSubmittedAssignments] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-
+    // Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (auth.currentUser) {
                 setUser(auth.currentUser);
     
-                const userInfoRef = collection(db, 'teachers');
-                const q = query(userInfoRef, where('uid', '==', user.uid));
-                try {
-                    const querySnapshot = await getDocs(q);
-                    querySnapshot.forEach((doc) => {
-                        setUserName(doc.data().firstName);
-                        setUserType(doc.data().userType);
-                    })
-                } catch (error) {
-                    console.log(error.message);
-                }
-    
-                const coursesRef = doc(db, 'courses', courseCode);
-                const courseSnapshot = await getDoc(coursesRef);
+                const teacherRef = await getTeacherDoc(user.uid);
+                
+                setUserName(teacherRef.data().firstName);
+                setUserType(teacherRef.data().userType);
+
+                const courseSnapshot = await getCourseDoc(courseCode);
     
                 if (courseSnapshot.exists()) {
                     const assignmentNames = courseSnapshot.data().currentAssignments || [];
@@ -51,12 +45,12 @@ export default function Assignments({ params }) {
                     // Initialize an array to store all promises for fetching assignment data
                     const assignmentPromises = assignmentNames.map(async (name) => {
                         let assignmentData = null;
-                        const quizRef = doc(db, 'quizzes', name);
-                        const essayRef = doc(db, 'essays', name);
+                        // const quizRef = doc(db, 'quizzes', name);
+                        // const essayRef = doc(db, 'essays', name);
     
                         const [quizSnapshot, essaySnapshot] = await Promise.all([
-                            getDoc(quizRef),
-                            getDoc(essayRef)
+                            getQuizDoc(name),
+                            getEssayDoc(name)
                         ]);
     
                         if (quizSnapshot.exists()) {
@@ -79,9 +73,7 @@ export default function Assignments({ params }) {
     }, [courseCode,currentAssignments]);
      // Add courseCode as a dependency
 
-
-
-
+    
     useEffect(() => {
         // Simulate a network request
         setTimeout(() => {
@@ -89,8 +81,6 @@ export default function Assignments({ params }) {
         }, 1000);
     }, []);
 
-
-   
     if (loading) {
         return <Loader />; // Return the Loading component if loading is true
     }
@@ -109,7 +99,7 @@ export default function Assignments({ params }) {
                 </div>
                 <div className="overflow-x-auto">
                     {currentAssignments.map((assignment, index) => (
-                      (userType == 'Teacher' && <TeacherAssignmentCard assignment={assignment} courseCode = {courseCode} />)
+                      (userType == 'Teacher' && <TeacherAssignmentCard key={index} assignment={assignment} courseCode = {courseCode} />)
                     ))}
                 </div>
             </div>

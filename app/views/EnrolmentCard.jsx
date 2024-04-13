@@ -5,7 +5,6 @@ import { collection, getDocs, deleteDoc, setDoc, getDoc, query, where, doc } fro
 
 export default function EnrolmentCard({ userEmail, courseCode, onFeedback }) {
 
-
     const deleteEnrolment = async () => {
         const enrolmentRef = collection(db, 'enrolments');
         const q = query(enrolmentRef, where('email', '==', userEmail), where('courseCode', '==', courseCode));
@@ -35,6 +34,7 @@ export default function EnrolmentCard({ userEmail, courseCode, onFeedback }) {
             const registeredCoursesRef = collection(studentDoc.ref, 'registeredCourses');
             await setDoc(doc(registeredCoursesRef, courseCode), newCourseData);
         });
+        console.log("Student registered for course")
     }
 
     const handleAccept = () => {

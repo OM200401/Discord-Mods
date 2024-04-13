@@ -15,6 +15,7 @@ const   StudentAssignmentCard = ({ assignment, courseCode }) => {
         <h3 className="text-lg font-semibold text-black">{assignment.name}</h3>
         <p className="text-sm text-gray-600">Weightage: {assignment.weightage}</p>
         <p className="text-sm text-gray-600">Due date: {assignment.dueDate} - {differenceDays} days</p>
+        <p className="text-sm text-gray-600">Type: {type}</p> 
       </div>
       
       <div className="flex">

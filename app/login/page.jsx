@@ -1,5 +1,5 @@
 'use client';
-import Navbar from "../components/Navbar";
+import Navbar from "../views/Navbar";
 import { useState } from 'react';
 import {Button} from "@nextui-org/react";
 import Link from "next/link";
@@ -11,26 +11,31 @@ import {Input} from "@nextui-org/react";
 import {MailIcon} from '../Icons/MailIcon';
 import { EyeFilledIcon } from "../Icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "../Icons/EyeSlashedFilledIcon";
+import { getTeacherDoc } from "../utilities/TeacherUtilities";
+import { getStudentDoc } from "../utilities/StudentUtilities";
+import { getAdminDoc } from "../utilities/AdminUtilities";
 
 // Created front end for the login page with Email and Password
 // Validation in html also added to check the type of email input and password
 
 export default function LoginPage() {
-    // const router = useRouter();
-    const[email, setEmail] = useState('');
-    const[password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [user,setUser] = useState(null);
+    // State variables
+    const[email, setEmail] = useState(''); // State for storing email
+    const[password, setPassword] = useState(''); // State for storing password
+    const [error, setError] = useState(''); // State for storing error
+    const [user,setUser] = useState(null); // State for storing user
 
-    const [uid,setUid] = useState(null);
-    const [isAdmin, setIsAdmin] = useState(false);
+    const [uid,setUid] = useState(null); // State for storing uid
+    const [isAdmin, setIsAdmin] = useState(false); // State for storing admin status
 
-    const [errorMsg, setErrorMsg] = useState('');
+    const [errorMsg, setErrorMsg] = useState(''); // State for storing error message
 
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(false); // State for storing visibility status
 
+    // Function for toggling visibility
     const toggleVisibility = () => setIsVisible(!isVisible);
 
+    // Function for getting friendly error message
     const getFriendlyErrorMessage = (firebaseErrorCode) => {
         switch (firebaseErrorCode) {
             case 'auth/invalid-email':
@@ -51,7 +56,7 @@ export default function LoginPage() {
         }
     };
 
-
+    // Function for handling form submission
     const handleSubmit = async(e) => {
         setError("");
         e.preventDefault();
@@ -72,27 +77,29 @@ export default function LoginPage() {
             setUser(user);
 
             //check if user is in the teachers collection
-            const tq = query(collection(db, "teachers"), where("email","==", email));
-            const querySnapshotStu = await getDocs(tq);
-            if(!querySnapshotStu.empty){
+            // const tq = query(collection(db, "teachers"), where("email","==", email));
+
+
+            const querySnapshotTeacher= await getTeacherDoc(user.uid);
+            if(querySnapshotTeacher.data()){
                 // User is a teacher
                 window.location.href = ('/home');
                 return;
             }
 
             //check if user is in the students collection
-            const sq = query(collection(db, "students"), where("email","==", email));
-            const querySnapshotTeach = await getDocs(sq);
-            if(!querySnapshotTeach.empty){
+            // const sq = query(collection(db, "students"), where("email","==", email));
+
+            const querySnapshotStudent = await getStudentDoc(user.uid);
+            if(querySnapshotStudent.data()){
                 //User is a teacher
                 window.location.href = ('/stuHome');
                 return;
             }
 
             //check if user is in the admins collection
-            const aq = query(collection(db, "admins"), where("email","==", email));
-            const querySnapshotAdmin = await getDocs(aq);
-            if(!querySnapshotAdmin.empty){
+            const querySnapshotAdmin = await getAdminDoc(user.uid);
+            if(querySnapshotAdmin.data()){
                 //User is an admin
                 window.location.href = ('/admin');
                 return;
@@ -107,8 +114,6 @@ export default function LoginPage() {
             console.error("Error signing in with email and password", error);
         } 
     };
-
-
 
     return (
         <div className="min-h-screen flex flex-col justify-start">

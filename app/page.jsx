@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link';
-import Navbar from './components/Navbar.jsx';
+import Navbar from './views/Navbar.jsx';
 import { useEffect,useState } from 'react';
 import db from './lib/firebase.js';
 import { collection } from 'firebase/firestore';

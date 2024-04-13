@@ -1,59 +1,65 @@
 'use client'
 import { useState, useEffect } from 'react';
-import Sidebar from '../../components/Sidebar';
-import CourseNavBar from '../../components/CourseNavBar';
+import Sidebar from '../../views/Sidebar';
+import CourseNavBar from '../../views/CourseNavBar';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
-import { setDoc, getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
-import db from '../../lib/firebase'
-import Loader from '../../components/Loader';
+import Loader from '../../views/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faMinusCircle, faPlusCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
+import { getEssayRef,getQuizRef,addQuiz, addEssay } from '../../models/Assignment';
+import { getTeacherDoc } from '../../utilities/TeacherUtilities';
+import { getCourseDoc, getCourseRef,addAssignmentToCourse} from '../../models/Course';
 
 export default function Assignments({ params }) {
-    const [userName,setUserName] = useState('non');
-    const [showForm, setShowForm] = useState(false);
-    const [quizTitle, setQuizTitle] = useState(''); // New state for quiz title
-    const [essayTitle, setEssayTitle] = useState(''); // New state for essay title
-    const [errorMessage, setErrorMessage] = useState('');
-    const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
-    const [weightage, setWeightage] = useState(0);
-    const [formType, setFormType] = useState("");
-    const [questionPrompt, setQuestionPrompt] = useState('');
-    const [dueDate, setDueDate] = useState('');
-    const [loading, setLoading] = useState(true);
+    //State variables
+    const [userName,setUserName] = useState('non'); // State for storing user name
+    const [showForm, setShowForm] = useState(false); // State for controlling visibility of form
+    const [quizTitle, setQuizTitle] = useState(''); // State for storing quiz title
+    const [essayTitle, setEssayTitle] = useState(''); // State for storing essay title
+    const [errorMessage, setErrorMessage] = useState(''); // State for storing error message
+    const [questions, setQuestions] = useState([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]); // State for storing questions
+    const [weightage, setWeightage] = useState(0); // State for storing weightage of quiz/essay
+    const [formType, setFormType] = useState(""); // State for storing type of form (quiz or essay)
+    const [questionPrompt, setQuestionPrompt] = useState(''); // State for storing question prompt for essay
+    const [dueDate, setDueDate] = useState(''); // State for storing due date of quiz/essay
+    const [loading, setLoading] = useState(true); // State for storing loading status
 
-    const [user,setUser] = useState(null);
-    const [userType,setUserType] = useState('user');
+    const [user,setUser] = useState(null); // State for storing user data
+    const [userType,setUserType] = useState('user'); // State for storing user type
 
-    const courseCode = params.courseCode;
-    // console.log("my course code is " + courseCode);
+    const courseCode = params.courseCode; // Extracting course code from params
 
+    //Effect hook for handling authentication
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if(auth.currentUser){
-                setUser(auth.currentUser);
-                  console.log(user);
-                  const userInfoRef = collection(db,'teachers');
-                  const q = query(userInfoRef, where('uid','==',user.uid));
+                //   const userInfoRef = collection(db,'teachers');
+                //   const q = query(userInfoRef, where('uid','==',user.uid));
                 //   console.log(q);
-                  try{
-                      const querySnapshot = await getDocs(q);
-                      querySnapshot.forEach((doc) => {
-                          setUserName(doc.data().firstName);
-                          setUserType(doc.data().userType);
-                        //   console.log(doc.data().firstName);
-                      })
-                  }catch(error){
-                      console.log(error.message);
-                  }  
+                //   try{
+                //       const querySnapshot = await getDocs(q);
+                //       querySnapshot.forEach((doc) => {
+                //           setUserName(doc.data().firstName);
+                //           setUserType(doc.data().userType);
+                //         //   console.log(doc.data().firstName);
+                //       })
+                //   }catch(error){
+                //       console.log(error.message);
+                //   }  
 
+                setUser(auth.currentUser);
+                const teacherRef = await getTeacherDoc(user.uid);
+                
+                setUserName(teacherRef.data().firstName);
+                setUserType(teacherRef.data().userType);
 
             }
         })
     });
 
+    //Function for handling addition of option in a question
     const handleAddOption = (questionIndex) => {
         setQuestions(questions.map((question, index) => {
             if (index === questionIndex) {
@@ -63,14 +69,17 @@ export default function Assignments({ params }) {
         }));
     };
 
+    // Function for handling deletion of a question
     const handleDeleteQuestion = (questionIndex) => {
         setQuestions(questions.filter((_, index) => index !== questionIndex));
     };
 
+    // Function for handling addition of a question
     const handleAddQuestion = () => {
         setQuestions([...questions, { text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
     };
 
+    // Function for handling change of correct option in a question
     const handleCorrectOptionChange = (questionIndex, optionIndex) => {
         setQuestions(questions.map((question, index) => {
             if (index === questionIndex) {
@@ -80,6 +89,7 @@ export default function Assignments({ params }) {
         }));
     };
 
+    // Function for handling change of weightage of a quiz/essay
     const handleWeightageChange = (e) => {
         const value = e.target.value;
         if (value >= 0 && value <= 100) {
@@ -89,6 +99,7 @@ export default function Assignments({ params }) {
         }
     };
 
+    // Function for handling submission of quiz
     const handleSubmitQuiz = async (e) => {
         e.preventDefault();
 
@@ -105,32 +116,42 @@ export default function Assignments({ params }) {
         setErrorMessage('');
 
         try {
-            const quizCollectionRef = doc(db, 'quizzes', quizTitle);
-            const courseCollectionRef = doc(db, 'courses', courseCode);
-            const courseSnapshot = await getDoc(courseCollectionRef);
+            const quizCollectionRef = await getQuizRef(quizTitle);
 
-            if((courseSnapshot.data().currentWeight + parseInt(weightage)) <= 100){
-                await setDoc(quizCollectionRef, { questions,weightage,dueDate:dueDate});
+            const courseCollectionRef = await getCourseRef(courseCode);
 
-            const courseData = courseSnapshot.data();
-            const currentAssignments = courseData.currentAssignments || [];
+            const courseSnapshot = await getCourseDoc(courseCode);
 
-            currentAssignments.push(quizCollectionRef.id);
-            await setDoc(courseCollectionRef,{...courseData,currentWeight:courseSnapshot.data().currentWeight+parseInt(weightage)});
+            // if((courseSnapshot.data().currentWeight + parseInt(weightage)) <= 100){
+            //     await setDoc(quizCollectionRef, { questions,weightage,dueDate:dueDate});
+            const addCourseAssignment = await addQuiz(courseSnapshot,weightage,questions,dueDate,quizCollectionRef);
+           
+            // const courseData = courseSnapshot.data();
+            // const currentAssignments = courseData.currentAssignments || [];
+
+            // currentAssignments.push(quizCollectionRef.id);
+            // await setDoc(courseCollectionRef,{...courseData,currentWeight:courseSnapshot.data().currentWeight+parseInt(weightage)});
+            if(addCourseAssignment != false) {
+                await addAssignmentToCourse(courseCollectionRef,courseSnapshot,quizCollectionRef, weightage);
+
+            }
+           
+           
             console.log('it worked');
             // Optionally, you can reset the form after submission
             setQuizTitle('');
             setQuestions([{ text: '', options: ['Option #1', 'Option #2'], correctAnswer: null }]);
             setShowForm(false);
-            }else{
-                alert('The weightage of all your assignments is greater than 100!');
-            }
+            // }else{
+            //     alert('The weightage of all your assignments is greater than 100!');
+            // }
         } catch (error) {
             console.error('Error adding quiz:', error);
         }
+    
     };
 
-
+    // Function for handling submission of essay
     const handleSubmitEssay = async (e) => {
         e.preventDefault();
 
@@ -148,49 +169,49 @@ export default function Assignments({ params }) {
         
 
         try {
-            const essayCollectionRef = doc(db, 'essays', essayTitle);
-            const courseCollectionRef = doc(db, 'courses', courseCode);
+            const essayCollectionRef = await getEssayRef(essayTitle);
+            const courseCollectionRef = await getCourseRef(courseCode);
 
-            const courseSnapshot = await getDoc(courseCollectionRef);
+            const courseSnapshot = await getCourseDoc(courseCode);
 
-            if((courseSnapshot.data().currentWeight + parseInt(weightage)) <= 100){
+            const addCourseAssignment = await addEssay(courseSnapshot,questionPrompt,weightage,dueDate,essayCollectionRef);
 
-            await setDoc(essayCollectionRef, { questionPrompt,weightage,dueDate:dueDate});
+            if(addCourseAssignment != false){
+               await addAssignmentToCourse(courseCollectionRef,courseSnapshot,essayCollectionRef, weightage);
 
+            }
 
-            const courseSnapshot = await getDoc(courseCollectionRef);
-            const courseData = courseSnapshot.data();
-            const currentAssignments = courseData.currentAssignments || [];
-
-            currentAssignments.push(essayCollectionRef.id);
-            await setDoc(courseCollectionRef,{...courseData,currentAssignments,currentWeight:courseSnapshot.data().currentWeight+parseInt(weightage)});
             console.log('it worked');
             // Optionally, you can reset the form after submission
             setEssayTitle('');
             setQuestionPrompt('');
             setShowForm(false);
-            }else{
-                alert('The weightage of all your assignments is greater than 100!');
-            }
+            // }else{
+            //     alert('The weightage of all your assignments is greater than 100!');
+            // }
         } catch (error) {
             console.error('Error adding quiz:', error);
         }
     };
 
+    // Function for handling click on "Add Quiz" button
     const handleAddQuizClick = () => {
         setFormType('quiz');
         setShowForm(true);
     };
 
+    // Function for handling click on "Add Essay" button
     const handleAddEssayClick = () => {
         setFormType('essay');
         setShowForm(true);
     };
 
+    // Function for handling change of question prompt for essay
     const handleQuestionPromptChange = (e) => {
         setQuestionPrompt(e.target.value);
     };
 
+    // Function for handling change of due date of quiz/essay
     const handleDueDateChange = (e) => {
         setDueDate(e.target.value);
     };
@@ -208,6 +229,7 @@ export default function Assignments({ params }) {
         return <Loader data-testid="loader" />; // Return the Loading component if loading is true
     }
 
+    // JSX for rendering the component
     return (
         <div className="flex flex-col md:flex-row">
             <Sidebar userName={userName} userType={"Teacher"}/>

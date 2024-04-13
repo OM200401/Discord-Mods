@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import Enrolments from '../../app/enrolments/page'
-import EnrolmentCard from '../../app/components/EnrolmentCard'
+import EnrolmentCard from '../../app/views/EnrolmentCard'
 
 const EnrolmentCardWrapper = () => (
     <EnrolmentCard userEmail="test@example.com" courseCode="TEST123" />

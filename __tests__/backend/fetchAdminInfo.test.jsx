@@ -7,7 +7,7 @@ describe('Firebase Database Tests', () => {
         const adminsCollection = collection(db, 'admins');
 
         // Query for all user documents
-        const q = query(adminsCollection, where('firstName', '==', 'Admin'));
+        const q = query(adminsCollection, where('firstName', '==', 'admin'));
       
         // Get the documents that match the query
         const querySnapshot = await getDocs(q);
@@ -23,10 +23,10 @@ describe('Firebase Database Tests', () => {
         // Ensure that the data matches the expected data
         expect(adminsData.length).toBeGreaterThan(0); // Ensure that there is at least one document
         expect(adminsData[0]).toEqual({
-            email: "admintestnew@gmail.com",
-            firstName:"Admin",
-            lastName:"User",
-            uid: "eiQykSA7Y2Zq59zCf8fNBHAFBlM2",
+            email: "admintest@gmail.com",
+            firstName:"admin",
+            lastName:"test",
+            uid: "9ZEzx8hdLiRfnoR4CUVjH3nhrum1",
             userType: "admin"             
         });
     });  

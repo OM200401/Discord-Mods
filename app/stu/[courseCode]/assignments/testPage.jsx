@@ -1,14 +1,14 @@
 'use client';
-import CourseNavBar from '../../../components/StuCourseNavBar.jsx';
-import Sidebar from '../../../components/Sidebar';
-import Loader from '../../../components/Loader.jsx';
+import CourseNavBar from '../../../views/StuCourseNavBar.jsx';
+import Sidebar from '../../../views/Sidebar.jsx';
+import Loader from '../../../views/Loader.jsx';
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../../lib/firebase.js';
 import { getDoc, doc,getDocs,query,collection, where } from 'firebase/firestore';
 import db from '../../../lib/firebase';
-import StudentAssignmentCard from '../../../components/StudentAssignmentCard.jsx';
-import TeacherAssignmentCard from '../../../components/TeacherAssignmentCard.jsx';
+import StudentAssignmentCard from '../../../views/StudentAssignmentCard.jsx';
+import TeacherAssignmentCard from '../../../views/TeacherAssignmentCard.jsx';
 
 export default function Assignments({params}) {
 

@@ -13,4 +13,3 @@ test('Renders correct number of student elements', async () => {
     const studentElements = await screen.findAllByTestId('student-element');
     expect(studentElements).toHaveLength(5);
 });
- 

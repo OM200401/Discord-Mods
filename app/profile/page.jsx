@@ -1,82 +1,79 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { auth } from '../lib/firebase'; 
-import { updateDoc, getDocs, query, where, collection } from 'firebase/firestore';
+import { updateDoc } from 'firebase/firestore';
 import { updatePassword } from 'firebase/auth';
 import { onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
-import Sidebar from '../components/Sidebar';
-import AdminSidebar from '../components/AdminSidebar';
-import db from '../lib/firebase';
+import Sidebar from '../views/Sidebar';
+import AdminSidebar from '../views/AdminSidebar';
+import { getStudentDoc } from '../utilities/StudentUtilities';
+import { getTeacherDoc } from '../utilities/TeacherUtilities';
+import { getAdminDoc } from '../utilities/AdminUtilities';
+import Loader from '../views/Loader';
 
 export default function Profile() {
+    // State variables
     const [userInput, setUserInput] = useState({
         email: '',
         firstName: '',
         lastName: '',
         uid: "",
         userType:""
-    });
-    const [user,setUser] = useState();
-    const [userType,setUserType] = useState('user');
-    const [isEditing, setIsEditing] = useState(false);
-    const [newPassword, setNewPassword] = useState('');
-    const [currentPassword, setCurrentPassword] = useState('');
+    }); // State for storing user input
+
+    const [user,setUser] = useState(); // State for storing user
+    const [userType,setUserType] = useState('user'); // State for storing user type
+    const [isEditing, setIsEditing] = useState(false); // State for storing editing status
+    const [newPassword, setNewPassword] = useState(''); // State for storing new password
+    const [currentPassword, setCurrentPassword] = useState(''); // State for storing current password
     const [editedUserInput, setEditedUserInput] = useState({
         email: '',
         firstName: '',
         lastName: '',
         uid: "",
         userType:""
-    });
+    }); // State for storing edited user input
+    const [feedback, setFeedback] = useState(''); // State for storing feedback
+    const [loading, setLoading] = useState(true); // State for loader
 
+    // Effect hook for handling authentication state change
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            setLoading(true);
             if (auth.currentUser) {
                 setUser(auth.currentUser);
-                console.log(user);
                 console.log(user.uid);
-                const stuQuery = query(collection(db, 'students'), where('uid', '==', user.uid));
-                const stuSnapshot = await getDocs(stuQuery);
 
-                const teachQuery = query(collection(db, 'teachers'), where('uid', '==', user.uid));
-                const teachSnapshot = await getDocs(teachQuery);
+                const stuSnapshot = await getStudentDoc(user.uid);
+                const teacherSnapshot = await getTeacherDoc(user.uid);
+                const adminSnapshot = await getAdminDoc(user.uid);
 
-                const adminQuery = query(collection(db, 'admins'), where('uid', '==', user.uid));
-                const adminSnapshot = await getDocs(adminQuery);
-
-                if (!stuSnapshot.empty) {
-                    stuSnapshot.forEach((doc) => {
-                        console.log(doc.id, ' => ', doc.data());
-                        setUserInput(doc.data());
-                    });
-                }else if(!teachSnapshot.empty){
-                    teachSnapshot.forEach((doc) => {
-                        console.log(doc.id, ' => ', doc.data());
-                        setUserInput(doc.data());
-                    });
-                }else if(!adminSnapshot.empty){
-                    adminSnapshot.forEach((doc) => {
-                        console.log(doc.id, ' => ', doc.data());
-                        setUserInput(doc.data());
-                    });
-                }else {
-                    console.log('No such document!');
+                if(stuSnapshot.exists()){
+                    setUserInput(stuSnapshot.data());
+                } else if(teacherSnapshot.exists()){
+                    setUserInput(teacherSnapshot.data());
+                } else if(adminSnapshot.exists()){
+                    setUserInput(adminSnapshot.data());
+                } else {
+                    return;
                 }
             } else {
                 // User is signed out
                 console.log('No user is signed in.');
             }
+            setLoading(false);
         });
-
         // Cleanup subscription on unmount
         return () => unsubscribe();
     }, []);
 
+    // Function for handling profile edit
     const handleEdit = () =>{
         setEditedUserInput({...userInput});
         toggleEditing();
     }
 
+    // Function for handling input change
     const handleInputChange = (event) =>{
         setEditedUserInput({...editedUserInput,
             [event.target.name]: event.target.value
@@ -87,62 +84,57 @@ export default function Profile() {
         setIsEditing(!isEditing);
     };
 
+    // Function to save the changes to the database
     const handleSave = async () => {
         // console.log("clicked");
         if(userInput.userType === "Student"){
-            const stu = query(collection(db, 'students'), where('uid', '==', userInput.uid));
-            const stuSnap = await getDocs(stu);
+            const stuSnap = await getStudentDoc(user.uid);
             // console.log("in if condition");
-            if(!stuSnap.empty){
-                const docRef = stuSnap.docs[0].ref;
+            if(stuSnap.exists()){
+                const docRef = stuSnap.ref;
                 console.log('Updating document:', docRef);
                 console.log('With data:', {
                     firstName: editedUserInput.firstName,
-                    lastName: editedUserInput.lastName,
-                    email: editedUserInput.email,
+                    lastName: editedUserInput.lastName
                 });
                 await updateDoc(docRef, {
                     firstName: editedUserInput.firstName,
-                    lastName: editedUserInput.lastName,
-                    email: editedUserInput.email,
+                    lastName: editedUserInput.lastName
                     // Add other fields as needed
                 });
             }
         }
         
         if(userInput.userType === "Teacher"){
-            const teacher = query(collection(db, 'teachers'), where('uid', '==', userInput.uid));
-            const teachSnap = await getDocs(teacher);
-            if(!teachSnap.empty){
-                const docRef = teachSnap.docs[0].ref;
+            const teachSnap = await getTeacherDoc(user.uid);
+            if(teachSnap.exists()){
+                const docRef = teachSnap.ref;
                 await updateDoc(docRef, {
                     firstName: editedUserInput.firstName,
-                    lastName: editedUserInput.lastName,
-                    email: editedUserInput.email,
+                    lastName: editedUserInput.lastName
                     // Add other fields as needed
                 });
             }
         }
 
         if(userInput.userType === "admin"){
-            const admin = query(collection(db, 'admins'), where('uid', '==', userInput.uid));
-            const adminSnap = await getDocs(admin);
-            if(!adminSnap.empty){
-                const docRef = adminSnap.docs[0].ref;
+            const adminSnap = await getAdminDoc(user.uid);
+            if(adminSnap.exists()){
+                const docRef = adminSnap.ref;
                 await updateDoc(docRef, {
                     firstName: editedUserInput.firstName,
                     lastName: editedUserInput.lastName,
-                    email: editedUserInput.email,
                     // Add other fields as needed
                 });
             }
         }
         
         setUserInput(editedUserInput);
-
         toggleEditing();
+        setFeedback('Information updated successfully')
     };
 
+    // Function to reset password in the firebase authentication system
     const handlePasswordReset = async (email, currentPassword, newPassword) => {
         try {
             if (auth.currentUser) {
@@ -154,23 +146,24 @@ export default function Profile() {
 
                 // Update the password
                 await updatePassword(auth.currentUser, newPassword);
-                console.log('Password updated successfully');
+                setFeedback('Password updated successfully');
             } else {
-                console.log('No user is signed in.');
+                setFeedback('No user is signed in.');
             }
         } catch (error) {
-            console.error('Error updating password:', error);
+            setFeedback('Error updating password:', error);
         }
     };
 
-
-
     return (
             <div className="bg-blue-100 min-h-screen">
-                <div className="flex">  
-                    {userInput.userType === 'admin' ? 
-                        <AdminSidebar userName={userInput.firstName} userType={userInput.userType}/> :
-                        <Sidebar userName={userInput.firstName} userType={userInput.userType}/>
+                {loading ? (
+                    <Loader />
+                ): (
+                    <div className="flex">  
+                    {userInput.userType === 'Teacher' || userInput.userType === 'Student' ? 
+                        <Sidebar userName={userInput.firstName} userType={userInput.userType}/> :
+                        <AdminSidebar userName={userInput.firstName} userType={userInput.userType}/> 
                     }
                     <div className="relative md:ml-64 w-full">
                         <div className="p-6 text-center">
@@ -245,8 +238,13 @@ export default function Profile() {
                                 </div>
                             </div>
                         </div>
+                        <div className="sm:col-span-3 flex justify-center">
+                            <span className="text-lg font-bold text-blue-900">{feedback}</span>
+                        </div>
                     </div>
                 </div>
+                )}
+                
             </div>
         );
     }

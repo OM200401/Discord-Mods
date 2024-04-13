@@ -1,5 +1,4 @@
 import jest from 'jest';
-import { fetchCourseInfo } from '../../app/components/FetchCourseData'
 import * as firestore from 'firebase/firestore'
 import { collection, query, where, getDocs } from "firebase/firestore";
 import db from '../../app/lib/firebase';
