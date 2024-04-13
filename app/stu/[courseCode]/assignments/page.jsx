@@ -2,6 +2,7 @@
 import CourseNavBar from '../../../views/StuCourseNavBar.jsx';
 import Sidebar from '../../../views/Sidebar.jsx';
 import Loader from '../../../views/Loader.jsx';
+import StudentAssignmentCard from '../../../views/StudentAssignmentCard.jsx';
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../../lib/firebase.js';
