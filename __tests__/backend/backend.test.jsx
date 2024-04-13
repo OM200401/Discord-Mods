@@ -7,7 +7,7 @@ describe('Firebase Database Tests', () => {
     const studentsCollection = collection(db, 'students');
 
     // Query for a specific student document with an ID of 'nYhZn7r4g529WXaYzSlx'
-    const q = query(studentsCollection, where('firstName', '==', 'NewTest'));
+    const q = query(studentsCollection, where('firstName', '==', 'NewTester'));
 
     // Get the documents that match the query
     const querySnapshot = await getDocs(q);
@@ -24,8 +24,8 @@ describe('Firebase Database Tests', () => {
     expect(studentsData.length).toBeGreaterThan(0); // Ensure that there is at least one document
     expect(studentsData[0]).toEqual({
       email: "abcde@gmail.com",
-      firstName:"NewTest",
-      lastName:"Refactor",
+      firstName:"NewTester",
+      lastName:"Refactored",
       uid: "dZt1dKjhShTlsN7Jm6OzevIzdSr1",
       userType: "Student"
     });
